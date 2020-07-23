@@ -52,6 +52,9 @@
 - name: Print the facts!
   debug: var=ansible_facts
 
+- name: Print facts to file!
+  local_action: copy content={{ var }} dest=/var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
+
 #- name: Show 'raw information' for a specific host!
 #  shell: |
 #    ansible matrix.{{ matrix_domain }} -m setup
