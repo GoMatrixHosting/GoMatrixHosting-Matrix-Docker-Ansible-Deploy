@@ -59,6 +59,7 @@
   file:
     path: /var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
     mode: '0644'
+    state: touch
   delegate_to: localhost
   when: run_setup|bool
   tags:
