@@ -53,7 +53,6 @@
   debug: var=ansible_facts
   tags:
     - setup-all
-    - persist
 
 - name: Ensure the facts file exists
   file:
@@ -61,13 +60,11 @@
     mode: '0644'
   tags:
     - setup-all
-    - persist
 
 - name: Print facts to file!
   local_action: copy content={{ var }} dest=/var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
   tags:
     - setup-all
-    - persist
 
 #- name: Show 'raw information' for a specific host!
 #  shell: |
