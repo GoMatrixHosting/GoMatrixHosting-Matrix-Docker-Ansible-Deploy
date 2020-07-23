@@ -52,6 +52,11 @@
 - name: Print the facts!
   debug: var=ansible_facts
 
+- name: Ensure the facts file exists
+  file:
+    path: /var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
+    mode: '0644'
+
 - name: Print facts to file!
   local_action: copy content={{ var }} dest=/var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
 
