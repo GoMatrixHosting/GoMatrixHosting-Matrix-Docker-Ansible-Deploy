@@ -4,8 +4,8 @@
     matrix_ansible_outdated_fail_msg: "You are running on Ansible {{ ansible_version.string }}, which is not supported. See our guide about Ansible: https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/ansible.md"
 
 # debugging section
-- name: Print the facts!!
-  debug: var=ansible_facts
+#- name: Print the facts!!
+#  debug: var=ansible_facts
 
 - name: Fail if running on Ansible < 2.5
   fail:
