@@ -1,0 +1,57 @@
+---
+
+- set_fact:
+    matrix_ansible_outdated_fail_msg: "You are running on Ansible {{ ansible_version.string }}, which is not supported. See our guide about Ansible: https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/ansible.md"
+
+# debugging section
+- name: Print the facts!!
+  debug: var=ansible_facts
+
+- name: Fail if running on Ansible < 2.5
+  fail:
+    msg: "{{ matrix_ansible_outdated_fail_msg }}"
+  when: "ansible_version.major <= 2 and ansible_version.minor < 5"
+
+# Ansible 2.5.0 and 2.5.1 are known to have a bug with `include_tasks` + `with_items`.
+# The bug has been fixed in Ansible 2.5.2.
+- name: Fail if running on Ansible 2.5.x (lower than 2.5.2)
+  fail:
+    msg: "{{ matrix_ansible_outdated_fail_msg }}"
+  when: "ansible_version.major == 2 and ansible_version.minor == 5 and ansible_version.revision < 2"
+
+- name: (Deprecation) Catch and report renamed settings
+  fail:
+    msg: >-
+      Your configuration contains a variable, which now has a different name.
+      Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
+  when: "item.old in vars"
+  with_items:
+    - {'old': 'host_specific_hostname_identity', 'new': 'matrix_domain'}
+    - {'old': 'hostname_identity', 'new': 'matrix_domain'}
+    - {'old': 'hostname_matrix', 'new': 'matrix_server_fqn_matrix'}
+    - {'old': 'hostname_riot', 'new': 'matrix_server_fqn_riot'}
+
+- name: Fail if required variables are undefined
+  fail:
+    msg: "The `{{ item }}` variable must be defined and have a non-null value"
+  with_items:
+    - matrix_domain
+    - matrix_server_fqn_matrix
+    - matrix_server_fqn_riot
+  when: "item not in vars or vars[item] is none"
+
+- name: Fail if uppercase domain used
+  fail:
+    msg: "Detected that you're using an uppercase domain name - `{{ item }}`. This will cause trouble. Please use all-lowercase!"
+  with_items:
+    - "{{ matrix_domain }}"
+    - "{{ matrix_server_fqn_matrix }}"
+    - "{{ matrix_server_fqn_riot }}"
+  when: "item != item|lower"
+
+- name: Fail if using python2 on Archlinux
+  fail:
+    msg: "Detected that you're using python2 when installing onto Archlinux. Archlinux by default only supports python3."
+  when:
+    - ansible_distribution == 'Archlinux'
+    - ansible_python.version.major != 3

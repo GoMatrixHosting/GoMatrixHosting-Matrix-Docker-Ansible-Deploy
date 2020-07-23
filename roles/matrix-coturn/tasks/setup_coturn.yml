@@ -1,0 +1,152 @@
+---
+
+#
+# Tasks related to setting up Coturn
+#
+
+- name: Ensure Matrix Coturn path exists
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: 0750
+    owner: "{{ matrix_user_username }}"
+    group: "{{ matrix_user_groupname }}"
+  with_items:
+    - { path: "{{ matrix_coturn_docker_src_files_path }}", when: "{{ matrix_coturn_container_image_self_build }}"}
+  when: matrix_riot_web_enabled|bool and item.when
+
+- name: Ensure Coturn image is pulled
+  docker_image:
+    name: "{{ matrix_coturn_docker_image }}"
+    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
+    force_source: "{{ matrix_coturn_docker_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
+    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_coturn_docker_image_force_pull }}"
+  when: matrix_coturn_enabled|bool and not matrix_coturn_container_image_self_build
+
+- name: Ensure Coturn repository is present on self-build
+  git:
+    repo: https://github.com/instrumentisto/coturn-docker-image.git
+    dest: "{{ matrix_coturn_docker_src_files_path }}"
+    version: "{{ matrix_coturn_docker_image.split(':')[1] }}"
+    force: "yes"
+  when: "matrix_coturn_enabled|bool and matrix_coturn_container_image_self_build"
+
+- name: Ensure Coturn Docker image is built
+  docker_image:
+    name: "{{ matrix_coturn_docker_image }}"
+    source: build
+    build:
+      dockerfile: Dockerfile
+      path: "{{ matrix_coturn_docker_src_files_path }}"
+      pull: yes
+  when: "matrix_coturn_enabled|bool and matrix_coturn_container_image_self_build"
+
+- name: Ensure Coturn configuration path exists
+  file:
+    path: "{{ matrix_coturn_base_path }}"
+    state: directory
+    mode: 0750
+    owner: "{{ matrix_user_username }}"
+    group: "{{ matrix_user_groupname }}"
+  when: matrix_coturn_enabled|bool
+
+- name: Ensure turnserver.conf installed
+  template:
+    src: "{{ role_path }}/templates/turnserver.conf.j2"
+    dest: "{{ matrix_coturn_config_path }}"
+    mode: 0644
+  when: matrix_coturn_enabled|bool
+
+# `docker_network` doesn't work as expected when the given network
+# is a substring of a network that already exists.
+#
+# See our other comments in `roles/matrix-base/tasks/setup_matrix_base.yml`
+- name: Check existence of Coturn network in Docker
+  shell:
+    cmd: "docker network ls -q --filter='name=^{{ matrix_coturn_docker_network }}$'"
+  register: matrix_coturn_result_docker_network
+  changed_when: false
+  when: matrix_coturn_enabled|bool
+  check_mode: no
+
+- name: Create Coturn network in Docker
+  shell:
+    cmd: "docker network create --driver=bridge {{ matrix_coturn_docker_network }}"
+  when: "matrix_coturn_enabled|bool and matrix_coturn_result_docker_network.stdout == '' and not ansible_check_mode"
+
+- name: Ensure matrix-coturn.service installed
+  template:
+    src: "{{ role_path }}/templates/systemd/matrix-coturn.service.j2"
+    dest: "{{ matrix_systemd_path }}/matrix-coturn.service"
+    mode: 0644
+  register: matrix_coturn_systemd_service_result
+  when: matrix_coturn_enabled|bool
+
+- name: Ensure systemd reloaded after matrix-coturn.service installation
+  service:
+    daemon_reload: yes
+  when: "matrix_coturn_enabled|bool and matrix_coturn_systemd_service_result.changed"
+
+# This may be unnecessary when more long-lived certificates are used.
+# We optimize for the common use-case though (short-lived Let's Encrypt certificates).
+# Reloading doesn't hurt anyway, so there's no need to make this more flexible.
+- name: Ensure periodic reloading of matrix-coturn is configured for SSL renewal (matrix-coturn-reload)
+  cron:
+    user: root
+    cron_file: matrix-coturn-ssl-reload
+    name: matrix-coturn-ssl-reload
+    state: present
+    hour: "4"
+    minute: "20"
+    day: "*/5"
+    job: "{{ matrix_host_command_systemctl }} reload matrix-coturn.service"
+  when: "matrix_coturn_enabled|bool and matrix_coturn_tls_enabled|bool"
+
+
+#
+# Tasks related to getting rid of Coturn (if it was previously enabled)
+#
+
+- name: Ensure matrix-coturn-ssl-reload cronjob removed
+  cron:
+    user: root
+    cron_file: matrix-coturn-ssl-reload
+    state: absent
+  when: "not matrix_coturn_enabled|bool or not matrix_coturn_tls_enabled|bool"
+
+- name: Check existence of matrix-coturn service
+  stat:
+    path: "{{ matrix_systemd_path }}/matrix-coturn.service"
+  register: matrix_coturn_service_stat
+  when: "not matrix_coturn_enabled|bool"
+
+- name: Ensure matrix-coturn is stopped
+  service:
+    name: matrix-coturn
+    state: stopped
+    daemon_reload: yes
+  register: stopping_result
+  when: "not matrix_coturn_enabled|bool and matrix_coturn_service_stat.stat.exists"
+
+- name: Ensure matrix-coturn.service doesn't exist
+  file:
+    path: "{{ matrix_systemd_path }}/matrix-coturn.service"
+    state: absent
+  when: "not matrix_coturn_enabled|bool and matrix_coturn_service_stat.stat.exists"
+
+- name: Ensure systemd reloaded after matrix-coturn.service removal
+  service:
+    daemon_reload: yes
+  when: "not matrix_coturn_enabled|bool and matrix_coturn_service_stat.stat.exists"
+
+- name: Ensure Matrix coturn paths don't exist
+  file:
+    path: "{{ matrix_coturn_base_path }}"
+    state: absent
+  when: "not matrix_coturn_enabled|bool"
+
+- name: Ensure coturn Docker image doesn't exist
+  docker_image:
+    name: "{{ matrix_coturn_docker_image }}"
+    state: absent
+  when: "not matrix_coturn_enabled|bool"

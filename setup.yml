@@ -1,0 +1,34 @@
+---
+- name: "Set up a Matrix server"
+  hosts: "{{ target if target is defined else 'matrix_servers' }}"
+  become: true
+
+  roles:
+    - matrix-base
+    - matrix-mailer
+    - matrix-postgres
+    - matrix-corporal
+    - matrix-bridge-appservice-discord
+    - matrix-bridge-appservice-slack
+    - matrix-bridge-appservice-webhooks
+    - matrix-bridge-appservice-irc
+    - matrix-bridge-mautrix-facebook
+    - matrix-bridge-mautrix-hangouts
+    - matrix-bridge-mautrix-telegram
+    - matrix-bridge-mautrix-whatsapp
+    - matrix-bridge-mx-puppet-discord
+    - matrix-bridge-mx-puppet-steam
+    - matrix-bridge-mx-puppet-skype
+    - matrix-bridge-mx-puppet-slack
+    - matrix-bridge-mx-puppet-twitter
+    - matrix-bridge-mx-puppet-instagram
+    - matrix-bridge-sms
+    - matrix-synapse
+    - matrix-riot-web
+    - matrix-jitsi
+    - matrix-ma1sd
+    - matrix-dimension
+    - matrix-email2matrix
+    - matrix-nginx-proxy
+    - matrix-coturn
+    - matrix-common-after

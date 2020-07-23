@@ -1,0 +1,31 @@
+#jinja2: lstrip_blocks: "True"
+{
+	"m.homeserver": {
+		"base_url": "{{ matrix_homeserver_url }}"
+	}
+	{% if matrix_identity_server_url %},
+	"m.identity_server": {
+		"base_url": "{{ matrix_identity_server_url }}"
+	}
+	{% endif %}
+	{% if matrix_integration_manager_rest_url and matrix_integration_manager_ui_url %},
+	"m.integrations": {
+		"managers": [
+			{
+				"api_url": "{{ matrix_integration_manager_rest_url }}",
+				"ui_url": "{{ matrix_integration_manager_ui_url }}"
+			}
+		]
+	}
+	{% endif %}
+	{% if matrix_riot_jitsi_preferredDomain %},
+	"im.vector.riot.jitsi": {
+		"preferredDomain": {{ matrix_riot_jitsi_preferredDomain|to_json }}
+	}
+	{% endif %}
+	{% if not matrix_riot_e2ee_default %},
+	"im.vector.riot.e2ee": {
+		"default": false
+	}
+	{% endif %}
+}

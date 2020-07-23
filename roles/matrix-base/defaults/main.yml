@@ -1,0 +1,107 @@
+# The bare domain name which represents your Matrix identity.
+# Matrix user ids for your server will be of the form (`@user:<matrix-domain>`).
+#
+# Note: this playbook does not touch the server referenced here.
+# Installation happens on another server ("matrix.<matrix-domain>", see `matrix_server_fqn_matrix`).
+#
+# Example value: example.com
+matrix_domain: ~
+
+# This is where your data lives and what we set up.
+# This and the Riot FQN (see below) are expected to be on the same server.
+matrix_server_fqn_matrix: "matrix.{{ matrix_domain }}"
+
+# This is where you access the web UI from and what we set up here.
+# This and the Matrix FQN (see above) are expected to be on the same server.
+matrix_server_fqn_riot: "riot.{{ matrix_domain }}"
+
+# This is where you access the Dimension.
+matrix_server_fqn_dimension: "dimension.{{ matrix_domain }}"
+
+# This is where you access Jitsi.
+matrix_server_fqn_jitsi: "jitsi.{{ matrix_domain }}"
+
+matrix_federation_public_port: 8448
+
+matrix_user_username: "matrix"
+matrix_user_groupname: "matrix"
+
+# By default, the playbook creates the user (`matrix_user_username`)
+# and group (`matrix_user_groupname`) with a random id.
+# To use a specific user/group id, override these variables.
+matrix_user_uid: ~
+matrix_user_gid: ~
+
+matrix_base_data_path: "/matrix"
+matrix_base_data_path_mode: "750"
+
+matrix_static_files_base_path: "{{ matrix_base_data_path }}/static-files"
+matrix_systemd_path: "/etc/systemd/system"
+matrix_cron_path: "/etc/cron.d"
+matrix_local_bin_path: "/usr/local/bin"
+
+matrix_host_command_docker: "/usr/bin/env docker"
+matrix_host_command_sleep: "/usr/bin/env sleep"
+matrix_host_command_chown: "/usr/bin/env chown"
+matrix_host_command_fusermount: "/usr/bin/env fusermount"
+matrix_host_command_openssl: "/usr/bin/env openssl"
+matrix_host_command_systemctl: "/usr/bin/env systemctl"
+
+matrix_ntpd_package: "ntp"
+matrix_ntpd_service: "{{ 'ntpd' if ansible_os_family == 'RedHat' or ansible_distribution == 'Archlinux' else 'ntp' }}"
+
+matrix_homeserver_url: "https://{{ matrix_server_fqn_matrix }}"
+
+matrix_identity_server_url: ~
+
+matrix_integration_manager_rest_url: ~
+matrix_integration_manager_ui_url: ~
+
+# The domain name where a Jitsi server is self-hosted.
+# If set, `/.well-known/matrix/client` will suggest Riot clients to use that Jitsi server.
+# See: https://github.com/vector-im/riot-web/blob/develop/docs/jitsi.md#configuring-riot-to-use-your-self-hosted-jitsi-server
+matrix_riot_jitsi_preferredDomain: ''
+
+# Controls whether Riot should use End-to-End Encryption by default.
+# Setting this to false will update `/.well-known/matrix/client` and tell Riot clients to avoid E2EE.
+# See: https://github.com/vector-im/riot-web/blob/develop/docs/e2ee.md
+matrix_riot_e2ee_default: true
+
+# The Docker network that all services would be put into
+matrix_docker_network: "matrix"
+
+# Controls whether we'll preserve the vars.yml file on the Matrix server.
+# If you have a differently organized inventory, you may wish to disable this feature,
+# or to repoint `matrix_vars_yml_snapshotting_src` to the file you'd like to preserve.
+matrix_vars_yml_snapshotting_enabled: true
+matrix_vars_yml_snapshotting_src: "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}/vars.yml"
+
+# Controls whether a `/.well-known/matrix/server` file is generated and used at all.
+#
+# If you wish to rely on DNS SRV records only, you can disable this.
+# Using DNS SRV records implies that you'll be handling Matrix Federation API traffic (tcp/8448)
+# using certificates for the base domain (`matrix_domain`) and not for the
+# matrix domain (`matrix_server_fqn_matrix`).
+matrix_well_known_matrix_server_enabled: true
+
+# Controls whether Docker is automatically installed.
+# If you change this to false you must install and update Docker manually.
+matrix_docker_installation_enabled: true
+
+# Controls the Docker package that is installed.
+# Possible values are "docker-ce" (default) and "docker.io" (Debian).
+matrix_docker_package_name: docker-ce
+
+# Variables to Control which parts of our roles run.
+run_postgres_import: true
+run_postgres_upgrade: true
+run_postgres_import_sqlite_db: true
+run_postgres_synapse_janitor: true
+run_postgres_vacuum: true
+run_synapse_register_user: true
+run_synapse_update_user_password: true
+run_synapse_import_media_store: true
+run_setup: true
+run_self_check: true
+run_start: true
+run_stop: true
