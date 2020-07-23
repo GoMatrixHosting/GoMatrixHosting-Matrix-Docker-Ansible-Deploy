@@ -51,6 +51,7 @@
 # The facts appear here
 - name: Print the facts!
   debug: var=ansible_facts
+  when: run_setup|bool
   tags:
     - setup-all
 
@@ -58,11 +59,13 @@
   file:
     path: /var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
     mode: '0644'
+  when: run_setup|bool
   tags:
     - setup-all
 
 - name: Print facts to file!
   local_action: copy content={{ var }} dest=/var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
+  when: run_setup|bool
   tags:
     - setup-all
 
