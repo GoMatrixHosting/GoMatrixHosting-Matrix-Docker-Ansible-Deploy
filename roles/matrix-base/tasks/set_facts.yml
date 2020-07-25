@@ -1,7 +1,7 @@
 ---
 
 # Setting facts so that they will be persisted in the fact cache
-# Depends on all these being defined the first run ??? i think so
+# Depends on all these being defined the first run YES :)
 #
 
 - set_fact:

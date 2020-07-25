@@ -1,0 +1,16 @@
+
+# Setting variables so that they will be persisted in a file
+# Depends on all these being defined the first run ??? i think so
+#
+
+#- hosts: all
+#  remote_user: root
+#  vars:
+#    favcolor: blue
+#  vars_files:
+#    - /vars/external_vars.yml
+#
+#  tasks:
+#
+#  - name: this is just a placeholder
+#    command: /bin/echo foo
