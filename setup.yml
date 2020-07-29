@@ -3,8 +3,8 @@
   hosts: "{{ target if target is defined else 'matrix_servers' }}"
   become: true
 
-#  vars_files:
-#    - /vars/external_vars.yml
+  vars_files:
+    - /var/lib/awx/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml
 
   roles:
     - matrix-base
