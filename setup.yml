@@ -3,8 +3,10 @@
   hosts: "{{ target if target is defined else 'matrix_servers' }}"
   become: true
 
+  # AWX/Tower shared location /var/lib/awx on host
+  #   - maps to awx_task:/var/lib/awx/projects in container
   vars_files:
-    - /var/lib/awx/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml
+    - /var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml
 
   roles:
     - matrix-base
