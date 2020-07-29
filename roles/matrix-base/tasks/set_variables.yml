@@ -10,7 +10,15 @@
 #  vars_files:
 #    - /vars/external_vars.yml
 #
-#  tasks:
-#
-#  - name: this is just a placeholder
-#    command: /bin/echo foo
+  tasks:
+
+  - name: record new variables 1
+    command: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+
+#   command: /bin/echo {{ item }}: {{ item }}
+#    with:
+#      - matrix_riot_web_enabled
+#      - matrix_riot_web_brand
+#      - matrix_riot_web_default_theme
+#      - matrix_riot_web_branding_welcomeBackgroundUrl
+#      - matrix_riot_web_registration_enabled
