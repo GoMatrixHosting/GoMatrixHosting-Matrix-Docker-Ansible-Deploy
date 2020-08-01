@@ -43,6 +43,9 @@
       path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars_update.yml'
       mode: '0600'
     register: local_awx_vars_file
+    tags:
+      - setup-all
+      - start
 
   - name: record new variables locally on AWX 2
     # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
