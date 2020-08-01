@@ -9,8 +9,6 @@
 #    favcolor: blue
 #  vars_files:
 #    - /vars/external_vars.yml
-#
-  tasks:
 
   - name: record new variables 1
     command: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
