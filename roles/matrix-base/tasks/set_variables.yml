@@ -11,7 +11,7 @@
 #    - /vars/external_vars.yml
 
   - name: record new variables 1
-    command: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+    shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
     tags:
       - setup-all
       - start
