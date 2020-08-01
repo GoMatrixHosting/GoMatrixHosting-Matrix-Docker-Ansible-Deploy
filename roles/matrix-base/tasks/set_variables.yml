@@ -10,16 +10,30 @@
 #  vars_files:
 #    - /vars/external_vars.yml
 
+#- hosts: all
+#  tasks:
+# uncomment previous two lines for local test
+#
   - name: record new variables 1
-    shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+    # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+    lineinfile:
+      name: /matrix/vars_update.yml
+      regexp: "^#? *{{ item.key | regex_escape() }}:"
+      line: "{{ item.key }}: {{ item.value }}"
+    with_dict:
+      'matrix_domain': '{{ matrix_domain }}'
+      'matrix_ssl_lets_encrypt_support_email': '{{ matrix_ssl_lets_encrypt_support_email }}'
+      'matrix_coturn_turn_static_auth_secret': '{{ matrix_coturn_turn_static_auth_secret }}'
+      'matrix_synapse_macaroon_secret_key': '{{ matrix_synapse_macaroon_secret_key }}'
+      'matrix_riot_web_enabled': '{{ matrix_riot_web_enabled }}'
+      'matrix_jitsi_jicofo_component_secret': '{{ matrix_jitsi_jicofo_component_secret }}'
+      'matrix_jitsi_jicofo_auth_password': '{{ matrix_jitsi_jicofo_auth_password }}'
+      'matrix_jitsi_jvb_auth_password': '{{ matrix_jitsi_jvb_auth_password }}'
+      'matrix_jitsi_jibri_recorder_password': '{{ matrix_jitsi_jibri_recorder_password }}'
+      'matrix_jitsi_jibri_xmpp_password': '{{ matrix_jitsi_jibri_xmpp_password }}'
+      'matrix_nginx_proxy_base_domain_serving_enabled': '{{ matrix_nginx_proxy_base_domain_serving_enabled }}'
+      'matrix_nginx_proxy_base_domain_homepage_enabled': '{{ matrix_nginx_proxy_base_domain_homepage_enabled }}'
+      'matrix_vars_yml_snapshotting_enabled': '{{ matrix_vars_yml_snapshotting_enabled }}'
     tags:
       - setup-all
       - start
-
-#   command: /bin/echo {{ item }}: {{ item }}
-#    with:
-#      - matrix_riot_web_enabled
-#      - matrix_riot_web_brand
-#      - matrix_riot_web_default_theme
-#      - matrix_riot_web_branding_welcomeBackgroundUrl
-#      - matrix_riot_web_registration_enabled
