@@ -39,9 +39,11 @@
       - start
 
   - name: create new vars_update file locally on AWX 2
+    delegate_to: 127.0.0.1
     file:
       path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars_update.yml'
       mode: '0600'
+      state: touch
     register: local_awx_vars_file
     tags:
       - setup-all
