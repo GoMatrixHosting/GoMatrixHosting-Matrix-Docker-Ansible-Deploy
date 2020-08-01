@@ -53,7 +53,7 @@
     # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
     delegate_to: 127.0.0.1
     lineinfile:
-      name: '{{ local_awx_vars_file.path }}'
+      name: '{{ local_awx_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
