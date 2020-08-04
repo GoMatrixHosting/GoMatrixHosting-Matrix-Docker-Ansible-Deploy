@@ -14,8 +14,22 @@
 #  tasks:
 # uncomment previous two lines for local test
 #
-  - name: record new variables 1
-    # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+# shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+
+
+  - name: Create a new vars_update file locally on AWX
+    delegate_to: 127.0.0.1
+    file:
+      path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars_update.yml'
+      mode: '0600'
+      state: touch
+    register: local_awx_vars_file
+    tags:
+      - setup-all
+      - start
+
+
+  - name: Record base variables on remote machine
     lineinfile:
       name: /matrix/vars_update.yml
       regexp: "^#? *{{ item.key | regex_escape() }}:"
@@ -38,19 +52,7 @@
       - setup-all
       - start
 
-  - name: create new vars_update file locally on AWX 2
-    delegate_to: 127.0.0.1
-    file:
-      path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars_update.yml'
-      mode: '0600'
-      state: touch
-    register: local_awx_vars_file
-    tags:
-      - setup-all
-      - start
-
-  - name: record new variables locally on AWX 2
-    # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
+  - name: Record base variables locally on AWX
     delegate_to: 127.0.0.1
     lineinfile:
       name: '{{ local_awx_vars_file.dest }}'
@@ -73,3 +75,69 @@
     tags:
       - setup-all
       - start
+
+
+  - name: Record riot-web variables on remote machine
+    lineinfile:
+      name: /matrix/vars_update.yml
+      regexp: "^#? *{{ item.key | regex_escape() }}:"
+      line: "{{ item.key }}: {{ item.value }}"
+    with_dict:
+      'matrix_riot_web_enabled': '{{ matrix_riot_web_enabled }}'
+      'matrix_riot_web_jitsi_preferredDomain': '{{ matrix_riot_web_jitsi_preferredDomain }}'
+      'matrix_riot_web_brand': '{{ matrix_riot_web_brand }}'
+      'matrix_riot_web_default_theme': '{{ matrix_riot_web_default_theme }}'
+      'matrix_riot_web_branding_welcomeBackgroundUrl': '{{ matrix_riot_web_branding_welcomeBackgroundUrl }}'
+      'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
+    tags:
+      - setup-riot-web
+      - start
+
+  - name: Record riot-web variables locally on AWX
+    delegate_to: 127.0.0.1
+    lineinfile:
+      name: '{{ local_awx_vars_file.dest }}'
+      regexp: "^#? *{{ item.key | regex_escape() }}:"
+      line: "{{ item.key }}: {{ item.value }}"
+    with_dict:
+      'matrix_riot_web_enabled': '{{ matrix_riot_web_enabled }}'
+      'matrix_riot_web_jitsi_preferredDomain': '{{ matrix_riot_web_jitsi_preferredDomain }}'
+      'matrix_riot_web_brand': '{{ matrix_riot_web_brand }}'
+      'matrix_riot_web_default_theme': '{{ matrix_riot_web_default_theme }}'
+      'matrix_riot_web_branding_welcomeBackgroundUrl': '{{ matrix_riot_web_branding_welcomeBackgroundUrl }}'
+      'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
+    tags:
+      - setup-riot-web
+      - start
+
+
+  - name: Record synapse variables on remote machine
+    lineinfile:
+      name: /matrix/vars_update.yml
+      regexp: "^#? *{{ item.key | regex_escape() }}:"
+      line: "{{ item.key }}: {{ item.value }}"
+    with_dict:
+      'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
+      'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
+      'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
+    tags:
+      - setup-synapse
+      - start
+
+  - name: Record synapse variables locally on AWX
+    delegate_to: 127.0.0.1
+    lineinfile:
+      name: '{{ local_awx_vars_file.dest }}'
+      regexp: "^#? *{{ item.key | regex_escape() }}:"
+      line: "{{ item.key }}: {{ item.value }}"
+    with_dict:
+      'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
+      'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
+      'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
+    tags:
+      - setup-synapse
+      - start
+
+
+
+
