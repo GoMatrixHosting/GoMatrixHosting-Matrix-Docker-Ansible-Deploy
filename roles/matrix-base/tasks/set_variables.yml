@@ -31,7 +31,7 @@
 
   - name: Record base variables on remote machine
     lineinfile:
-      name: /matrix/vars_update.yml
+      name: /matrix/vars.yml
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -79,7 +79,7 @@
 
   - name: Record riot-web variables on remote machine
     lineinfile:
-      name: /matrix/vars_update.yml
+      name: /matrix/vars.yml
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -113,7 +113,7 @@
 
   - name: Record synapse variables on remote machine
     lineinfile:
-      name: /matrix/vars_update.yml
+      name: /matrix/vars.yml
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
