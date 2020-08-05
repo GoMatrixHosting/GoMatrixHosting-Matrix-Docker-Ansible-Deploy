@@ -1,7 +1,5 @@
-
 # Setting variables so that they will be persisted in a file
 # Depends on all these being defined the first run ??? i think so
-#
 
 #- hosts: all
 #  remote_user: root
@@ -16,7 +14,6 @@
 #
 # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
 
-
   - name: Create a new vars_update file locally on AWX
     delegate_to: 127.0.0.1
     file:
@@ -26,8 +23,8 @@
     register: local_awx_vars_file
     tags:
       - setup-all
-      - start
-
+      - setup-riot-web
+      - setup-synapse
 
   - name: Record base variables on remote machine
     lineinfile:
@@ -50,7 +47,6 @@
       'matrix_vars_yml_snapshotting_enabled': '{{ matrix_vars_yml_snapshotting_enabled }}'
     tags:
       - setup-all
-      - start
 
   - name: Record base variables locally on AWX
     delegate_to: 127.0.0.1
@@ -74,8 +70,6 @@
       'matrix_vars_yml_snapshotting_enabled': '{{ matrix_vars_yml_snapshotting_enabled }}'
     tags:
       - setup-all
-      - start
-
 
   - name: Record riot-web variables on remote machine
     lineinfile:
@@ -91,7 +85,6 @@
       'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
     tags:
       - setup-riot-web
-      - start
 
   - name: Record riot-web variables locally on AWX
     delegate_to: 127.0.0.1
@@ -108,8 +101,6 @@
       'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
     tags:
       - setup-riot-web
-      - start
-
 
   - name: Record synapse variables on remote machine
     lineinfile:
@@ -122,7 +113,6 @@
       'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
     tags:
       - setup-synapse
-      - start
 
   - name: Record synapse variables locally on AWX
     delegate_to: 127.0.0.1
@@ -136,8 +126,3 @@
       'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
     tags:
       - setup-synapse
-      - start
-
-
-
-
