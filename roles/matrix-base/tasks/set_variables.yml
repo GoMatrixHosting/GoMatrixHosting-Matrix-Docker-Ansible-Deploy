@@ -23,6 +23,8 @@
     register: local_awx_vars_file
     tags:
       - setup-all
+      - setup-riot-web
+      - setup-synapse
 
   - name: Record base variables on remote machine
     lineinfile:
