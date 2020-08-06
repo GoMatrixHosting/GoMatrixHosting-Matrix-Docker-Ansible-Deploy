@@ -14,13 +14,24 @@
 #
 # shell: '/bin/echo matrix_riot_web_enabled: {{ matrix_riot_web_enabled }} >> /matrix/vars_update.yml'
 
-  - name: Create a new vars_update file locally on AWX
+  - name: Create a new vars.yml file locally on AWX
     delegate_to: 127.0.0.1
     file:
-      path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars_update.yml'
+      path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
       mode: '0600'
       state: touch
     register: local_awx_vars_file
+    tags:
+      - setup-all
+      - setup-riot-web
+      - setup-synapse
+
+  - name: Create a new vars.yml file on target machine
+    file:
+      path: '/matrix/vars.yml'
+      mode: '0600'
+      state: touch
+    register: remote_awx_vars_file
     tags:
       - setup-all
       - setup-riot-web
