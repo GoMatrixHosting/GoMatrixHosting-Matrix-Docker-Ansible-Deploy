@@ -158,3 +158,13 @@
       - setup-all
       - setup-riot-web
       - setup-synapse
+
+  - name: remove deployment key
+    file:
+      path: '{{ remote_pass_file.dest }}'
+      state: absent
+    when: remote_pass_file.dest is defined
+    tags:
+      - setup-all
+      - setup-riot-web
+      - setup-synapse
