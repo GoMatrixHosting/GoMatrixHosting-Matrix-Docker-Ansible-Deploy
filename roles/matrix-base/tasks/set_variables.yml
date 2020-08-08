@@ -26,12 +26,12 @@
       - setup-riot-web
       - setup-synapse
 
-  - name: Create a new vars.yml file on target machine
+  - name: Create a new vars.yml file on remote target machine
     file:
       path: '/matrix/vars.yml'
       mode: '0600'
       state: touch
-    register: remote_awx_vars_file
+    register: remote_vars_file
     tags:
       - setup-all
       - setup-riot-web
@@ -39,7 +39,7 @@
 
   - name: Record base variables on remote machine
     lineinfile:
-      name: /matrix/vars.yml
+      path: '{{ remote_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -62,7 +62,7 @@
   - name: Record base variables locally on AWX
     delegate_to: 127.0.0.1
     lineinfile:
-      name: '{{ local_awx_vars_file.dest }}'
+      path: '{{ local_awx_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -84,7 +84,7 @@
 
   - name: Record riot-web variables on remote machine
     lineinfile:
-      name: /matrix/vars.yml
+      path: '{{ remote_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -100,7 +100,7 @@
   - name: Record riot-web variables locally on AWX
     delegate_to: 127.0.0.1
     lineinfile:
-      name: '{{ local_awx_vars_file.dest }}'
+      path: '{{ local_awx_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -115,7 +115,7 @@
 
   - name: Record synapse variables on remote machine
     lineinfile:
-      name: /matrix/vars.yml
+      path: '{{ remote_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
@@ -128,7 +128,7 @@
   - name: Record synapse variables locally on AWX
     delegate_to: 127.0.0.1
     lineinfile:
-      name: '{{ local_awx_vars_file.dest }}'
+      path: '{{ local_awx_vars_file.dest }}'
       regexp: "^#? *{{ item.key | regex_escape() }}:"
       line: "{{ item.key }}: {{ item.value }}"
     with_dict:
