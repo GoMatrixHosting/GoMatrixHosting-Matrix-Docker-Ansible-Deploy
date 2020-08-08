@@ -138,10 +138,22 @@
     tags:
       - setup-synapse
 
-  - name: Make encrypted copy of vars on remote machine
-    command: ./deploy-vault/envaultify.sh ./deploy-vault/pass.sh '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
+  - name: install deployment key
+    copy:
+      src: deploy-vault/pass.txt
+      dest: "/tmp/pass.txt"
+      mode: '0600'
+    register: remote_pass_file
     when: remote_vars_file.dest is defined
-    #    when: remote_vars_file.path is defined
+    tags:
+      - setup-all
+      - setup-riot-web
+      - setup-synapse
+
+  - name: Make encrypted copy of vars on remote machine
+    # infile == outfile
+    script: deploy-vault/envaultify.sh '{{ remote_pass_file.dest }}' '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
+    when: remote_pass_file.dest is defined
     tags:
       - setup-all
       - setup-riot-web
