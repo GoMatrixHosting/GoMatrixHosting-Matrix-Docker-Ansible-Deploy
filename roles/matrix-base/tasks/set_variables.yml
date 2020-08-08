@@ -142,3 +142,7 @@
     command: ./deploy-vault/envaultify.sh ./deploy-vault/pass.sh '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
     when: remote_vars_file.dest is defined
     #    when: remote_vars_file.path is defined
+    tags:
+      - setup-all
+      - setup-riot-web
+      - setup-synapse
