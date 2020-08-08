@@ -137,3 +137,8 @@
       'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
     tags:
       - setup-synapse
+
+  - name: Make encrypted copy of vars on remote machine
+    command: ./deploy-vault/envaultify.sh ./deploy-vault/pass.sh '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
+    when: remote_vars_file.dest is defined
+    #    when: remote_vars_file.path is defined
