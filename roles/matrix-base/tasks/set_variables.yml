@@ -138,33 +138,34 @@
     tags:
       - setup-synapse
 
-  - name: install deployment key
-    copy:
-      src: deploy-vault/pass.txt
-      dest: "/tmp/pass.txt"
-      mode: '0600'
-    register: remote_pass_file
-    when: remote_vars_file.dest is defined
-    tags:
-      - setup-all
-      - setup-riot-web
-      - setup-synapse
-
-  - name: Make encrypted copy of vars on remote machine
-    # infile == outfile
-    script: deploy-vault/envaultify.sh '{{ remote_pass_file.dest }}' '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
-    when: remote_pass_file.dest is defined
-    tags:
-      - setup-all
-      - setup-riot-web
-      - setup-synapse
-
-  - name: remove deployment key
-    file:
-      path: '{{ remote_pass_file.dest }}'
-      state: absent
-    when: remote_pass_file.dest is defined
-    tags:
-      - setup-all
-      - setup-riot-web
-      - setup-synapse
+#  - name: install deployment key
+#    copy:
+#      src: deploy-vault/pass.txt
+#      dest: "/tmp/pass.txt"
+#      mode: '0600'
+#    register: remote_pass_file
+#    when: remote_vars_file.dest is defined
+#    tags:
+#      - setup-all
+#      - setup-riot-web
+#      - setup-synapse
+#
+#  - name: Make encrypted copy of vars on remote machine
+#    # infile == outfile
+#    script: deploy-vault/envaultify.sh '{{ remote_pass_file.dest }}' '{{ remote_vars_file.dest }}' '{{ remote_vars_file.dest }}.vault'
+#    when: remote_pass_file.dest is defined
+#    tags:
+#      - setup-all
+#      - setup-riot-web
+#      - setup-synapse
+#
+#  - name: remove deployment key
+#    file:
+#      path: '{{ remote_pass_file.dest }}'
+#      state: absent
+#    when: remote_pass_file.dest is defined
+#    tags:
+#      - setup-all
+#      - setup-riot-web
+#      - setup-synapse
+#
