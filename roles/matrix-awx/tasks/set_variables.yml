@@ -10,7 +10,7 @@
   register: local_awx_vars_file
   tags:
     - setup-all
-    - setup-riot-web
+    - setup-element
     - setup-synapse
 
 - name: Ensure vars.yml file on remote target machine exists
@@ -21,7 +21,7 @@
   register: remote_vars_file
   tags:
     - setup-all
-    - setup-riot-web
+    - setup-element
     - setup-synapse
 
 # ^ These might not be needed
@@ -100,7 +100,7 @@
     'matrix_riot_web_branding_welcomeBackgroundUrl': '{{ matrix_riot_web_branding_welcomeBackgroundUrl }}'
     'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
   tags:
-    - setup-riot-web
+    - setup-element
 
 #  - name: Record synapse variables on remote machine
 #    lineinfile:
@@ -134,8 +134,8 @@
     dest: /matrix/awx/
     mode: '0600'
   tags:
+    - setup-all
     - setup-synapse
-    - setup-riot-web
-
+    - setup-element
 
 
