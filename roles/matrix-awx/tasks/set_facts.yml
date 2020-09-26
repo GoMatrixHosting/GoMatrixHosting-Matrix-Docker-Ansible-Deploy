@@ -1,0 +1,85 @@
+---
+
+# Setting facts so that they will be persisted in the fact cache
+# Depends on all these being defined the first run YES :)
+#
+
+- set_fact:
+    matrix_domain: "{{ matrix_domain }}"
+    matrix_ssl_lets_encrypt_support_email: "{{ matrix_ssl_lets_encrypt_support_email }}"
+    matrix_coturn_turn_static_auth_secret: "{{ matrix_coturn_turn_static_auth_secret }}"
+    matrix_synapse_macaroon_secret_key: "{{ matrix_synapse_macaroon_secret_key }}"
+    matrix_riot_web_enabled: "{{ matrix_riot_web_enabled }}"
+    matrix_riot_web_jitsi_preferredDomain: "{{ matrix_riot_web_jitsi_preferredDomain }}"
+    matrix_jitsi_enabled: "{{ matrix_jitsi_enabled }}"
+    matrix_jitsi_jicofo_component_secret: "{{ matrix_jitsi_jicofo_component_secret }}"
+    matrix_jitsi_jicofo_auth_password: "{{ matrix_jitsi_jicofo_auth_password }}"
+    matrix_jitsi_jvb_auth_password: "{{ matrix_jitsi_jvb_auth_password }}"
+    matrix_jitsi_jibri_recorder_password: "{{ matrix_jitsi_jibri_recorder_password }}"
+    matrix_jitsi_jibri_xmpp_password: "{{ matrix_jitsi_jibri_xmpp_password }}"
+    matrix_synapse_allow_public_rooms_over_federation: "{{ matrix_synapse_allow_public_rooms_over_federation }}"
+    matrix_synapse_enable_registration: "{{ matrix_synapse_enable_registration }}"
+    matrix_nginx_proxy_base_domain_serving_enabled: "{{ matrix_nginx_proxy_base_domain_serving_enabled }}"
+    matrix_nginx_proxy_base_domain_homepage_enabled: "{{ matrix_nginx_proxy_base_domain_homepage_enabled }}"
+    matrix_vars_yml_snapshotting_enabled: "{{ matrix_vars_yml_snapshotting_enabled }}"
+    cacheable: yes
+  when: run_setup|bool
+  tags:
+    - setup-all
+
+- set_fact:
+    matrix_riot_web_enabled: "{{ matrix_riot_web_enabled }}"
+    matrix_riot_web_jitsi_preferredDomain: "{{ matrix_riot_web_jitsi_preferredDomain }}"
+    matrix_riot_web_brand: "{{ matrix_riot_web_brand }}"
+    matrix_riot_web_default_theme: "{{ matrix_riot_web_default_theme }}"
+    matrix_riot_web_branding_welcomeBackgroundUrl: "{{ matrix_riot_web_branding_welcomeBackgroundUrl }}"
+    matrix_riot_web_registration_enabled: "{{ matrix_riot_web_registration_enabled }}"
+    cacheable: yes
+  when: run_setup|bool
+  tags:
+    - setup-riot-web
+
+- set_fact:
+    matrix_synapse_allow_public_rooms_over_federation: "{{ matrix_synapse_allow_public_rooms_over_federation }}"
+    matrix_synapse_enable_registration: "{{ matrix_synapse_enable_registration }}"
+    matrix_synapse_federation_enabled: "{{ matrix_synapse_federation_enabled }}"
+    cacheable: yes
+  when: run_setup|bool
+  tags:
+    - setup-synapse
+
+# The facts appear here
+- name: Print the facts!
+  debug: var=ansible_facts
+  when: run_setup|bool
+  tags:
+    - setup-all
+
+- name: Ensure the facts file exists
+  file:
+    path: /var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
+    mode: '0644'
+    state: touch
+  delegate_to: localhost
+  when: run_setup|bool
+  tags:
+    - setup-all
+
+- name: Print facts to file!
+  local_action: copy content={{ var }} dest=/var/lib/awx/persistant_variables/{{ matrix_domain }}.facts
+  when: run_setup|bool
+  tags:
+    - setup-all
+
+#- name: Show 'raw information' for a specific host!
+#  shell: |
+#    ansible matrix.{{ matrix_domain }} -m setup
+#  delegate_to: localhost
+
+#- name: Print the facts for this host!
+#  debug: var={{ ansible_facts['matrix.cheesedomain.xyz'] }}
+
+#- name: Print the inventory file if it exists!
+#  debug: var=inventory_file
+
+

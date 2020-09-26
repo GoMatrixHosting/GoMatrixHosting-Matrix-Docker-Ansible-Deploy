@@ -9,6 +9,7 @@
     - /var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml
 
   roles:
+    - matrix-awx
     - matrix-base
     - matrix-mailer
     - matrix-postgres
