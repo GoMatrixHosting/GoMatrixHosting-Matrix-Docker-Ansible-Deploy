@@ -86,7 +86,7 @@
 #    tags:
 #      - setup-riot-web
 
-- name: Record riot-web variables locally on AWX
+- name: Record Element-Web variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '{{ local_awx_vars_file.dest }}'
