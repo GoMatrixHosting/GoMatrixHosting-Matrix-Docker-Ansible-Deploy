@@ -72,7 +72,7 @@
       }
     backup: no
 
--name: Copy new 'Configure Element' survey.json to target machine
+- name: Copy new 'Configure Element' survey.json to target machine
   delegate_to: "{{ server_ip4 }}"
   copy:
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json'
@@ -145,7 +145,7 @@
       }
     backup: no
 
--name: Copy new 'Configure Synapse' survey.json to target machine
+- name: Copy new 'Configure Synapse' survey.json to target machine
   delegate_to: "{{ server_ip4 }}"
   copy:
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
