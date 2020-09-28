@@ -79,22 +79,22 @@
     dest:  '/matrix/awx/configure_element.json'
     mode: 0644
 
-- name: Recreate 'Configure Element' job template
-  delegate_to: 127.0.0.1
-  tower_job_template:
-    name: "{{ client_organisation }} - 1 - Configure Element"
-    description: "Configure Element client via survey."
-    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
-    job_type: run
-    job_tags: "start,setup-riot-web"
-    inventory: "{{ client_organisation }} Inventory"
-    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
-    playbook: setup.yml
-    survey_enabled: true
-    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json') }}"
-    become_enabled: yes
-    state: present
-    verbosity: 1
+#- name: Recreate 'Configure Element' job template
+#  delegate_to: 127.0.0.1
+#  tower_job_template:
+#    name: "{{ client_organisation }} - 1 - Configure Element"
+#    description: "Configure Element client via survey."
+#    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
+#    job_type: run
+#    job_tags: "start,setup-riot-web"
+#    inventory: "{{ client_organisation }} Inventory"
+#    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
+#    playbook: setup.yml
+#    survey_enabled: true
+#    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json') }}"
+#    become_enabled: yes
+#    state: present
+#    verbosity: 1
 
 - name: Save new 'Configure Synapse' survey.json to the AWX tower using blockinfile
   delegate_to: 127.0.0.1
@@ -152,20 +152,20 @@
     dest:  '/matrix/awx/configure_synapse.json'
     mode: 0644
 
-- name: Recreate 'Configure Synapse' job template
-  delegate_to: 127.0.0.1
-  tower_job_template:
-    name: "{{ client_organisation }} - 1 - Configure Synapse"
-    description: "Configure Synapse (homeserver) settings."
-    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
-    job_type: run
-    job_tags: "start,setup-synapse"
-    inventory: "{{ client_organisation }} Inventory"
-    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
-    playbook: setup.yml
-    survey_enabled: true
-    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json') }}"
-    become_enabled: yes
-    state: present
-    verbosity: 1
+#- name: Recreate 'Configure Synapse' job template
+#  delegate_to: 127.0.0.1
+#  tower_job_template:
+#    name: "{{ client_organisation }} - 1 - Configure Synapse"
+#    description: "Configure Synapse (homeserver) settings."
+#    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
+#    job_type: run
+#    job_tags: "start,setup-synapse"
+#    inventory: "{{ client_organisation }} Inventory"
+#    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
+#    playbook: setup.yml
+#    survey_enabled: true
+#    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json') }}"
+#    become_enabled: yes
+#    state: present
+#    verbosity: 1
 
