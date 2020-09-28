@@ -1,3 +1,50 @@
+# 2020-09-01
+
+## matrix-registration support
+
+The playbook can now help you set up [matrix-registration](https://github.com/ZerataX/matrix-registration) - an application that lets you keep your Matrix server's registration private, but still allow certain users (those having a unique registration link) to register by themselves.
+
+See our [Setting up matrix-registration](docs/configuring-playbook-matrix-registration.md) documentation page to get started.
+
+
+# 2020-08-21
+
+## rust-synapse-compress-state support
+
+The playbook can now help you use [rust-synapse-compress-state](https://github.com/matrix-org/rust-synapse-compress-state) to compress the state groups in your Synapse database.
+
+See our [Compressing state with rust-synapse-compress-state](docs/maintenance-synapse.md#compressing-state-with-rust-synapse-compress-state) documentation page to get started.
+
+
+# 2020-07-22
+
+## Synapse Admin support
+
+The playbook can now help you set up [synapse-admin](https://github.com/Awesome-Technologies/synapse-admin).
+
+See our [Setting up Synapse Admin](docs/configuring-playbook-synapse-admin.md) documentation to get started.
+
+
+# 2020-07-20
+
+## matrix-reminder-bot support
+
+The playbook can now help you set up [matrix-reminder-bot](https://github.com/anoadragon453/matrix-reminder-bot).
+
+See our [Setting up matrix-reminder-bot](docs/configuring-playbook-bot-matrix-reminder-bot.md) documentation to get started.
+
+
+# 2020-07-17
+
+## (Compatibility Break) Riot is now Element
+
+As per the official announcement, [Riot has been rebraned to Element](https://element.io/blog/welcome-to-element/).
+
+The playbook follows suit. Existing installations have a few options for how to handle this.
+
+See our [Migrating to Element](docs/configuring-playbook-riot-web.md#migrating-to-element) documentation page for more details.
+
+
 # 2020-07-03
 
 ## Steam bridging support via mx-puppet-steam
@@ -49,7 +96,7 @@ To reuse your existing rooms, invite `@smsbot:yourServer` to the room or write a
 
 Thanks to [benkuly](https://github.com/benkuly)'s efforts, the playbook now supports bridging to SMS (with one telephone number only) via [matrix-sms-bridge](https://github.com/benkuly/matrix-sms-bridge).
 
-See our [Setting up Matrix SMS bridging](docs/configuring-playbook-matrix-bridge-sms.md) documentation page for getting started.
+See our [Setting up Matrix SMS bridging](docs/configuring-playbook-bridge-matrix-bridge-sms.md) documentation page for getting started.
 
 
 # 2020-05-19

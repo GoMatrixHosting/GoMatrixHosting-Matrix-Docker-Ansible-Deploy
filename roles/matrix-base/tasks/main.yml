@@ -1,33 +1,12 @@
-# Ensure ansible up to date and pre-requisite variables are set
 - import_tasks: "{{ role_path }}/tasks/sanity_check.yml"
   tags:
     - always
 
-# Blank ??? strange...
-- import_tasks: "{{ role_path }}/tasks/validate_config.yml"
-  when: "run_setup|bool"
-  tags:
-    - setup-all
-
-# Cleans up a few left over file from previous outdated setups
 - import_tasks: "{{ role_path }}/tasks/clean_up_old_files.yml"
   when: run_setup|bool
   tags:
     - setup-all
 
-# Additional playbook to set persistent facts
-#- import_tasks: "{{ role_path }}/tasks/set_facts.yml"
-#  when: run_setup|bool
-#  tags:
-#    - setup-all
-
-# Additional playbook to set a variable file
-- import_tasks: "{{ role_path }}/tasks/set_variables.yml"
-  when: run_setup|bool
-  tags:
-    - setup-all
-
-# Installs docker and begins setup.
 - import_tasks: "{{ role_path }}/tasks/server_base/setup.yml"
   when: run_setup|bool
   tags:

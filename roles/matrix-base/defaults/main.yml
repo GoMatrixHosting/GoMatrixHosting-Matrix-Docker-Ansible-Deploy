@@ -8,12 +8,12 @@
 matrix_domain: ~
 
 # This is where your data lives and what we set up.
-# This and the Riot FQN (see below) are expected to be on the same server.
+# This and the Element FQN (see below) are expected to be on the same server.
 matrix_server_fqn_matrix: "matrix.{{ matrix_domain }}"
 
-# This is where you access the web UI from and what we set up here.
+# This is where you access the Element web UI from (if enabled via matrix_client_element_enabled; enabled by default).
 # This and the Matrix FQN (see above) are expected to be on the same server.
-matrix_server_fqn_riot: "riot.{{ matrix_domain }}"
+matrix_server_fqn_element: "element.{{ matrix_domain }}"
 
 # This is where you access the Dimension.
 matrix_server_fqn_dimension: "dimension.{{ matrix_domain }}"
@@ -58,12 +58,12 @@ matrix_integration_manager_rest_url: ~
 matrix_integration_manager_ui_url: ~
 
 # The domain name where a Jitsi server is self-hosted.
-# If set, `/.well-known/matrix/client` will suggest Riot clients to use that Jitsi server.
+# If set, `/.well-known/matrix/client` will suggest Element clients to use that Jitsi server.
 # See: https://github.com/vector-im/riot-web/blob/develop/docs/jitsi.md#configuring-riot-to-use-your-self-hosted-jitsi-server
 matrix_riot_jitsi_preferredDomain: ''
 
-# Controls whether Riot should use End-to-End Encryption by default.
-# Setting this to false will update `/.well-known/matrix/client` and tell Riot clients to avoid E2EE.
+# Controls whether Element should use End-to-End Encryption by default.
+# Setting this to false will update `/.well-known/matrix/client` and tell Element clients to avoid E2EE.
 # See: https://github.com/vector-im/riot-web/blob/develop/docs/e2ee.md
 matrix_riot_e2ee_default: true
 
@@ -85,7 +85,7 @@ matrix_vars_yml_snapshotting_src: "{{ inventory_dir }}/host_vars/{{ inventory_ho
 matrix_well_known_matrix_server_enabled: true
 
 # Controls whether Docker is automatically installed.
-# If you change this to false you must install and update Docker manually.
+# If you change this to false you must install and update Docker manually. You also need to install the docker (https://pypi.org/project/docker/) Python package.
 matrix_docker_installation_enabled: true
 
 # Controls the Docker package that is installed.
@@ -101,6 +101,7 @@ run_postgres_vacuum: true
 run_synapse_register_user: true
 run_synapse_update_user_password: true
 run_synapse_import_media_store: true
+run_synapse_rust_synapse_compress_state: true
 run_setup: true
 run_self_check: true
 run_start: true

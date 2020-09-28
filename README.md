@@ -16,9 +16,9 @@ Using this playbook, you can get the following services configured on your serve
 
 - (optional, default) a [coturn](https://github.com/coturn/coturn) STUN/TURN server for WebRTC audio/video calls
 
-- (optional, default) free [Let's Encrypt](https://letsencrypt.org/) SSL certificate, which secures the connection to the Synapse server and the Riot web UI
+- (optional, default) free [Let's Encrypt](https://letsencrypt.org/) SSL certificate, which secures the connection to the Synapse server and the Element web UI
 
-- (optional, default) a [Riot](https://riot.im/) web UI, which is configured to connect to your own Synapse server by default
+- (optional, default) an [Element](https://app.element.io/) ([formerly Riot](https://element.io/previously-riot)) web UI, which is configured to connect to your own Synapse server by default
 
 - (optional, default) an [ma1sd](https://github.com/ma1uta/ma1sd) Matrix Identity server
 
@@ -56,17 +56,23 @@ Using this playbook, you can get the following services configured on your serve
 
 - (optional) the [mx-puppet-twitter](https://github.com/Sorunome/mx-puppet-twitter) bridge for Twitter-DMs ([Twitter](https://twitter.com/) - see [docs/configuring-playbook-bridge-mx-puppet-twitter.md](docs/configuring-playbook-bridge-mx-puppet-twitter.md) for setup documentation
 
-- (optional) the [mx-puppet-discord](https://github.com/Sorunome/mx-puppet-discord) bridge for [Discord](https://discordapp.com/)) - see [docs/configuring-playbook-bridge-mx-puppet-discord.md](docs/configuring-playbook-bridge-mx-puppet-discord.md) for setup documentation
+- (optional) the [mx-puppet-discord](https://github.com/matrix-discord/mx-puppet-discord) bridge for [Discord](https://discordapp.com/)) - see [docs/configuring-playbook-bridge-mx-puppet-discord.md](docs/configuring-playbook-bridge-mx-puppet-discord.md) for setup documentation
 
 - (optional) the [mx-puppet-steam](https://github.com/icewind1991/mx-puppet-steam) bridge for [Steam](https://steamapp.com/)) - see [docs/configuring-playbook-bridge-mx-puppet-steam.md](docs/configuring-playbook-bridge-mx-puppet-steam.md) for setup documentation
 
-- (optional) the [matrix-sms-bridge](https://github.com/benkuly/matrix-sms-bridge) for bridging your Matrix server to SMS
+- (optional) the [matrix-sms-bridge](https://github.com/benkuly/matrix-sms-bridge) for bridging your Matrix server to SMS - see [docs/configuring-playbook-bridge-matrix-bridge-sms.md](docs/configuring-playbook-bridge-matrix-bridge-sms.md) for setup documentation
 
-- (optional) [Email2Matrix](https://github.com/devture/email2matrix) for relaying email messages to Matrix rooms
+- (optional) [Email2Matrix](https://github.com/devture/email2matrix) for relaying email messages to Matrix rooms - see [docs/configuring-playbook-email2matrix.md](docs/configuring-playbook-email2matrix.md) for setup documentation
 
-- (optional) [Dimension](https://github.com/turt2live/matrix-dimension), an open source integrations manager for matrix clients
+- (optional) [Dimension](https://github.com/turt2live/matrix-dimension), an open source integrations manager for matrix clients - see [docs/configuring-playbook-dimension.md](docs/configuring-playbook-dimension.md) for setup documentation
 
-- (optional) [Jitsi](https://jitsi.org/), an open source video-conferencing platform
+- (optional) [Jitsi](https://jitsi.org/), an open source video-conferencing platform - see [docs/configuring-playbook-jitsi.md](docs/configuring-playbook-jitsi.md) for setup documentation
+
+- (optional) [matrix-reminder-bot](https://github.com/anoadragon453/matrix-reminder-bot) for scheduling one-off & recurring reminders and alarms - see [docs/configuring-playbook-bot-matrix-reminder-bot.md](docs/configuring-playbook-bot-matrix-reminder-bot.md) for setup documentation
+
+- (optional) [synapse-admin](https://github.com/Awesome-Technologies/synapse-admin), a web UI tool for administrating users and rooms on your Matrix server - see [docs/configuring-playbook-synapse-admin.md](docs/configuring-playbook-synapse-admin.md) for setup documentation
+
+- (optional) [matrix-registration](https://github.com/ZerataX/matrix-registration), a simple python application to have a token based matrix registration - see [docs/configuring-playbook-matrix-registration.md](docs/configuring-playbook-matrix-registration.md) for setup documentation
 
 Basically, this playbook aims to get you up-and-running with all the basic necessities around Matrix, without you having to do anything else.
 
@@ -83,7 +89,7 @@ This is similar to the [EMnify/matrix-synapse-auto-deploy](https://github.com/EM
 
 - this one installs and hooks together **a lot more Matrix-related services** for you (see above)
 
-- this one **can be re-ran many times** without causing trouble
+- this one **can be executed more than once** without causing trouble
 
 - works on various distros: **CentOS** (7.0+), Debian-based distributions (**Debian** 9/Stretch+, **Ubuntu** 16.04+), **Archlinux**
 
@@ -98,6 +104,8 @@ This is similar to the [EMnify/matrix-synapse-auto-deploy](https://github.com/EM
 - this one optionally can store the `media_store` content repository files on [Amazon S3](https://aws.amazon.com/s3/) (but defaults to storing files on the server's filesystem)
 
 - this one optionally **allows you to use an external PostgreSQL server** for Synapse's database (but defaults to running one in a container)
+
+- helps you **import data from a previous installation** (so you can migrate your manual virtualenv/Docker setup to a more managed one)
 
 
 ## Installation
@@ -120,7 +128,7 @@ This playbook sets up your server using the following Docker images:
 
 - [instrumentisto/coturn](https://hub.docker.com/r/instrumentisto/coturn/) - the [Coturn](https://github.com/coturn/coturn) STUN/TURN server (optional)
 
-- [vectorim/riot-web](https://hub.docker.com/r/vectorim/riot-web/) - the [Riot.im](https://about.riot.im/) web client (optional)
+- [vectorim/riot-web](https://hub.docker.com/r/vectorim/riot-web/) - the [Element](https://element.io/) web client (optional)
 
 - [ma1uta/ma1sd](https://hub.docker.com/r/ma1uta/ma1sd/) - the [ma1sd](https://github.com/ma1uta/ma1sd) Matrix Identity server (optional)
 
@@ -133,6 +141,8 @@ This playbook sets up your server using the following Docker images:
 - [devture/email2matrix](https://hub.docker.com/r/devture/email2matrix/) - the [Email2Matrix](https://github.com/devture/email2matrix) email server, which can relay email messages to Matrix rooms (optional)
 
 - [devture/matrix-corporal](https://hub.docker.com/r/devture/matrix-corporal/) - [Matrix Corporal](https://github.com/devture/matrix-corporal): reconciliator and gateway for a managed Matrix server (optional)
+
+- [devture/zeratax-matrix-registration](https://hub.docker.com/r/devture/zeratax-matrix-registration/) - [matrix-registration](https://github.com/ZerataX/matrix-registration): a simple python application to have a token based matrix registration (optional)
 
 - [nginx](https://hub.docker.com/_/nginx/) - the [nginx](http://nginx.org/) web server (optional)
 
@@ -156,15 +166,15 @@ This playbook sets up your server using the following Docker images:
 
 - [folivonet/matrix-sms-bridge](https://hub.docker.com/repository/docker/folivonet/matrix-sms-bridge) - the [matrix-sms-brdige](https://github.com/benkuly/matrix-sms-bridge) (optional)
 
-- [sorunome/mx-puppet-skype](https://hub.docker.com/r/sorunome/mx-puppet-skype) - the [mx-puppet-skype](https://github.com/Sorunome/mx-puppet-skype) bridge to [Skype](https:/www.skype.com) (optional)
+- [sorunome/mx-puppet-skype](https://hub.docker.com/r/sorunome/mx-puppet-skype) - the [mx-puppet-skype](https://github.com/Sorunome/mx-puppet-skype) bridge to [Skype](https://www.skype.com) (optional)
 
-- [sorunome/mx-puppet-slack](https://hub.docker.com/r/sorunome/mx-puppet-slack) - the [mx-puppet-slack](https://github.com/Sorunome/mx-puppet-slack) bridge to [Slack](https:/slack.com) (optional)
+- [sorunome/mx-puppet-slack](https://hub.docker.com/r/sorunome/mx-puppet-slack) - the [mx-puppet-slack](https://github.com/Sorunome/mx-puppet-slack) bridge to [Slack](https://slack.com) (optional)
 
 - [sorunome/mx-puppet-instagram](https://hub.docker.com/r/sorunome/mx-puppet-instagram) - the [mx-puppet-instagram](https://github.com/Sorunome/mx-puppet-instagram) bridge to [Instagram](https://www.instagram.com) (optional)
 
 - [sorunome/mx-puppet-twitter](https://hub.docker.com/r/sorunome/mx-puppet-twitter) - the [mx-puppet-twitter](https://github.com/Sorunome/mx-puppet-twitter) bridge to [Twitter](https://twitter.com) (optional)
 
-- [sorunome/mx-puppet-discord](https://hub.docker.com/r/sorunome/mx-puppet-discord) - the [mx-puppet-discord](https://github.com/matrix-discord/mx-puppet-discord) bridge to [Discord](https:/discordapp.com) (optional)
+- [sorunome/mx-puppet-discord](https://hub.docker.com/r/sorunome/mx-puppet-discord) - the [mx-puppet-discord](https://github.com/matrix-discord/mx-puppet-discord) bridge to [Discord](https://discordapp.com) (optional)
 
 - [icewind1991/mx-puppet-steam](https://hub.docker.com/r/icewind1991/mx-puppet-steam) - the [mx-puppet-steam](https://github.com/icewind1991/mx-puppet-steam) bridge to [Steam](https://steampowered.com) (optional)
 
@@ -177,6 +187,10 @@ This playbook sets up your server using the following Docker images:
 - [jitsi/prosody](https://hub.docker.com/r/jitsi/prosody) - the [Jitsi](https://jitsi.org/) Prosody XMPP server component (optional)
 
 - [jitsi/jvb](https://hub.docker.com/r/jitsi/jvb) - the [Jitsi](https://jitsi.org/) Video Bridge component (optional)
+
+- [anoa/matrix-reminder-bot](https://hub.docker.com/r/anoa/matrix-reminder-bot) - the [matrix-reminder-bot](https://github.com/anoadragon453/matrix-reminder-bot) bot for one-off & recurring reminders and alarms (optional)
+
+- [awesometechnologies/synapse-admin](https://hub.docker.com/r/awesometechnologies/synapse-admin) - the [synapse-admin](https://github.com/Awesome-Technologies/synapse-admin) web UI tool for administrating users and rooms on your Matrix server (optional)
 
 
 ## Deficiencies

@@ -1,9 +1,9 @@
 # Adjusting SSL certificate retrieval (optional, advanced)
 
-By default, this playbook retrieves and auto-renews free SSL certificates from [Let's Encrypt](https://letsencrypt.org/) for the domains it needs (`matrix.<your-domain>` and possibly `riot.<your-domain>`)
+By default, this playbook retrieves and auto-renews free SSL certificates from [Let's Encrypt](https://letsencrypt.org/) for the domains it needs (`matrix.<your-domain>` and possibly `element.<your-domain>`)
 
 Those certificates are used when configuring the nginx reverse proxy installed by this playbook.
-They can also be used for configuring [your own webserver](docs/configuring-playbook-own-webserver.md), in case you're not using the integrated nginx server provided by the playbook.
+They can also be used for configuring [your own webserver](configuring-playbook-own-webserver.md), in case you're not using the integrated nginx server provided by the playbook.
 
 If you need to retrieve certificates for other domains (e.g. your base domain) or more control over certificate retrieval, read below.
 
@@ -13,7 +13,7 @@ Things discussed in this document:
 
 - [Using your own SSL certificates](#using-your-own-ssl-certificates), if you don't want to or can't use Let's Encrypt certificates, but are still interested in using the integrated nginx reverse proxy server
 
-- [Not bothering with SSL certificates](#not-bothering-with-ssl-certificates), if you're using [your own webserver](docs/configuring-playbook-own-webserver.md) and would rather this playbook leaves SSL certificate management to you
+- [Not bothering with SSL certificates](#not-bothering-with-ssl-certificates), if you're using [your own webserver](configuring-playbook-own-webserver.md) and would rather this playbook leaves SSL certificate management to you
 
 - [Obtaining SSL certificates for additional domains](#obtaining-ssl-certificates-for-additional-domains), if you'd like to host additional domains on the Matrix server and would like the playbook to help you obtain and renew certificates for those domains automatically
 
@@ -27,6 +27,8 @@ If self-signed certificates are alright with you, you can ask the playbook to ge
 ```yaml
 matrix_ssl_retrieval_method: self-signed
 ```
+
+If you get a `Cannot reach homeserver` error in Element, you will have to visit `https://matrix.<your-domain>` in your browser and agree to the certificate exception before you can login.
 
 
 ## Using your own SSL certificates
@@ -42,7 +44,7 @@ With such a configuration, the playbook would expect you to drop the SSL certifi
 - `<matrix_ssl_config_dir_path>/live/<domain>/fullchain.pem`
 - `<matrix_ssl_config_dir_path>/live/<domain>/privkey.pem`
 
-where `<domain>` refers to the domains that you need (usually `matrix.<your-domain>` and `riot.<your-domain>`).
+where `<domain>` refers to the domains that you need (usually `matrix.<your-domain>` and `element.<your-domain>`).
 
 
 ## Not bothering with SSL certificates
@@ -62,7 +64,8 @@ The playbook tries to be smart about the certificates it will obtain for you.
 
 By default, it obtains certificates for:
 - `matrix.<your-domain>` (`matrix_server_fqn_matrix`)
-- possibly for `riot.<your-domain>`, unless you have disabled the Riot component using `matrix_riot_web_enabled: false`
+- possibly for `element.<your-domain>`, unless you have disabled the [Element client component](configuring-playbook-client-element.md) using `matrix_client_element_enabled: false`
+- possibly for `riot.<your-domain>`, if you have explicitly enabled Riot to Element redirection (for background compatibility) using `matrix_nginx_proxy_proxy_riot_compat_redirect_enabled: true`
 - possibly for `dimension.<your-domain>`, if you have explicitly [set up Dimension](configuring-playbook-dimension.md).
 - possibly for your base domain (`<your-domain>`), if you have explicitly configured [Serving the base domain](configuring-playbook-base-domain-serving.md)
 
@@ -70,12 +73,12 @@ If you are hosting other domains on the Matrix machine, you can make the playboo
 To do that, simply define your own custom configuration like this:
 
 ```yaml
-# Note: we need to explicitly list the aforementioned Matrix domains that you use (Matrix, Riot, Dimension).
+# Note: we need to explicitly list the aforementioned Matrix domains that you use (Matrix, Element, Dimension).
 # In this example, we retrieve an extra certificate - one for the base domain (in the `matrix_domain` variable).
 # Adding any other additional domains (hosted on the same machine) is possible.
 matrix_ssl_domains_to_obtain_certificates_for:
   - '{{ matrix_server_fqn_matrix }}'
-  - '{{ matrix_server_fqn_riot }}'
+  - '{{ matrix_server_fqn_element }}'
   - '{{ matrix_server_fqn_dimension }}'
   - '{{ matrix_domain }}'
 ```

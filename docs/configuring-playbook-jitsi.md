@@ -1,6 +1,6 @@
 # Jitsi
 
-The playbook can install the [Jitsi](https://jitsi.org/) video-conferencing platform and integrate it with [Riot](configuring-playbook-riot-web.md).
+The playbook can install the [Jitsi](https://jitsi.org/) video-conferencing platform and integrate it with [Element](configuring-playbook-client-element.md).
 
 Jitsi installation is **not enabled by default**, because it's not a core component of Matrix services.
 
@@ -56,11 +56,19 @@ The default authentication mode of Jitsi is `internal`, however LDAP is also sup
 ```yaml
 matrix_jitsi_enable_auth: true
 matrix_jitsi_auth_type: ldap
-matrix_jitsi_ldap_url: ldap://ldap.DOMAIN  # or ldaps:// if using tls
-matrix_jitsi_ldap_base: "OU=People,DC=DOMAIN"
-matrix_jitsi_ldap_filter: "(&(uid=%u)(employeeType=active))"
-matrix_jitsi_ldap_use_tls: false
-matrix_jitsi_ldap_start_tls: true
+matrix_jitsi_ldap_url: "ldap://ldap.DOMAIN"
+matrix_jitsi_ldap_base: "OU=People,DC=DOMAIN
+#matrix_jitsi_ldap_binddn: ""
+#matrix_jitsi_ldap_bindpw: ""
+matrix_jitsi_ldap_filter: "uid=%u"
+matrix_jitsi_ldap_auth_method: "bind"
+matrix_jitsi_ldap_version: "3"
+matrix_jitsi_ldap_use_tls: true
+matrix_jitsi_ldap_tls_ciphers: ""
+matrix_jitsi_ldap_tls_check_peer: true
+matrix_jitsi_ldap_tls_cacert_file: "/etc/ssl/certs/ca-certificates.crt"
+matrix_jitsi_ldap_tls_cacert_dir: "/etc/ssl/certs"
+matrix_jitsi_ldap_start_tls: false
 ```
 
 For more information refer to the [docker-jitsi-meet](https://github.com/jitsi/docker-jitsi-meet#authentication-using-ldap) and the [saslauthd `LDAP_SASLAUTHD`](https://github.com/winlibs/cyrus-sasl/blob/master/saslauthd/LDAP_SASLAUTHD) documentation.
@@ -144,13 +152,13 @@ Run this command for each user you would like to create, replacing `<USERNAME>` 
 
 You can use the self-hosted Jitsi server in multiple ways:
 
-- **by adding a widget to a room via riot-web** (the one configured by the playbook at `https://riot.DOMAIN`). Just start a voice or a video call in a room containing more than 2 members and that would create a Jitsi widget which utilizes your self-hosted Jitsi server.
+- **by adding a widget to a room via Element** (the one configured by the playbook at `https://element.DOMAIN`). Just start a voice or a video call in a room containing more than 2 members and that would create a Jitsi widget which utilizes your self-hosted Jitsi server.
 
 - **by adding a widget to a room via the Dimension Integration Manager**. You'll have to point the widget to your own Jitsi server manually. See our [Dimension](./configuring-playbook-dimension.md) documentation page for more details. Naturally, Dimension would need to be installed first (the playbook doesn't install it by default).
 
 - **directly (without any Matrix integration)**. Just go to `https://jitsi.DOMAIN`
 
-**Note**: Riot apps on mobile devices currently [don't support joining meetings on a self-hosted Jitsi server](https://github.com/vector-im/riot-web/blob/601816862f7d84ac47547891bd53effa73d32957/docs/jitsi.md#mobile-app-support).
+**Note**: Element apps on mobile devices currently [don't support joining meetings on a self-hosted Jitsi server](https://github.com/vector-im/riot-web/blob/601816862f7d84ac47547891bd53effa73d32957/docs/jitsi.md#mobile-app-support).
 
 
 ## Troubleshooting

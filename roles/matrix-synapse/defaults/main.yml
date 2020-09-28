@@ -5,7 +5,7 @@ matrix_synapse_enabled: true
 
 matrix_synapse_container_image_self_build: false
 
-matrix_synapse_docker_image: "matrixdotorg/synapse:v1.16.0"
+matrix_synapse_docker_image: "matrixdotorg/synapse:v1.20.1"
 matrix_synapse_docker_image_force_pull: "{{ matrix_synapse_docker_image.endswith(':latest') }}"
 
 matrix_synapse_base_path: "{{ matrix_base_data_path }}/synapse"
@@ -72,13 +72,6 @@ matrix_synapse_macaroon_secret_key: ""
 matrix_synapse_registration_shared_secret: "{{ matrix_synapse_macaroon_secret_key }}"
 matrix_synapse_allow_guest_access: false
 matrix_synapse_form_secret: "{{ matrix_synapse_macaroon_secret_key }}"
-
-matrix_synapse_id_servers_public: ['matrix.org', 'vector.im']
-
-# The list of identity servers to use for Synapse.
-# We assume this role runs standalone without a local Identity server, so we point Synapse to public ones.
-# This most likely gets overwritten later, so that a local Identity server is used.
-matrix_synapse_trusted_third_party_id_servers: "{{ matrix_synapse_id_servers_public }}"
 
 matrix_synapse_max_upload_size_mb: 10
 
@@ -289,7 +282,7 @@ matrix_synapse_email_smtp_host: ""
 matrix_synapse_email_smtp_port: 587
 matrix_synapse_email_smtp_require_transport_security: false
 matrix_synapse_email_notif_from: "Matrix <matrix@{{ matrix_domain }}>"
-matrix_synapse_email_client_base_url: "https://{{ matrix_server_fqn_riot }}"
+matrix_synapse_email_client_base_url: "https://{{ matrix_server_fqn_element }}"
 
 
 # Enable this to activate the REST auth password provider module.
@@ -370,6 +363,13 @@ matrix_synapse_trusted_key_servers:
 matrix_synapse_redaction_retention_period: 7d
 
 matrix_synapse_user_ips_max_age: 28d
+
+
+matrix_synapse_rust_synapse_compress_state_docker_image: "devture/rust-synapse-compress-state:v0.1.0"
+matrix_synapse_rust_synapse_compress_state_docker_image_force_pull: "{{ matrix_synapse_rust_synapse_compress_state_docker_image.endswith(':latest') }}"
+
+matrix_synapse_rust_synapse_compress_state_base_path: "{{ matrix_base_data_path }}/rust-synapse-compress-state"
+
 
 # Default Synapse configuration template which covers the generic use case.
 # You can customize it by controlling the various variables inside it.

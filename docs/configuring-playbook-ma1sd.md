@@ -6,6 +6,17 @@ This server is private by default, potentially at the expense of user discoverab
 
 ma1sd is a fork of [mxisd](https://github.com/kamax-io/mxisd) which was pronounced end of life 2019-06-21.
 
+
+## Disabling ma1sd
+
+ma1sd, being an Identity Server, is not strictly needed. It is only used for 3PIDs (3rd party identifiers like E-mail and phone numbers) and some [enhanced features](https://github.com/ma1uta/ma1sd/#features).
+
+If you'd like for the playbook to not install ma1sd (or to uninstall it if it was previously installed), you can disable it in your configuration file (`inventory/host_vars/matrix.<your-domain>/vars.yml`):
+
+```yaml
+matrix_ma1sd_enabled: false
+```
+
 ## Matrix.org lookup forwarding
 
 To ensure maximum discovery, you can make your identity server also forward lookups to the central matrix.org Identity server (at the cost of potentially leaking all your contacts information).
@@ -88,6 +99,22 @@ matrix_ma1sd_configuration_extension_yaml: |
             account_sid: '<secret-SID>'
             auth_token: '<secret-token>'
             number: '+<msisdn-number>'
+```
+
+## Example: Open Registration for every Domain
+
+If you want to open registration for any domain, you have to setup the allowed domains with ma1sd's `blacklist` and `whitelist`. The default behavior when neither the `blacklist`, nor the `whitelist` match, is to allow registration. Beware: you can't block toplevel domains (aka `.xy`) because the internal architecture of ma1sd doesn't allow that.
+
+```yaml
+matrix_ma1sd_configuration_extension_yaml: |
+  register:
+    policy:
+      allowed: true
+      threepid:
+        email:
+          domain:
+            blacklist: ~
+            whitelist: ~
 ```
 
 ## Troubleshooting
