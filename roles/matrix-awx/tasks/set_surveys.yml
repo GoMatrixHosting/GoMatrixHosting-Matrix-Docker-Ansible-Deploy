@@ -75,7 +75,6 @@
     - setup-element
 
 - name: Copy new 'Configure Element' survey.json to target machine
-  delegate_to: "{{ server_ip4 }}"
   copy:
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json'
     dest:  '/matrix/awx/configure_element.json'
@@ -154,7 +153,6 @@
     - setup-synapse
 
 - name: Copy new 'Configure Synapse' survey.json to target machine
-  delegate_to: "{{ server_ip4 }}"
   copy:
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
     dest:  '/matrix/awx/configure_synapse.json'
