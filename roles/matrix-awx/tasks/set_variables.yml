@@ -128,7 +128,6 @@
     - setup-synapse
 
 - name: Copy the new vars.yml file to the target machine
-  delegate_to: "{{ server_ip4 }}"
   copy:
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
     dest: /matrix/awx/
