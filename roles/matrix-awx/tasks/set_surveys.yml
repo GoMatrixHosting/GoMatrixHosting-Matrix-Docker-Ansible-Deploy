@@ -2,7 +2,7 @@
 - name: Save new 'Configure Element' survey.json to the AWX tower using blockinfile
   delegate_to: 127.0.0.1
   blockinfile:
-    dest: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
+    dest: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json'
     block: |
       {
         "name": "",
@@ -71,6 +71,8 @@
         ]
       }
     backup: no
+  tags:
+    - setup-element
 
 - name: Copy new 'Configure Element' survey.json to target machine
   delegate_to: "{{ server_ip4 }}"
@@ -78,6 +80,8 @@
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_element.json'
     dest:  '/matrix/awx/configure_element.json'
     mode: 0644
+  tags:
+    - setup-element
 
 #- name: Recreate 'Configure Element' job template
 #  delegate_to: 127.0.0.1
@@ -95,6 +99,8 @@
 #    become_enabled: yes
 #    state: present
 #    verbosity: 1
+#  tags:
+#    - setup-synapse
 
 - name: Save new 'Configure Synapse' survey.json to the AWX tower using blockinfile
   delegate_to: 127.0.0.1
@@ -144,6 +150,8 @@
         ]
       }
     backup: no
+  tags:
+    - setup-synapse
 
 - name: Copy new 'Configure Synapse' survey.json to target machine
   delegate_to: "{{ server_ip4 }}"
@@ -151,6 +159,8 @@
     src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
     dest:  '/matrix/awx/configure_synapse.json'
     mode: 0644
+  tags:
+    - setup-synapse
 
 #- name: Recreate 'Configure Synapse' job template
 #  delegate_to: 127.0.0.1
@@ -168,4 +178,6 @@
 #    become_enabled: yes
 #    state: present
 #    verbosity: 1
+#  tags:
+#    - setup-synapse
 
