@@ -1,0 +1,20 @@
+
+- name: Record Element-Web variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '{{ local_awx_vars_file.dest }}'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+  with_dict:
+    'matrix_riot_web_enabled': '{{ matrix_riot_web_enabled }}'
+    'matrix_riot_web_jitsi_preferredDomain': '{{ matrix_riot_web_jitsi_preferredDomain }}'
+    'matrix_riot_web_brand': '{{ matrix_riot_web_brand }}'
+    'matrix_riot_web_default_theme': '{{ matrix_riot_web_default_theme }}'
+    'matrix_riot_web_branding_welcomeBackgroundUrl': '{{ matrix_riot_web_branding_welcomeBackgroundUrl }}'
+    'matrix_riot_web_registration_enabled': '{{ matrix_riot_web_registration_enabled }}'
+
+- name: Copy the new vars.yml file to the target machine
+  copy:
+    src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    dest: /matrix/awx/
+    mode: '0600'

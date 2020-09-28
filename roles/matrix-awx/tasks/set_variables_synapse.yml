@@ -1,0 +1,17 @@
+
+- name: Record synapse variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '{{ local_awx_vars_file.dest }}'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+  with_dict:
+    'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
+    'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
+    'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
+
+- name: Copy the new vars.yml file to the target machine
+  copy:
+    src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    dest: /matrix/awx/
+    mode: '0600'

@@ -1,16 +1,21 @@
 
-# Additional playbook to set persistent facts
-#- import_tasks: "{{ role_path }}/tasks/set_facts.yml"
-#  when: run_setup|bool
-#  tags:
-#    - setup-all
 
-# Additional playbook to set a variable file
-- import_tasks: "{{ role_path }}/tasks/set_variables.yml"
+# Additional playbook to set the variable file
+- import_tasks: "{{ role_path }}/tasks/set_variables_main.yml"
   when: run_setup|bool
   tags:
     - setup-all
+
+# Additional playbook to set the variable file during element configuration
+- import_tasks: "{{ role_path }}/tasks/set_variables_element.yml"
+  when: run_setup|bool
+  tags:
     - setup-element
+
+# Additional playbook to set the variable file during synapse configuration
+- import_tasks: "{{ role_path }}/tasks/set_variables_synapse.yml"
+  when: run_setup|bool
+  tags:
     - setup-synapse
 
 # Additional playbook to set survey_spec file for configure element
@@ -19,9 +24,9 @@
   tags:
     - setup-element
 
-
 # Additional playbook to set survey_spec file for configure synapse
 - import_tasks: "{{ role_path }}/tasks/set_survey_configure_synapse.yml"
   when: run_setup|bool
   tags:
     - setup-synapse
+

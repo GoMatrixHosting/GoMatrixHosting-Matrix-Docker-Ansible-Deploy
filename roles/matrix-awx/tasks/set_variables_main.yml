@@ -1,0 +1,40 @@
+# Setting variables so that they will be persisted in a file
+# Depends on certain variables being defined the first run
+
+- name: Ensure vars.yml file exists locally on AWX
+  delegate_to: 127.0.0.1
+  file:
+    path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    mode: '0600'
+    state: touch
+  register: local_awx_vars_file
+
+- name: Ensure vars.yml file on remote target machine exists
+  file:
+    path: '/matrix/awx/vars.yml'
+    mode: '0600'
+    state: touch
+  register: remote_vars_file
+
+- name: Record base variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '{{ local_awx_vars_file.dest }}'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+  with_dict:
+    'matrix_domain': '{{ matrix_domain }}'
+    'matrix_ssl_lets_encrypt_support_email': '{{ matrix_ssl_lets_encrypt_support_email }}'
+    'matrix_coturn_turn_static_auth_secret': '{{ matrix_coturn_turn_static_auth_secret }}'
+    'matrix_synapse_macaroon_secret_key': '{{ matrix_synapse_macaroon_secret_key }}'
+    'matrix_riot_web_enabled': '{{ matrix_riot_web_enabled }}'
+    'matrix_jitsi_jicofo_component_secret': '{{ matrix_jitsi_jicofo_component_secret }}'
+    'matrix_jitsi_jicofo_auth_password': '{{ matrix_jitsi_jicofo_auth_password }}'
+    'matrix_jitsi_jvb_auth_password': '{{ matrix_jitsi_jvb_auth_password }}'
+    'matrix_jitsi_jibri_recorder_password': '{{ matrix_jitsi_jibri_recorder_password }}'
+    'matrix_jitsi_jibri_xmpp_password': '{{ matrix_jitsi_jibri_xmpp_password }}'
+    'matrix_nginx_proxy_base_domain_serving_enabled': '{{ matrix_nginx_proxy_base_domain_serving_enabled }}'
+    'matrix_nginx_proxy_base_domain_homepage_enabled': '{{ matrix_nginx_proxy_base_domain_homepage_enabled }}'
+    'matrix_vars_yml_snapshotting_enabled': '{{ matrix_vars_yml_snapshotting_enabled }}'
+
+
