@@ -1,0 +1,14 @@
+#
+# Sane defaults for setting the surveys
+#
+
+matrix_element_enabled: "true"
+matrix_element_brand: "Element"
+matrix_element_default_theme: "light"
+matrix_element_branding_welcomeBackgroundUrl: "https://i.imgur.com/Y4SPBdZ.jpg" 
+matrix_element_registration_enabled: "true"
+
+matrix_synapse_enable_registration: "false"
+matrix_synapse_federation_enabled: "false"
+matrix_synapse_allow_public_rooms_over_federation: "false"
+
