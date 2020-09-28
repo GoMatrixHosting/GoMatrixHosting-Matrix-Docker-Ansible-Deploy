@@ -1,0 +1,73 @@
+
+- name: Save new 'Configure Synapse' survey.json to the AWX tower using blockinfile
+  delegate_to: 127.0.0.1
+  blockinfile:
+    dest: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
+    block: |
+      {
+        "name": "",
+        "description": "",
+        "spec": [
+          {
+            "question_name": "Enable Public Registration",
+            "question_description": "Controls whether people with access to the homeserver can register by themselves.",
+            "required": true,
+            "min": null,
+            "max": null,
+            "default": "{{ matrix_synapse_enable_registration }}",
+            "choices": "true\nfalse",
+            "new_question": true,
+            "variable": "matrix_synapse_enable_registration",
+            "type": "multiplechoice"
+          },
+          {
+            "question_name": "Enable Federation",
+            "question_description": "Controls whether Synapse will federate at all. Disable this to completely isolate your server from the rest of the Matrix network.",
+            "required": true,
+            "min": null,
+            "max": null,
+            "default": "{{ matrix_synapse_federation_enabled }}",
+            "choices": "true\nfalse",
+            "new_question": true,
+            "variable": "matrix_synapse_federation_enabled",
+            "type": "multiplechoice"
+          },
+          {
+            "question_name": "Allow Public Rooms Over Federation",
+            "question_description": "Controls whether remote servers can fetch this server's public rooms directory via federation. For private servers, you'll most likely want to forbid this.",
+            "required": true,
+            "min": null,
+            "max": null,
+            "default": "{{ matrix_synapse_allow_public_rooms_over_federation }}",
+            "choices": "true\nfalse",
+            "new_question": true,
+            "variable": "matrix_synapse_allow_public_rooms_over_federation",
+            "type": "multiplechoice"
+          },
+        ]
+      }
+    backup: no
+
+- name: Copy new 'Configure Synapse' survey.json to target machine
+  copy:
+    src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json'
+    dest:  '/matrix/awx/configure_synapse.json'
+    mode: 0644
+
+#- name: Recreate 'Configure Synapse' job template
+#  delegate_to: 127.0.0.1
+#  tower_job_template:
+#    name: "{{ client_organisation }} - 1 - Configure Synapse"
+#    description: "Configure Synapse (homeserver) settings."
+#    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
+#    job_type: run
+#    job_tags: "start,setup-synapse"
+#    inventory: "{{ client_organisation }} Inventory"
+#    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
+#    playbook: setup.yml
+#    survey_enabled: true
+#    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/configure_synapse.json') }}"
+#    become_enabled: yes
+#    state: present
+#    verbosity: 1
+

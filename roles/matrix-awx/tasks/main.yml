@@ -10,9 +10,18 @@
   when: run_setup|bool
   tags:
     - setup-all
+    - setup-element
+    - setup-synapse
 
-# Additional playbook to set survey_spec files
-- import_tasks: "{{ role_path }}/tasks/set_surveys.yml"
+# Additional playbook to set survey_spec file for configure element
+- import_tasks: "{{ role_path }}/tasks/set_survey_configure_element.yml"
   when: run_setup|bool
   tags:
-    - setup-all
+    - setup-element
+
+
+# Additional playbook to set survey_spec file for configure synapse
+- import_tasks: "{{ role_path }}/tasks/set_survey_configure_synapse.yml"
+  when: run_setup|bool
+  tags:
+    - setup-synapse
