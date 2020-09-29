@@ -85,7 +85,7 @@
 #    description: "Configure Element client via survey."
 #    extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
 #    job_type: run
-#    job_tags: "start,setup-riot-web"
+#    job_tags: "start,setup-client-element"
 #    inventory: "{{ client_organisation }} Inventory"
 #    project: "{{ client_organisation }} - Matrix Docker Ansible Deploy"
 #    playbook: setup.yml

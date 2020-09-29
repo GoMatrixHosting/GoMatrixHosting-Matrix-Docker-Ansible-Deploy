@@ -10,7 +10,7 @@
 - import_tasks: "{{ role_path }}/tasks/set_variables_element.yml"
   when: run_setup|bool
   tags:
-    - setup-element
+    - setup-client-element
 
 # Additional playbook to set the variable file during synapse configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_synapse.yml"
@@ -22,7 +22,7 @@
 - import_tasks: "{{ role_path }}/tasks/set_survey_configure_element.yml"
   when: run_setup|bool
   tags:
-    - setup-element
+    - setup-client-element
 
 # Additional playbook to set survey_spec file for configure synapse
 - import_tasks: "{{ role_path }}/tasks/set_survey_configure_synapse.yml"
