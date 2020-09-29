@@ -5,6 +5,7 @@
     path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Element Settings'
   with_dict:
     'matrix_client_element_enabled': '{{ matrix_client_element_enabled }}'
     'matrix_client_element_jitsi_preferredDomain': '{{ matrix_client_element_jitsi_preferredDomain }}'
