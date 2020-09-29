@@ -1,0 +1,42 @@
+{
+  "name": "",
+  "description": "",
+  "spec": [
+    {
+      "question_name": "Enable Public Registration",
+      "question_description": "Controls whether people with access to the homeserver can register by themselves.",
+      "required": true,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_enable_registration }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_enable_registration",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Enable Federation",
+      "question_description": "Controls whether Synapse will federate at all. Disable this to completely isolate your server from the rest of the Matrix network.",
+      "required": true,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_federation_enabled }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_federation_enabled",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Allow Public Rooms Over Federation",
+      "question_description": "Controls whether remote servers can fetch this server's public rooms directory via federation. For private servers, you'll most likely want to forbid this.",
+      "required": true,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_allow_public_rooms_over_federation }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_allow_public_rooms_over_federation",
+      "type": "multiplechoice"
+    },
+  ]
+}

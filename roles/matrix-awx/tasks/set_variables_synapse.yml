@@ -5,6 +5,7 @@
     path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Settings'
   with_dict:
     'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
     'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
