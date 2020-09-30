@@ -14,7 +14,7 @@
 - name: Recreate 'Configure Synapse' job template
   delegate_to: 127.0.0.1
   tower_job_template:
-    name: "{{ client_organisation }} - 1 - Configure Synapse"
+    name: "{{ matrix_domain }} - 1 - Configure Synapse"
     description: "Configure Synapse (homeserver) settings."
     extra_vars_path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/extra_vars.yml'
     job_type: run
