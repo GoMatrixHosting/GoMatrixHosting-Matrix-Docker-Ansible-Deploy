@@ -2,7 +2,7 @@
 - name: Record Element-Web variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    path: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Element Settings'
@@ -16,6 +16,6 @@
 
 - name: Copy the new vars.yml file to the target machine
   copy:
-    src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    src: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/vars.yml'
     dest: /matrix/awx/
     mode: '0600'

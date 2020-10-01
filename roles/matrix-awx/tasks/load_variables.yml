@@ -1,8 +1,8 @@
 
 - name: Include vars in extra_vars.yml
   include_vars:
-    file: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ target }}/extra_vars.yml'
+    file: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/extra_vars.yml'
 
 - name: Include vars in vars.yml
   include_vars:
-    file: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ target }}/vars.yml'
+    file: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/vars.yml'
