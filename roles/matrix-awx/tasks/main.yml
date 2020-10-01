@@ -7,12 +7,6 @@
     - setup-client-element
     - setup-synapse
 
-# Additional playbook to set the variable file
-- import_tasks: "{{ role_path }}/tasks/set_variables_main.yml"
-  when: run_setup|bool
-  tags:
-    - setup-all
-
 # Additional playbook to set the variable file during element configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_element.yml"
   when: run_setup|bool
