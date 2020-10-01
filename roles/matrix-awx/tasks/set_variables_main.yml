@@ -37,4 +37,8 @@
     'matrix_nginx_proxy_base_domain_homepage_enabled': '{{ matrix_nginx_proxy_base_domain_homepage_enabled }}'
     'matrix_vars_yml_snapshotting_enabled': '{{ matrix_vars_yml_snapshotting_enabled }}'
 
-
+- name: Copy the new vars.yml file to the target machine
+  copy:
+    src: '/var/lib/awx/projects/chatoasis-awx-variables/matrix.{{ matrix_domain }}/vars.yml'
+    dest: /matrix/awx/
+    mode: '0600'
