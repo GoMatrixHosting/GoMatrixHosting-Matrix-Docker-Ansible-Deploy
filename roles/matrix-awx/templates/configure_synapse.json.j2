@@ -5,7 +5,7 @@
     {
       "question_name": "Enable Public Registration",
       "question_description": "Controls whether people with access to the homeserver can register by themselves.",
-      "required": true,
+      "required": false,
       "min": null,
       "max": null,
       "default": "{{ matrix_synapse_enable_registration }}",
@@ -17,7 +17,7 @@
     {
       "question_name": "Enable Federation",
       "question_description": "Controls whether Synapse will federate at all. Disable this to completely isolate your server from the rest of the Matrix network.",
-      "required": true,
+      "required": false,
       "min": null,
       "max": null,
       "default": "{{ matrix_synapse_federation_enabled }}",
@@ -29,7 +29,7 @@
     {
       "question_name": "Allow Public Rooms Over Federation",
       "question_description": "Controls whether remote servers can fetch this server's public rooms directory via federation. For private servers, you'll most likely want to forbid this.",
-      "required": true,
+      "required": false,
       "min": null,
       "max": null,
       "default": "{{ matrix_synapse_allow_public_rooms_over_federation }}",
@@ -38,5 +38,89 @@
       "variable": "matrix_synapse_allow_public_rooms_over_federation",
       "type": "multiplechoice"
     },
+    {
+      "question_name": "Enable Community Creation",
+      "question_description": "Enables depriviledged users to create 'communities', which are basically groups of rooms.",
+      "required": false,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_enable_group_creation }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_enable_group_creation",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Synapse Auto-Join Room",
+      "question_description": "Sets the 'auto-join room', where new users will be automatically invited to. Example: #announcements:example.org",
+      "required": false,
+      "min": 0,
+      "max": 1024,
+      "default": "{{ matrix_synapse_auto_join_rooms }}",
+      "choices": "",
+      "new_question": true,
+      "variable": "matrix_synapse_auto_join_rooms",
+      "type": "text"
+    },
+    {
+      "question_name": "Enable Synapse Presence",
+      "question_description": "Controls whether presence is enabled. This shows who's online and reading your posts. Disabling it will increase both performance and user privacy.",
+      "required": false,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_use_presence }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_use_presence",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Synapse Max Upload Size",
+      "question_description": "Sets the maximum size for uploaded files in MB.",
+      "required": false,
+      "min": 0,
+      "max": 3,
+      "default": "{{ matrix_synapse_max_upload_size_mb }}",
+      "choices": "",
+      "new_question": true,
+      "variable": "matrix_synapse_max_upload_size_mb",
+      "type": "text"
+    },
+    {
+      "question_name": "Enable ReCaptcha on Registration",
+      "question_description": "Enables Googles ReCaptcha verification for registering an account, recommended for public servers.",
+      "required": false,
+      "min": null,
+      "max": null,
+      "default": "{{ matrix_synapse_enable_registration_captcha }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "matrix_synapse_enable_registration_captcha",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Recaptcha Public Key",
+      "question_description": "Sets the Google ReCaptcha public key for this website.",
+      "required": false,
+      "min": 0,
+      "max": 40,
+      "default": "{{ matrix_synapse_recaptcha_public_key }}",
+      "choices": "",
+      "new_question": true,
+      "variable": "matrix_synapse_recaptcha_public_key",
+      "type": "text"
+    },
+    {
+      "question_name": "Recaptcha Private Key",
+      "question_description": "Sets the Google ReCaptcha private key for this website.",
+      "required": false,
+      "min": 0,
+      "max": 40,
+      "default": "{{ matrix_synapse_recaptcha_private_key }}",
+      "choices": "",
+      "new_question": true,
+      "variable": "matrix_synapse_recaptcha_private_key",
+      "type": "text"
+    }
   ]
 }
