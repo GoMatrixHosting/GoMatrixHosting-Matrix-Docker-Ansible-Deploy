@@ -10,6 +10,13 @@
     'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
     'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
     'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
+    'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
+    'matrix_synapse_auto_join_rooms': '[{{ matrix_synapse_auto_join_rooms }}]'
+    'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
+    'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
+    'matrix_synapse_enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
+    'matrix_synapse_recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
+    'matrix_synapse_recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
 
 - name: Copy the new vars.yml file to the target machine
   copy:
