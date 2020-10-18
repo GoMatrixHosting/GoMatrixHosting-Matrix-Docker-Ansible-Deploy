@@ -3,11 +3,11 @@
   delegate_to: 127.0.0.1
   template:
     src: 'roles/matrix-awx/templates/configure_element.json.j2'
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/configure_element.json'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ target }}/configure_element.json'
 
 - name: Copy new 'Configure Element' survey.json to target machine
   copy:
-    src: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/configure_element.json'
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ target }}/configure_element.json'
     dest:  '/matrix/awx/configure_element.json'
     mode: 0644
 
@@ -16,7 +16,7 @@
   tower_job_template:
     name: "{{ matrix_domain }} - 1 - Configure Element"
     description: "Configure Element client via survey."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/target.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ target }}/target.yml'
     job_type: run
     job_tags: "start,setup-client-element"
     inventory: "{{ client_organisation }} Inventory"
@@ -24,7 +24,7 @@
     playbook: setup.yml
     credential: "{{ client_organisation }} - ChatOasis testing SSH"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/configure_element.json') }}"
+    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ target }}/configure_element.json') }}"
     become_enabled: yes
     state: present
     verbosity: 1

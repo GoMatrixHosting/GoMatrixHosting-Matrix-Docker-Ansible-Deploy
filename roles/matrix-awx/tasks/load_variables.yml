@@ -1,8 +1,8 @@
 
 - name: Include vars in organisation.yml
   include_vars:
-    file: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+    file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
 
 - name: Include vars in matrix_vars.yml
   include_vars:
-    file: '/var/lib/awx/projects/clients/{{ client_email }}/{{ target }}/matrix_vars.yml'
+    file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ target }}/matrix_vars.yml'
