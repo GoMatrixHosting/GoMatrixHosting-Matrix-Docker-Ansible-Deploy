@@ -1,7 +1,7 @@
 # matrix-corporal is a reconciliator and gateway for a managed Matrix server.
 # See: https://github.com/devture/matrix-corporal
 
-matrix_corporal_enabled: true
+matrix_corporal_enabled: false
 
 # Controls whether the matrix-corporal container exposes its gateway HTTP port (tcp/41080 in the container).
 #
