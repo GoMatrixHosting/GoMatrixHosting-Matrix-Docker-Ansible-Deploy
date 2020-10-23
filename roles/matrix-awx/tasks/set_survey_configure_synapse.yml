@@ -16,7 +16,7 @@
   tower_job_template:
     name: "{{ matrix_domain }} - 1 - Configure Synapse"
     description: "Configure Synapse (homeserver) settings."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/target.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     job_tags: "start,setup-synapse"
     inventory: "{{ member_id }} Inventory"
