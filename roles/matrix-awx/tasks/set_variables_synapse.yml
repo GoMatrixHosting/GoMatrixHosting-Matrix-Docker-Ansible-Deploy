@@ -24,7 +24,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: 'matrix_synapse_configuration_extension_yaml: |'
+    insertafter: "matrix_synapse_configuration_extension_yaml: |"
   with_dict:
     '  enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
     '  recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
