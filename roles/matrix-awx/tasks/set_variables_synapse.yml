@@ -14,9 +14,16 @@
     'matrix_synapse_auto_join_rooms': '[{{ matrix_synapse_auto_join_rooms }}]'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
-    'matrix_synapse_enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
-    'matrix_synapse_recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
-    'matrix_synapse_recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
+
+#    'matrix_synapse_enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
+#    'matrix_synapse_recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
+#    'matrix_synapse_recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
+
+# Considering:
+#matrix_synapse_configuration_extension_yaml: |
+#  recaptcha_private_key: private key
+#  recaptcha_public_key: public key
+#  enable_registration_captcha: false
 
 - name: Copy the new vars.yml file to the target machine
   copy:
