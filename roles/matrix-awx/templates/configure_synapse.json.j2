@@ -92,10 +92,10 @@
       "required": false,
       "min": null,
       "max": null,
-      "default": "{{ matrix_synapse_enable_registration_captcha }}",
+      "default": "{{ ext_enable_registration_captcha }}",
       "choices": "true\nfalse",
       "new_question": true,
-      "variable": "matrix_synapse_enable_registration_captcha",
+      "variable": "ext_enable_registration_captcha",
       "type": "multiplechoice"
     },
     {
@@ -104,10 +104,10 @@
       "required": false,
       "min": 0,
       "max": 40,
-      "default": "{{ matrix_synapse_recaptcha_public_key }}",
+      "default": "{{ ext_recaptcha_public_key }}",
       "choices": "",
       "new_question": true,
-      "variable": "matrix_synapse_recaptcha_public_key",
+      "variable": "ext_recaptcha_public_key",
       "type": "text"
     },
     {
@@ -116,10 +116,10 @@
       "required": false,
       "min": 0,
       "max": 40,
-      "default": "{{ matrix_synapse_recaptcha_private_key }}",
+      "default": "{{ ext_recaptcha_private_key }}",
       "choices": "",
       "new_question": true,
-      "variable": "matrix_synapse_recaptcha_private_key",
+      "variable": "ext_recaptcha_private_key",
       "type": "text"
     }
   ]

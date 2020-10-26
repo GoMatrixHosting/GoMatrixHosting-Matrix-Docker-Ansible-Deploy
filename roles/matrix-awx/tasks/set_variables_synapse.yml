@@ -23,9 +23,9 @@
     line: "{{ item.key }}: {{ item.value }}"
     insertbefore: '# End Synapse Extension'
   with_dict:
-    '  enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
-    '  recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
-    '  recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
+    '  enable_registration_captcha': '{{ ext_enable_registration_captcha }}'
+    '  recaptcha_public_key': '{{ ext_recaptcha_public_key }}'
+    '  recaptcha_private_key': '{{ ext_recaptcha_private_key }}'
 
 - name: Copy the new vars.yml file to the target machine
   copy:
