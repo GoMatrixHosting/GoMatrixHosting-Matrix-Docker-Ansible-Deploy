@@ -1,5 +1,5 @@
 
-- name: Record synapse variables locally on AWX
+- name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
@@ -14,27 +14,18 @@
     'matrix_synapse_auto_join_rooms': '[{{ matrix_synapse_auto_join_rooms }}]'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
-#    'matrix_synapse_enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
-#    'matrix_synapse_recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
-#    'matrix_synapse_recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
 
-- name: Record synapse variables locally on AWX
+- name: Record Synapse Extension variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: "matrix_synapse_configuration_extension_yaml: |"
+    insertbefore: '# End Synapse Extension'
   with_dict:
     '  enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
     '  recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
     '  recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
-
-# Considering:
-#matrix_synapse_configuration_extension_yaml: |
-#  recaptcha_private_key: private key
-#  recaptcha_public_key: public key
-#  enable_registration_captcha: false
 
 - name: Copy the new vars.yml file to the target machine
   copy:
