@@ -18,6 +18,18 @@
     'matrix_synapse_recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
     'matrix_synapse_recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
 
+- name: Record synapse variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: 'matrix_synapse_configuration_extension_yaml: |'
+  with_dict:
+    '  enable_registration_captcha': '{{ matrix_synapse_enable_registration_captcha }}'
+    '  recaptcha_public_key': '{{ matrix_synapse_recaptcha_public_key }}'
+    '  recaptcha_private_key': '{{ matrix_synapse_recaptcha_private_key }}'
+
 # Considering:
 #matrix_synapse_configuration_extension_yaml: |
 #  recaptcha_private_key: private key
