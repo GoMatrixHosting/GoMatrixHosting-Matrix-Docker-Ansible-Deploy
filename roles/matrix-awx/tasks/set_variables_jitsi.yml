@@ -1,0 +1,17 @@
+
+- name: Record Jitsi variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Jitsi Settings'
+  with_dict:
+    'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
+    'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'
+
+- name: Copy the new vars.yml file to the target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: /matrix/awx/
+    mode: '0600'
