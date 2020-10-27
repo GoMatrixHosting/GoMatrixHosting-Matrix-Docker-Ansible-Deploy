@@ -14,7 +14,7 @@
     'matrix_client_element_branding_welcomeBackgroundUrl': '{{ matrix_client_element_branding_welcomeBackgroundUrl }}'
     'matrix_client_element_registration_enabled': '{{ matrix_client_element_registration_enabled }}'
 
-- name: Copy the new vars.yml file to the target machine
+- name: Copy the new matrix_vars.yml file to the target machine
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     dest: /matrix/awx/

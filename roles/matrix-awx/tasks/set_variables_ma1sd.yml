@@ -1,14 +1,13 @@
 
-- name: Record Jitsi variables locally on AWX
+- name: Record Ma1sd variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Jitsi Settings'
+    insertafter: '# Ma1sd Settings'
   with_dict:
-    'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
-    'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'
+    'matrix_ma1sd_enabled': '{{ matrix_ma1sd_enabled }}'
 
 - name: Copy the new matrix_vars.yml file to the target machine
   copy:

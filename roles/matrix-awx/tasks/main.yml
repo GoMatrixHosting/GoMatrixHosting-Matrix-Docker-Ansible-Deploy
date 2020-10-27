@@ -19,6 +19,18 @@
   tags:
     - setup-synapse
 
+# Additional playbook to set the variable file during jitsi configuration
+- import_tasks: "{{ role_path }}/tasks/set_variables_jitsi.yml"
+  when: run_setup|bool
+  tags:
+    - setup-jitsi
+
+# Additional playbook to set the variable file during ma1sd configuration
+- import_tasks: "{{ role_path }}/tasks/set_variables_ma1sd.yml"
+  when: run_setup|bool
+  tags:
+    - setup-ma1sd
+
 # Additional playbook to set survey_spec file for configure element
 - import_tasks: "{{ role_path }}/tasks/set_survey_configure_element.yml"
   when: run_setup|bool
@@ -30,4 +42,16 @@
   when: run_setup|bool
   tags:
     - setup-synapse
+
+# Additional playbook to set survey_spec file for configure jitsi
+- import_tasks: "{{ role_path }}/tasks/set_survey_configure_jitsi.yml"
+  when: run_setup|bool
+  tags:
+    - setup-jitsi
+
+# Additional playbook to set survey_spec file for configure ma1sd
+- import_tasks: "{{ role_path }}/tasks/set_survey_configure_ma1sd.yml"
+  when: run_setup|bool
+  tags:
+    - setup-ma1sd
 

@@ -27,7 +27,7 @@
     '  recaptcha_public_key': '{{ ext_recaptcha_public_key }}'
     '  recaptcha_private_key': '{{ ext_recaptcha_private_key }}'
 
-- name: Copy the new vars.yml file to the target machine
+- name: Copy the new matrix_vars.yml file to the target machine
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     dest: /matrix/awx/
