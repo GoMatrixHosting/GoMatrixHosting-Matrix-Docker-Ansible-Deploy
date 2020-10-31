@@ -13,6 +13,7 @@
     'matrix_client_element_default_theme': '{{ matrix_client_element_default_theme }}'
     'matrix_client_element_branding_welcomeBackgroundUrl': '{{ matrix_client_element_branding_welcomeBackgroundUrl }}'
     'matrix_client_element_registration_enabled': '{{ matrix_client_element_registration_enabled }}'
+    'matrix_server_fqn_element': "{{ element_subdomain }}.{{ matrix_domain }}"
 
 - name: Copy the new matrix_vars.yml file to the target machine
   copy:
