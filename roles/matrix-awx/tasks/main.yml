@@ -5,6 +5,12 @@
   tags:
     - always
 
+# Configure SFTP so user can upload a static website
+- import_tasks: "{{ role_path }}/tasks/customise_base_domain_website.yml"
+  when: run_setup|bool
+  tags:
+    - setup-nginx-proxy
+
 # Additional playbook to set the variable file during element configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_element.yml"
   when: run_setup|bool
