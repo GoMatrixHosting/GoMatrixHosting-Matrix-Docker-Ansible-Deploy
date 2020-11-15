@@ -1,50 +1,48 @@
-tasks:
-- block:
-  tags: awx
-  - name: Record Jitsi variables locally on AWX
-    delegate_to: 127.0.0.1
-    lineinfile:
-      path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-      regexp: "^#? *{{ item.key | regex_escape() }}:"
-      line: "{{ item.key }}: {{ item.value }}"
-      insertafter: '# Jitsi Settings'
-    with_dict:
-      'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
-      'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'
 
-  - name: Copy the new matrix_vars.yml file to the target machine
-    copy:
-      src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-      dest: /matrix/awx/
-      mode: '0600'
+- name: Record Jitsi variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Jitsi Settings'
+  with_dict:
+    'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
+    'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'
 
-  - name: Save new 'Configure Jitsi' survey.json to the AWX tower, template
-    delegate_to: 127.0.0.1
-    template:
-      src: 'roles/matrix-awx/templates/configure_jitsi.json.j2'
-      dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json'
+- name: Copy the new matrix_vars.yml file to the target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: /matrix/awx/
+    mode: '0600'
 
-  - name: Copy new 'Configure Jitsi' survey.json to target machine
-    copy:
-      src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json'
-      dest:  '/matrix/awx/configure_jitsi.json'
-      mode: 0644
+- name: Save new 'Configure Jitsi' survey.json to the AWX tower, template
+  delegate_to: 127.0.0.1
+  template:
+    src: 'roles/matrix-awx/templates/configure_jitsi.json.j2'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json'
 
-  - name: Recreate 'Configure Jitsi' job template
-    delegate_to: 127.0.0.1
-    tower_job_template:
-      name: "{{ matrix_domain }} - 1 - Configure Jitsi"
-      description: "Configure Jitsi conferencing settings."
-      extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-      job_type: run
-      job_tags: "start,setup-jitsi"
-      inventory: "{{ member_id }} Inventory"
-      project: "{{ member_id }} - Matrix Docker Ansible Deploy"
-      playbook: setup.yml
-      credential: "{{ member_id }} - ChatOasis testing SSH"
-      survey_enabled: true
-      survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json') }}"
-      become_enabled: yes
-      state: present
-      verbosity: 1
+- name: Copy new 'Configure Jitsi' survey.json to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json'
+    dest:  '/matrix/awx/configure_jitsi.json'
+    mode: 0644
+
+- name: Recreate 'Configure Jitsi' job template
+  delegate_to: 127.0.0.1
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Jitsi"
+    description: "Configure Jitsi conferencing settings."
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    job_type: run
+    job_tags: "start,setup-jitsi"
+    inventory: "{{ member_id }} Inventory"
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    credential: "{{ member_id }} - ChatOasis testing SSH"
+    survey_enabled: true
+    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json') }}"
+    become_enabled: yes
+    state: present
+    verbosity: 1
 

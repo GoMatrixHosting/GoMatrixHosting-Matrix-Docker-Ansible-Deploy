@@ -1,37 +1,37 @@
 
 # Load initial variables from tower volume
 - import_tasks: "{{ role_path }}/tasks/load_variables.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - always
 
 # Configure SFTP so user can upload a static website
 - import_tasks: "{{ role_path }}/tasks/customise_base_domain_website.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-nginx-proxy
 
 # Additional playbook to set the variable file during element configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_element.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-client-element
 
 # Additional playbook to set the variable file during synapse configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_synapse.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-synapse
 
 # Additional playbook to set the variable file during jitsi configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_jitsi.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-jitsi
 
 # Additional playbook to set the variable file during ma1sd configuration
 - import_tasks: "{{ role_path }}/tasks/set_variables_ma1sd.yml"
-  when: run_setup|bool
+  when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-ma1sd
 
