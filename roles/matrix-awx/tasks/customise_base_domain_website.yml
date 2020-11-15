@@ -1,9 +1,9 @@
 
-- name: Clear existing website files if user doesn't wish to customise base domain
-  shell:
-    cmd: rm -r /matrix/nginx-proxy/data/matrix-domain/*
-    warn: False
-  when: customise_base_domain_website|bool == false
+#- name: Clear existing website files if user doesn't wish to customise base domain
+#  shell:
+#    cmd: rm -r /matrix/nginx-proxy/data/matrix-domain/*
+#    warn: False
+#  when: customise_base_domain_website|bool == false
 
 - name: Enable index.html creation if user doesn't wish to customise base domain
   delegate_to: 127.0.0.1
