@@ -1,6 +1,8 @@
 
 - name: Clear existing website files if user doesn't wish to customise base domain
-  shell: rm -r /matrix/nginx-proxy/data/matrix-domain/*
+  shell:
+    cmd: rm -r /matrix/nginx-proxy/data/matrix-domain/*
+    warn: False
   when: customise_base_domain_website|bool == false
 
 - name: Enable index.html creation if user doesn't wish to customise base domain
@@ -10,12 +12,6 @@
     insertafter: # Base Domain Settings
     line: 'matrix_nginx_proxy_base_domain_homepage_enabled: true'
   when: customise_base_domain_website|bool == false
-
-- name: Copy the new matrix_vars.yml file to the target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    dest: /matrix/awx/
-    mode: '0600'
 
 - name: Reload vars in matrix_vars.yml
   include_vars:
@@ -33,12 +29,6 @@
   template:
     src: 'roles/matrix-awx/templates/configure_base_domain_website.json.j2'
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_base_domain_website.json'
-
-- name: Copy new 'Customise Base Domain Website' survey.json to target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_base_domain_website.json'
-    dest:  '/matrix/awx/configure_base_domain_website.json'
-    mode: 0644
 
 - name: Recreate 'Customise Base Domain Website' job template
   delegate_to: 127.0.0.1
