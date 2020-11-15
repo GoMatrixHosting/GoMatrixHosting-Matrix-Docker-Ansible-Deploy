@@ -4,7 +4,7 @@
   when: customise_base_domain_website|bool == false
 
 - name: Enable index.html creation if user doesn't wish to customise base domain
-  delegate: 127.0.0.1
+  delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertafter: # Base Domain Settings
