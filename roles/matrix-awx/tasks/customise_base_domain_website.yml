@@ -34,7 +34,7 @@
 - name: Update 'website' users password
   user:
     name: website
-    password: "{{ sftp_password }}"
+    password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
   when: sftp_password != ""
 
