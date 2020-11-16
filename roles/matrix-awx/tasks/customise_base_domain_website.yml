@@ -91,7 +91,6 @@
     update_password: on_create
 
 - name: Setup SFTP users default root path
-  delegate_to: '{{ server_ipv4 }}'
   shell: sudo usermod -d / website
 
 - name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has website:website permissions and is mounted to nginx container)
@@ -111,13 +110,11 @@
     mode: '0766'
 
 - name: Enable service ssh_sftp.service
-  delegate_to: '{{ server_ipv4 }}'
   service:
     name: ssh_sftp.service
     enabled: yes
 
 - name: Start service ssh_sftp.service
-  delegate_to: '{{ server_ipv4 }}'
   service:
     name: ssh_sftp.service
     state: started
