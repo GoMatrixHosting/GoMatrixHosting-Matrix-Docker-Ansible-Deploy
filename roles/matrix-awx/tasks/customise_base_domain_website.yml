@@ -1,9 +1,4 @@
 
-#- name: Clear existing website files if user doesn't wish to customise base domain
-#  shell:
-#    cmd: rm -r /matrix/nginx-proxy/data/matrix-domain/*
-#    warn: False
-#  when: customise_base_domain_website|bool == false
 
 - name: Enable index.html creation if user doesn't wish to customise base domain
   delegate_to: 127.0.0.1
@@ -31,13 +26,6 @@
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
 
-- name: Update 'website' users password
-  user:
-    name: website
-    password: "{{ sftp_password | password_hash('sha512') }}"
-    update_password: always
-  when: sftp_password != ""
-
 - name: Save new 'Customise Base Domain Website' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
@@ -61,4 +49,76 @@
     become_enabled: yes
     state: present
     verbosity: 1
+
+# Copied over from provision stage
+
+- name: Copy ssh_sftp.service file
+  copy:
+    src: './roles/matrix-awx/templates/sftp/ssh_sftp.service'
+    dest: '/lib/systemd/system/ssh_sftp.service'
+    mode: 0644
+
+- name: Copy sshd config file
+  copy:
+    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config'
+    dest: '/etc/ssh/sshd_sftp_config'
+    mode: 0644
+
+- name: Ensure group "website" exists
+  group:
+    name: website
+    state: present
+
+- name: If user defines sftp_password, enable acccount / set password on 'website' account.
+  user:
+    name: website
+    comment: SFTP user to set custom web files
+    shell: /bin/false
+    home: /home/website/
+    group: website
+    password: "{{ sftp_password | password_hash('sha512') }}"
+    update_password: always
+  when: sftp_password != ""
+
+- name: If user account doesn't exist, create a disabled account for SFTP user 'website', with a primary group of 'website', and a shell of /bin/false
+  user:
+    name: website
+    comment: SFTP user to set custom web files
+    shell: /bin/false
+    home: /home/website/
+    group: website
+    password: '!'
+    update_password: on_create
+
+- name: Setup SFTP users default root path
+  delegate_to: '{{ server_ipv4 }}'
+  shell: sudo usermod -d / website
+
+- name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has website:website permissions and is mounted to nginx container)
+  file:
+    path: /chroot
+    state: directory
+    owner: root
+    group: root
+    mode: '0744'
+
+- name: Create the rw /chroot/website directory if it doesn't exist.
+  file:
+    path: /chroot/website
+    state: directory
+    owner: website
+    group: website
+    mode: '0766'
+
+- name: Enable service ssh_sftp.service
+  delegate_to: '{{ server_ipv4 }}'
+  service:
+    name: ssh_sftp.service
+    enabled: yes
+
+- name: Start service ssh_sftp.service
+  delegate_to: '{{ server_ipv4 }}'
+  service:
+    name: ssh_sftp.service
+    state: started
 
