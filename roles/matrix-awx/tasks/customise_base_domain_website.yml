@@ -9,16 +9,22 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Base Domain Settings'
-    line: 'matrix_nginx_proxy_base_domain_homepage_enabled: true'
+  with_dict:
+    'matrix_nginx_proxy_base_domain_homepage_enabled': 'true'
   when: customise_base_domain_website|bool == false
 
 - name: Disable index.html creation to allow multi-file site if user does wish to customise base domain
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Base Domain Settings'
-    line: 'matrix_nginx_proxy_base_domain_homepage_enabled: false'
+  with_dict:
+    'matrix_nginx_proxy_base_domain_homepage_enabled': 'false'
   when: customise_base_domain_website|bool == true
 
 - name: Reload vars in matrix_vars.yml
