@@ -99,15 +99,15 @@
     state: directory
     owner: root
     group: root
-    mode: '0744'
+    mode: '1755'
 
 - name: Create the rw /chroot/website directory if it doesn't exist.
   file:
     path: /chroot/website
     state: directory
-    owner: website
-    group: website
-    mode: '0766'
+    owner: matrix
+    group: matrix
+    mode: '0777'
 
 - name: Enable service ssh_sftp.service
   service:
