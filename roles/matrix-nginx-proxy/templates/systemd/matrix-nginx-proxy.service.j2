@@ -31,10 +31,10 @@ ExecStart={{ matrix_host_command_docker }} run --rm --name matrix-nginx-proxy \
 			-p {{ matrix_nginx_proxy_container_federation_host_bind_port }}:8448 \
 			{% endif %}
 			-v {{ matrix_nginx_proxy_base_path }}/nginx.conf:/etc/nginx/nginx.conf:ro \
-			{% if matrix_awx_enabled|bool == 'false' %}
+			{% if matrix_awx_enabled|bool == 'false' or matrix_nginx_proxy_base_domain_homepage_enabled %}
 			-v {{ matrix_nginx_proxy_data_path }}:/nginx-data:ro \
 			{% endif %}
-			{% if matrix_awx_enabled %}
+			{% if matrix_awx_enabled and matrix_nginx_proxy_base_domain_homepage_enabled|bool == 'false' %}
 			-v /chroot/website:/nginx-data/matrix-domain:ro \
 			{% endif %}
 			-v {{ matrix_nginx_proxy_confd_path }}:/etc/nginx/conf.d:ro \
