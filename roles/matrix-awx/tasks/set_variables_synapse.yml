@@ -56,7 +56,7 @@
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
-    credential: "{{ member_id }} - ChatOasis testing SSH"
+    credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
     survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse.json') }}"
     become_enabled: yes

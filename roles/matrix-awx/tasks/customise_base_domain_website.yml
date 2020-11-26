@@ -43,7 +43,7 @@
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
-    credential: "{{ member_id }} - ChatOasis testing SSH"
+    credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
     survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_base_domain_website.json') }}"
     become_enabled: yes
@@ -93,7 +93,7 @@
 - name: Setup SFTP users default root path
   shell: sudo usermod -d / website
 
-- name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has website:website permissions and is mounted to nginx container)
+- name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
   file:
     path: /chroot
     state: directory
