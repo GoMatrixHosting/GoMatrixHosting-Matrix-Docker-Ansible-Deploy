@@ -74,10 +74,10 @@
   when: "not matrix_synapse_signing_key_stat.stat.exists"
 
 - debug:
-    var: "{{ matrix_synapse_configuration }}"
+    msg: "{{ matrix_synapse_configuration }}"
 
 - debug:
-    var: "{{ matrix_synapse_configuration|to_nice_yaml }}"
+    msg: "{{ matrix_synapse_configuration|to_nice_yaml }}"
 
 - name: Ensure Synapse homeserver config installed
   copy:
