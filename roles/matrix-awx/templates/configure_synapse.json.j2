@@ -52,10 +52,10 @@
     },
     {
       "question_name": "Synapse Auto-Join Room",
-      "question_description": "Sets the 'auto-join' rooms, where new users will be automatically invited to. Entries must be divided by commas, and encased in single quotes. Example: '#announcements:example.org','#main:example.org'",
+      "question_description": "Sets the 'auto-join' rooms, where new users will be automatically invited to. Entries must be divided with commas, for example: #announcements:example.org,#main:example.org",
       "required": false,
       "min": 0,
-      "max": 2048,
+      "max": 4096,
       "default": "{{ matrix_synapse_auto_join_rooms }}",
       "choices": "",
       "new_question": true,
