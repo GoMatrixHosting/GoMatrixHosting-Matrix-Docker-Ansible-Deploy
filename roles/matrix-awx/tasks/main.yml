@@ -1,6 +1,6 @@
 
-# Load initial variables from tower volume
-- import_tasks: "{{ role_path }}/tasks/load_variables.yml"
+# Load initial organisation variables from tower volume
+- import_tasks: "{{ role_path }}/tasks/load_organisation_variables.yml"
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - always
@@ -35,4 +35,8 @@
   tags:
     - setup-ma1sd
 
-
+# Load newly formed matrix variables from tower volume
+- import_tasks: "{{ role_path }}/tasks/load_matrix_variables.yml"
+  when: run_setup|bool and matrix_awx_enabled|bool
+  tags:
+    - always
