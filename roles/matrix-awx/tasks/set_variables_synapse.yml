@@ -5,7 +5,7 @@
   when: matrix_synapse_auto_join_rooms|length == 0
 
 - name: Set matrix_synapse_auto_join_rooms_final if matrix_synapse_auto_join_rooms is not empty
-  command: |
+  shell: |
     echo "'{{ matrix_synapse_auto_join_rooms }}'" | sed "s/,/\',\'/g"
   register: parsed_auto_join_rooms_output
   when: matrix_synapse_auto_join_rooms|length > 0
