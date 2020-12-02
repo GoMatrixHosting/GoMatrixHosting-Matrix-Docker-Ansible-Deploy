@@ -80,6 +80,8 @@
     update_password: always
   when: sftp_password != ""
 
+# would be safer if it generated the password for you!
+
 - name: If user account doesn't exist, create a disabled account for SFTP user 'website', with a primary group of 'website', and a shell of /bin/false
   user:
     name: website
