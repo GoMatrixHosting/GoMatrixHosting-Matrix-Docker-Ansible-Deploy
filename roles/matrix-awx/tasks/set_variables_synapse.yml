@@ -1,8 +1,8 @@
 
-- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is empty
-  set_fact:
-    matrix_synapse_auto_join_rooms: '[]'
-  when: matrix_synapse_auto_join_rooms_raw|length == 0
+#- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is empty
+#  set_fact:
+#    matrix_synapse_auto_join_rooms: '[]'
+#  when: matrix_synapse_auto_join_rooms_raw|length == 0
 
 - name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty
   shell: |
@@ -27,17 +27,37 @@
     'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
     'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
     'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
-    'matrix_synapse_auto_join_rooms': '{{ matrix_synapse_auto_join_rooms }}'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
 
-- name: Remove 'matrix_synapse_auto_join_rooms' line if list is empty
+#- name: Remove 'matrix_synapse_auto_join_rooms' line if list is empty
+#  delegate_to: 127.0.0.1
+#  lineinfile:
+#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+#    state: absent
+#    line: 'matrix_synapse_auto_join_rooms: []'
+#  when: matrix_synapse_auto_join_rooms_raw|length == 0
+
+# still loaded an an extra variables
+
+- name: Remove Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's blank
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^matrix_synapse_auto_join_rooms"
     state: absent
-    line: 'matrix_synapse_auto_join_rooms: []'
-  when: matrix_synapse_auto_join_rooms_raw|length == 0
+  when: matrix_synapse_auto_join_rooms_raw|length == 0  
+
+- name: Record Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's not blank
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Settings'
+  with_dict:
+    'matrix_synapse_auto_join_rooms': '{{ matrix_synapse_auto_join_rooms }}'
+  when: matrix_synapse_auto_join_rooms_raw|length > 0
 
 - name: Record Synapse Extension variables locally on AWX
   delegate_to: 127.0.0.1
