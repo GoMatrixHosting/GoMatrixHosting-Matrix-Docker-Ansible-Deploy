@@ -1,22 +1,19 @@
 
-- name: Set matrix_synapse_auto_join_rooms_final if matrix_synapse_auto_join_rooms is empty
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is empty
   set_fact:
     matrix_synapse_auto_join_rooms: '[]'
   when: matrix_synapse_auto_join_rooms_raw|length == 0
 
-- name: Set matrix_synapse_auto_join_rooms_final if matrix_synapse_auto_join_rooms is not empty
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty
   shell: |
     echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | sed "s/,/\',\'/g"
   register: parsed_auto_join_rooms_output
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
-- name: Set matrix_synapse_auto_join_rooms_final if matrix_synapse_auto_join_rooms is not empty
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty
   set_fact:
     matrix_synapse_auto_join_rooms: '{{ parsed_auto_join_rooms_output.stdout }}'
   when: matrix_synapse_auto_join_rooms_raw|length > 0
-
-- debug:
-    msg: '{{ matrix_synapse_auto_join_rooms }}'
 
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
@@ -33,6 +30,14 @@
     'matrix_synapse_auto_join_rooms': '{{ matrix_synapse_auto_join_rooms }}'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
+
+- name: Remove 'matrix_synapse_auto_join_rooms' line if list is empty
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    state: absent
+    line: 'matrix_synapse_auto_join_rooms: []'
+  when: matrix_synapse_auto_join_rooms_raw|length == 0
 
 - name: Record Synapse Extension variables locally on AWX
   delegate_to: 127.0.0.1
