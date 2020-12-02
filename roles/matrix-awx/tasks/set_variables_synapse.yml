@@ -1,9 +1,4 @@
 
-#- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is empty
-#  set_fact:
-#    matrix_synapse_auto_join_rooms: '[]'
-#  when: matrix_synapse_auto_join_rooms_raw|length == 0
-
 - name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty
   shell: |
     echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | sed "s/,/\',\'/g"
@@ -29,16 +24,6 @@
     'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
-
-#- name: Remove 'matrix_synapse_auto_join_rooms' line if list is empty
-#  delegate_to: 127.0.0.1
-#  lineinfile:
-#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-#    state: absent
-#    line: 'matrix_synapse_auto_join_rooms: []'
-#  when: matrix_synapse_auto_join_rooms_raw|length == 0
-
-# still loaded an an extra variables
 
 - name: Remove Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's blank
   delegate_to: 127.0.0.1
