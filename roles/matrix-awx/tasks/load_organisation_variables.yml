@@ -4,7 +4,3 @@
     file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
   no_log: True
 
-- name: Include vars in matrix_vars.yml
-  include_vars:
-    file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-  no_log: True
