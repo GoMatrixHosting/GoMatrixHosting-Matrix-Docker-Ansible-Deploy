@@ -9,12 +9,6 @@
   with_dict:
     'matrix_ma1sd_enabled': '{{ matrix_ma1sd_enabled }}'
 
-- name: Copy the new matrix_vars.yml file to the target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    dest: /matrix/awx/
-    mode: '0600'
-
 - name: Save new 'Configure Ma1sd' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:

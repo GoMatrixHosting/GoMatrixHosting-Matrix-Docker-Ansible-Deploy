@@ -22,6 +22,16 @@
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'false'
   when: customise_base_domain_website|bool == true
 
+- name: Record 'Customise Base Domain Website' variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# AWX Settings'
+  with_dict:
+    'customise_base_domain_website': '{{ customise_base_domain_website }}'
+
 - name: Reload vars in matrix_vars.yml
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
