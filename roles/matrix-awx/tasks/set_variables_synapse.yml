@@ -56,6 +56,10 @@
     '  recaptcha_public_key': '{{ ext_recaptcha_public_key }}'
     '  recaptcha_private_key': '{{ ext_recaptcha_private_key }}'
 
+- name: Set matrix_synapse_auto_join_rooms_raw to a empty string if undefined
+  set_fact: matrix_synapse_auto_join_rooms_raw=""
+  when: (matrix_synapse_auto_join_rooms_raw is not defined) or (matrix_synapse_auto_join_rooms_raw|length == 0)
+
 - name: Save new 'Configure Synapse' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
