@@ -22,7 +22,7 @@
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'false'
   when: customise_base_domain_website|bool == true
 
-- name: Record 'Customise Base Domain Website' variables locally on AWX
+- name: Record 'Customise Website + Access Backup' variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
@@ -36,17 +36,17 @@
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
 
-- name: Save new 'Customise Base Domain Website' survey.json to the AWX tower, template
+- name: Save new 'Customise Website + Access Backup' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
-    src: './roles/matrix-awx/templates/configure_base_domain_website.json.j2'
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_base_domain_website.json'
+    src: './roles/matrix-awx/templates/configure_website_access_backup.json.j2'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_website_access_backup.json'
 
 - name: Recreate 'Customise Base Domain Website' job template
   delegate_to: 127.0.0.1
   tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure Base Domain Website"
-    description: "Configure base domain website settings."
+    name: "{{ matrix_domain }} - 1 - Configure Website + Access Backup"
+    description: "Configure base domain website settings and access the services backup."
     extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     job_tags: "start,setup-nginx-proxy"
@@ -55,7 +55,7 @@
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_base_domain_website.json') }}"
+    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_website_access_backup.json') }}"
     become_enabled: yes
     state: present
     verbosity: 1
@@ -74,36 +74,36 @@
     dest: '/etc/ssh/sshd_sftp_config'
     mode: 0644
 
-- name: Ensure group "website" exists
+- name: Ensure group "sftp" exists
   group:
-    name: website
+    name: sftp
     state: present
 
-- name: If user defines sftp_password, enable acccount / set password on 'website' account.
+- name: If user defines sftp_password, enable account / set password on 'stfp' account.
   user:
-    name: website
+    name: sftp
     comment: SFTP user to set custom web files
     shell: /bin/false
-    home: /home/website/
-    group: website
+    home: /home/sftp/
+    group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
   when: sftp_password != ""
 
 # would be safer if it generated the password for you!
 
-- name: If user account doesn't exist, create a disabled account for SFTP user 'website', with a primary group of 'website', and a shell of /bin/false
+- name: If user account doesn't exist, create a disabled account for SFTP user 'sftp', with a primary group of 'sftp', and a shell of /bin/false
   user:
-    name: website
+    name: sftp
     comment: SFTP user to set custom web files
     shell: /bin/false
-    home: /home/website/
-    group: website
+    home: /home/sftp/
+    group: sftp
     password: '!'
     update_password: on_create
 
 - name: Setup SFTP users default root path
-  shell: sudo usermod -d / website
+  shell: sudo usermod -d / sftp
 
 - name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
   file:
@@ -120,6 +120,15 @@
     owner: matrix
     group: matrix
     mode: '0777'
+
+- name: Create symlink to /backup/ directory to ro /chroot/backup/.
+  file:
+    src: /backup/
+    dest: /chroot/backup/
+    owner: root
+    group: root
+    mode: '0444'
+    state: link
 
 - name: Enable service ssh_sftp.service
   service:

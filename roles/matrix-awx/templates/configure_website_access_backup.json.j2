@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Configure Website Access Backup",
+  "description": "Configure base domain website settings and access the services backup.",
   "spec": [
     {
       "question_name": "Customise Base Domain Website",
@@ -16,11 +16,11 @@
     },
     {
       "question_name": "SFTP Password",
-      "question_description": "Sets the password of the 'website' account, which allows you to upload a multi-file static website by SFTP. If empty the password won't be updated. WARNING: You must set a strong password here, for instructions on making strong passwords see: https://ssd.eff.org/en/module/creating-strong-passwords",
+      "question_description": "Sets the password of the 'sftp' account, which allows you to upload a multi-file static website by SFTP, as well as download the latest copy of your services backup. If empty the password won't be updated. WARNING: You must set a strong password here, for instructions on making strong passwords see: https://ssd.eff.org/en/module/creating-strong-passwords",
       "required": false,
       "min": 0,
       "max": 64,
-      "default": "",
+      "default": "{{ sftp_password }}",
       "choices": "",
       "new_question": true,
       "variable": "sftp_password",

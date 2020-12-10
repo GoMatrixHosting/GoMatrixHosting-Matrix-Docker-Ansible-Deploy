@@ -23,7 +23,7 @@ AcceptEnv LANG LC_*
 # override default of no subsystems
 Subsystem sftp internal-sftp
 
-Match User website
+Match User sftp
     ChrootDirectory /chroot
     PermitTunnel no
     X11Forwarding no
