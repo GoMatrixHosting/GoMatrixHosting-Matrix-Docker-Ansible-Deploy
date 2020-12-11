@@ -124,7 +124,7 @@
 - name: Create symlink to /backup/ directory to ro /chroot/backup/.
   file:
     src: /backup/
-    dest: /chroot/backup/
+    dest: /chroot/backup
     owner: root
     group: root
     mode: '0444'
