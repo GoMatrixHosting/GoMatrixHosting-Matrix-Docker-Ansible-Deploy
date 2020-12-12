@@ -105,6 +105,12 @@
 - name: Setup SFTP users default root path
   shell: sudo usermod -d / sftp
 
+- name: adding existing user 'sftp' to group matrix
+  user:
+    name: sftp
+    groups: matrix
+    append: yes
+
 - name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
   file:
     path: /chroot
@@ -119,15 +125,15 @@
     state: directory
     owner: matrix
     group: matrix
-    mode: '0777'
+    mode: '0555'
 
 - name: Create symlink to /backup/ directory to ro /chroot/backup/.
   file:
     src: /backup/
     dest: /chroot/backup
-    owner: root
-    group: root
-    mode: '0444'
+    owner: sftp
+    group: sftp
+    mode: '0500'
     state: link
 
 - name: Enable service ssh_sftp.service
