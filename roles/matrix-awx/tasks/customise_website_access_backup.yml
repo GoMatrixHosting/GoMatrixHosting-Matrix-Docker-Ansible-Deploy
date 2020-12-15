@@ -94,7 +94,7 @@
     group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
-  when: sftp_password != ""
+  when: (sftp_password is defined) and (sftp_password|length > 0)
 
 # would be safer if it generated the password for you!
 
@@ -117,7 +117,7 @@
     groups: matrix
     append: yes
 
-- name: Create the ro /chroot directory if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
+- name: Create the ro /chroot directory with sticky bit if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
   file:
     path: /chroot
     state: directory
@@ -131,31 +131,55 @@
     state: directory
     owner: matrix
     group: matrix
-    mode: '0777'
+    mode: '0474'
 
 - name: Ensure /chroot/backup/ location exists
   file:
     path: /chroot/backup
     state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    owner: sftp
+    group: sftp
+    mode: '0700'
 
 - name: Ensure /chroot/backup/borg/ location exists
   file:
     path: /chroot/backup/borg
     state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    owner: sftp
+    group: sftp
+    mode: '0700'
 
 - name: Ensure /chroot/backup/snapshot/ location exists
   file:
     path: /chroot/backup/snapshot
     state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    owner: sftp
+    group: sftp
+    mode: '0700'
+
+- name: Ensure /chroot/backup/root/ location exists
+  file:
+    path: /chroot/backup/root
+    state: directory
+    owner: sftp
+    group: sftp
+    mode: '0700'
+
+- name: Ensure /chroot/backup/root/.config/ location exists
+  file:
+    path: /chroot/backup/root/.config
+    state: directory
+    owner: sftp
+    group: sftp
+    mode: '0700'
+
+- name: Ensure /chroot/backup/root/.cache/ location exists
+  file:
+    path: /chroot/backup/root/.cache
+    state: directory
+    owner: sftp
+    group: sftp
+    mode: '700'
 
 - name: Enable service ssh_sftp.service
   service:
