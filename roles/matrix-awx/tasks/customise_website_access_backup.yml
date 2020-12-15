@@ -107,7 +107,7 @@
     groups: matrix
     append: yes
 
-- name: Create the ro /chroot directory with sticky bit if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
+- name: Create the /chroot directory with sticky bit if it doesn't exist. Used for the sftp jail.
   file:
     path: /chroot
     state: directory
@@ -115,13 +115,13 @@
     group: root
     mode: '1755'
 
-- name: Create the rw /chroot/website directory if it doesn't exist.
+- name: Create the /chroot/website directory if it doesn't exist. Has matrix:matrix permissions and is mounted to nginx container.
   file:
     path: /chroot/website
     state: directory
     owner: matrix
     group: matrix
-    mode: '0474'
+    mode: '0574'
 
 - name: Ensure /chroot/backup/ location exists
   file:
