@@ -98,16 +98,6 @@
 
 # would be safer if it generated the password for you!
 
-- name: If user account doesn't exist, create a disabled account for SFTP user 'sftp', with a primary group of 'sftp', and a shell of /bin/false
-  user:
-    name: sftp
-    comment: SFTP user to set custom web files
-    shell: /bin/false
-    home: /home/sftp/
-    group: sftp
-    password: '!'
-    update_password: on_create
-
 - name: Setup SFTP users default root path
   shell: sudo usermod -d / sftp
 
