@@ -133,14 +133,29 @@
     group: matrix
     mode: '0555'
 
-- name: Create symlink to /backup/ directory to ro /chroot/backup/.
+- name: Ensure /chroot/backup/ location exists
   file:
-    src: /backup/
-    dest: /chroot/backup
-    owner: sftp
-    group: sftp
-    mode: '0500'
-    state: link
+    path: /chroot/backup
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure /chroot/backup/borg/ location exists
+  file:
+    path: /chroot/backup/borg
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure /chroot/backup/snapshot/ location exists
+  file:
+    path: /chroot/backup/snapshot
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: Enable service ssh_sftp.service
   service:
