@@ -107,7 +107,7 @@
     groups: matrix
     append: yes
 
-- name: Create the /chroot directory with sticky bit if it doesn't exist. Used for the sftp jail.
+- name: Create the ro /chroot directory with sticky bit if it doesn't exist. (/chroot/website has matrix:matrix permissions and is mounted to nginx container)
   file:
     path: /chroot
     state: directory
@@ -115,7 +115,7 @@
     group: root
     mode: '1755'
 
-- name: Create the /chroot/website directory if it doesn't exist. Has matrix:matrix permissions and is mounted to nginx container.
+- name: Create the rw /chroot/website directory if it doesn't exist.
   file:
     path: /chroot/website
     state: directory
@@ -131,9 +131,9 @@
     group: sftp
     mode: '0700'
 
-- name: Ensure /chroot/backup/borg/ location exists
+- name: Ensure /chroot/backup/matrix/ location exists
   file:
-    path: /chroot/backup/borg
+    path: /chroot/backup/matrix
     state: directory
     owner: sftp
     group: sftp
@@ -146,30 +146,6 @@
     owner: sftp
     group: sftp
     mode: '0700'
-
-- name: Ensure /chroot/backup/root/ location exists
-  file:
-    path: /chroot/backup/root
-    state: directory
-    owner: sftp
-    group: sftp
-    mode: '0700'
-
-- name: Ensure /chroot/backup/root/.config/ location exists
-  file:
-    path: /chroot/backup/root/.config
-    state: directory
-    owner: sftp
-    group: sftp
-    mode: '0700'
-
-- name: Ensure /chroot/backup/root/.cache/ location exists
-  file:
-    path: /chroot/backup/root/.cache
-    state: directory
-    owner: sftp
-    group: sftp
-    mode: '700'
 
 - name: Enable service ssh_sftp.service
   service:
