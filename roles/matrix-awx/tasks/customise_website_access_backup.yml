@@ -131,22 +131,6 @@
     group: sftp
     mode: '0700'
 
-- name: Ensure /chroot/backup/matrix/ location exists
-  file:
-    path: /chroot/backup/matrix
-    state: directory
-    owner: sftp
-    group: sftp
-    mode: '0700'
-
-- name: Ensure /chroot/backup/snapshot/ location exists
-  file:
-    path: /chroot/backup/snapshot
-    state: directory
-    owner: sftp
-    group: sftp
-    mode: '0700'
-
 - name: Enable service ssh_sftp.service
   service:
     name: ssh_sftp.service
