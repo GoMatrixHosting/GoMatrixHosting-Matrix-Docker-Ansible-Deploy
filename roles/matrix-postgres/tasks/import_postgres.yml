@@ -78,6 +78,9 @@
       grep -vE '^CREATE DATABASE {{ matrix_postgres_db_name }}' |
       psql -v ON_ERROR_STOP=1 -h matrix-postgres"
 
+- debug:
+    msg: '{{ matrix_postgres_import_command }}'
+
 # This is a hack.
 # See: https://ansibledaily.com/print-to-standard-output-without-escaping/
 #
