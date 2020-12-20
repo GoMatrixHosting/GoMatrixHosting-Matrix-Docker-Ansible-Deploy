@@ -5,6 +5,12 @@
   tags:
     - always
 
+# Import configs, media repo from /chroot/backup import
+- import_tasks: "{{ role_path }}/tasks/import_awx.yml"
+  when: run_setup|bool and matrix_awx_enabled|bool
+  tags:
+    - import-awx
+
 # Configure SFTP so user can upload a static website
 - import_tasks: "{{ role_path }}/tasks/customise_website_access_backup.yml"
   when: run_setup|bool and matrix_awx_enabled|bool
