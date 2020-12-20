@@ -1,18 +1,18 @@
 
 - name: Ensure /matrix/awx is empty
-  command: rm -r /matrix/awx/*
+  shell: rm -r /matrix/awx/*
 
 - name: Ensure /matrix/synapse is empty
-  command: rm -r /matrix/synapse/*
+  shell: rm -r /matrix/synapse/*
 
 - name: Extract from /chroot/backup
-  command: tar -xvzf /chroot/backup/matrix.tar.gz -C /matrix/
+  shell: tar -xvzf /chroot/backup/matrix.tar.gz -C /matrix/
 
 - name: Ensure correct ownership of /matrix/awx
-  command: chown -R matrix:matrix /matrix/awx
+  shell: chown -R matrix:matrix /matrix/awx
 
 - name: Ensure correct ownership of /matrix/awx
-  command: chown -R matrix:matrix /matrix/synapse
+  shell: chown -R matrix:matrix /matrix/synapse
 
 - name: Fetch matrix_vars.yml file to AWX
   fetch:
