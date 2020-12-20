@@ -72,8 +72,8 @@
       -v {{ server_path_postgres_dump }}:/{{ server_path_postgres_dump|basename }}:ro
       --entrypoint=/bin/sh
       {{ matrix_postgres_docker_image_latest }}
-      -c "cat /{{ server_path_postgres_dump|basename }} |
-      {{ 'gunzip |' if server_path_postgres_dump.endswith('.gz') else '' }}
+      -c "export PGPASSWORD='{{ matrix_postgres_connection_password }}'; cat /{{ server_path_postgres_dump|basename }} |
+      {{ 'pigz -d |' if server_path_postgres_dump.endswith('.gz') else '' }}
       grep -vE '^CREATE ROLE {{ matrix_postgres_connection_username }}' |
       grep -vE '^CREATE DATABASE {{ matrix_postgres_db_name }}' |
       psql -v ON_ERROR_STOP=1 -h matrix-postgres"
@@ -100,3 +100,4 @@
   command: "{{ matrix_postgres_import_command }}"
   async: "{{ postgres_import_wait_time }}"
   poll: 10
+
