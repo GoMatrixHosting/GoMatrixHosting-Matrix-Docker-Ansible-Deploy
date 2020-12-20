@@ -77,7 +77,7 @@
       grep -vE '^CREATE ROLE {{ matrix_postgres_connection_username }}' |
       grep -vE '^CREATE DATABASE {{ matrix_postgres_db_name }}' |
       psql -v ON_ERROR_STOP=1 -h matrix-postgres"
-  when: (matrix_awx_enabled|bool == true) and (matrix_postgres_connection_password is defined) and (matrix_synapse_auto_join_rooms_raw|length > 0)
+  when: (matrix_awx_enabled|bool == true) and (matrix_postgres_connection_password is defined) and (matrix_postgres_connection_password|length > 0)
 
 - name: Generate Postgres database import command
   set_fact:
