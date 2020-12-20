@@ -17,4 +17,5 @@
 - name: Fetch matrix_vars.yml file to AWX
   fetch:
     src: /matrix/awx/matrix_vars.yml
-    dest: /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml
+    dest: /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/
+    flat: yes
