@@ -32,6 +32,12 @@
   with_dict:
     'customise_base_domain_website': '{{ customise_base_domain_website }}'
 
+- name: Copy new 'matrix_vars.yml' to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: '/matrix/awx/matrix_vars.yml'
+    mode: 0644
+
 - name: Reload vars in matrix_vars.yml
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'

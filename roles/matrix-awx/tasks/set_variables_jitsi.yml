@@ -10,6 +10,12 @@
     'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
     'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'
 
+- name: Copy new 'matrix_vars.yml' to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: '/matrix/awx/matrix_vars.yml'
+    mode: 0644
+
 - name: Save new 'Configure Jitsi' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
