@@ -14,9 +14,6 @@
 - name: Ensure correct ownership of /matrix/synapse
   shell: chown -R matrix:matrix /matrix/synapse
 
-- name: Extract the database in /chroot/backup
-  shell: 'pigz -d {{ server_path_postgres_dump }}.gz'
-
 - name: Fetch matrix_vars.yml file to AWX
   fetch:
     src: /matrix/awx/matrix_vars.yml
