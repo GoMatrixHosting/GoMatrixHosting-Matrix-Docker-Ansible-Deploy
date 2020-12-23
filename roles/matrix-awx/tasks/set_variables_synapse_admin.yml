@@ -1,0 +1,47 @@
+
+- name: Record Synapse Admin variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Admin Settings'
+  with_dict:
+    'matrix_synapse_admin_enabled': '{{ matrix_synapse_admin_enabled }}'
+
+- name: Copy new 'matrix_vars.yml' to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: '/matrix/awx/matrix_vars.yml'
+    mode: 0644
+
+- name: Save new 'Configure Synapse Admin' survey.json to the AWX tower, template
+  delegate_to: 127.0.0.1
+  template:
+    src: 'roles/matrix-awx/templates/configure_synapse_admin.json.j2'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse_admin.json'
+
+- name: Copy new 'Configure Synapse Admin' survey.json to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse_admin.json'
+    dest:  '/matrix/awx/configure_synapse_admin.json'
+    mode: 0644
+
+- name: Recreate 'Configure Synapse Admin' job template
+  delegate_to: 127.0.0.1
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Synapse Admin"
+    description: "Configure 'Synapse Admin', a moderation tool to help you manage your server."
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    job_type: run
+    job_tags: "start,setup-all"
+    inventory: "{{ member_id }} Inventory"
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    credential: "{{ member_id }} - AWX SSH Key"
+    survey_enabled: true
+    survey_spec: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse_admin.json') }}"
+    become_enabled: yes
+    state: present
+    verbosity: 1
+
