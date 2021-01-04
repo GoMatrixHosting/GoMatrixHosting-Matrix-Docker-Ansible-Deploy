@@ -7,7 +7,7 @@
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Synapse Admin Settings'
   with_dict:
-    'matrix_synapse_admin_enabled': '{{ matrix_synapse_admin_enabled }}'
+    'matrix_synapse_admin_enabled': '{{ matrix_synapse_admin_enabled|string|lower }}'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
