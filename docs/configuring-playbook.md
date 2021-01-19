@@ -33,6 +33,7 @@ When you're done with all the configuration you'd like to do, continue with [Ins
 
 - [Setting up the Jitsi video-conferencing platform](configuring-playbook-jitsi.md) (optional)
 
+- [Setting Dynamic DNS](configuring-playbook-dynamic-dns.md) (optional)
 
 ### Core service adjustments
 
@@ -92,6 +93,8 @@ When you're done with all the configuration you'd like to do, continue with [Ins
 - [Setting up Mautrix Facebook bridging](configuring-playbook-bridge-mautrix-facebook.md) (optional)
 
 - [Setting up Mautrix Hangouts bridging](configuring-playbook-bridge-mautrix-hangouts.md) (optional)
+
+- [Setting up Mautrix Signal bridging](configuring-playbook-bridge-mautrix-signal.md) (optional)
 
 - [Setting up Appservice IRC bridging](configuring-playbook-bridge-appservice-irc.md) (optional)
 

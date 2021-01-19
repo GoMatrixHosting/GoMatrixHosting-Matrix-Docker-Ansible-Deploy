@@ -34,7 +34,7 @@
 	{% endif %}
 
 	{% if matrix_nginx_proxy_proxy_matrix_corporal_api_enabled %}
-	location /_matrix/corporal {
+	location ^~ /_matrix/corporal {
 		{% if matrix_nginx_proxy_enabled %}
 			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
@@ -51,7 +51,7 @@
 	{% endif %}
 
 	{% if matrix_nginx_proxy_proxy_matrix_identity_api_enabled %}
-	location /_matrix/identity {
+	location ^~ /_matrix/identity {
 		{% if matrix_nginx_proxy_enabled %}
 			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
@@ -68,7 +68,7 @@
 	{% endif %}
 
 	{% if matrix_nginx_proxy_proxy_matrix_user_directory_search_enabled %}
-	location /_matrix/client/r0/user_directory/search {
+	location ^~ /_matrix/client/r0/user_directory/search {
 		{% if matrix_nginx_proxy_enabled %}
 			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
@@ -105,29 +105,6 @@
 		{{- configuration_block }}
 	{% endfor %}
 
-	{#
-		This handles the Matrix Client API only.
-		The Matrix Federation API is handled by a separate vhost.
-	#}
-	location /_matrix {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
-			resolver 127.0.0.11 valid=5s;
-			set $backend "{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_with_container }}";
-			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_sans_container }};
-		{% endif %}
-
-		proxy_set_header Host $host;
-		proxy_set_header X-Forwarded-For $remote_addr;
-
-		client_body_buffer_size 25M;
-		client_max_body_size {{ matrix_nginx_proxy_proxy_matrix_client_api_client_max_body_size_mb }}M;
-		proxy_max_temp_file_size 0;
-	}
-
 	{% if matrix_nginx_proxy_proxy_synapse_metrics %}
 	location /_synapse/metrics {
 		{% if matrix_nginx_proxy_enabled %}
@@ -150,7 +127,11 @@
 	}
 	{% endif %}
 
-	location /_synapse {
+	{#
+		This handles the Matrix Client API only.
+		The Matrix Federation API is handled by a separate vhost.
+	#}
+	location ~* ^({{ matrix_nginx_proxy_proxy_matrix_client_api_forwarded_location_prefix_regexes|join('|') }}) {
 		{% if matrix_nginx_proxy_enabled %}
 			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
@@ -170,7 +151,11 @@
 	}
 
 	location / {
-		rewrite ^/$ /_matrix/static/ last;
+		{% if matrix_nginx_proxy_proxy_matrix_client_redirect_root_uri_to_domain %}
+			return 302 $scheme://{{ matrix_nginx_proxy_proxy_matrix_client_redirect_root_uri_to_domain }}$request_uri;
+		{% else %}
+			rewrite ^/$ /_matrix/static/ last;
+		{% endif %}
 	}
 {% endmacro %}
 
@@ -218,9 +203,12 @@ server {
 
 	ssl_certificate {{ matrix_ssl_config_dir_path }}/live/{{ matrix_nginx_proxy_proxy_matrix_hostname }}/fullchain.pem;
 	ssl_certificate_key {{ matrix_ssl_config_dir_path }}/live/{{ matrix_nginx_proxy_proxy_matrix_hostname }}/privkey.pem;
+
 	ssl_protocols {{ matrix_nginx_proxy_ssl_protocols }};
-	ssl_prefer_server_ciphers on;
-	ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+	{% if matrix_nginx_proxy_ssl_ciphers != '' %}
+	ssl_ciphers {{ matrix_nginx_proxy_ssl_ciphers }};
+	{% endif %}
+	ssl_prefer_server_ciphers {{ matrix_nginx_proxy_ssl_prefer_server_ciphers }};
 
 	{{ render_vhost_directives() }}
 }
@@ -250,9 +238,13 @@ server {
 	{% if matrix_nginx_proxy_https_enabled %}
 		ssl_certificate {{ matrix_nginx_proxy_proxy_matrix_federation_api_ssl_certificate }};
 		ssl_certificate_key {{ matrix_nginx_proxy_proxy_matrix_federation_api_ssl_certificate_key }};
-		ssl_protocols {{ matrix_nginx_proxy_ssl_protocols }};
-		ssl_prefer_server_ciphers on;
-		ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+
+	ssl_protocols {{ matrix_nginx_proxy_ssl_protocols }};
+	{% if matrix_nginx_proxy_ssl_ciphers != '' %}
+	ssl_ciphers {{ matrix_nginx_proxy_ssl_ciphers }};
+	{% endif %}
+	ssl_prefer_server_ciphers {{ matrix_nginx_proxy_ssl_prefer_server_ciphers }};
+
 	{% endif %}
 
 	location / {
