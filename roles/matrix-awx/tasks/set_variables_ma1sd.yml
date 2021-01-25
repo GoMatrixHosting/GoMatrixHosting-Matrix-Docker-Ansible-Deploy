@@ -35,7 +35,7 @@
     extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     job_tags: "start,setup-ma1sd"
-    inventory: "{{ member_id }} Inventory"
+    inventory: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
