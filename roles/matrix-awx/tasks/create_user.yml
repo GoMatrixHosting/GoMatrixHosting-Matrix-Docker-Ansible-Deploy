@@ -1,0 +1,26 @@
+#
+# Create user and define if they are admin
+#
+# /usr/local/bin/matrix-synapse-register-user <your_username> <your_password> <admin access: 0 or 1>
+#
+
+- name: Set admin bool to zero
+  set_fact:
+    admin_bool: 0
+  when: admin_access == 'false'
+
+- name: Examine if server admin set
+  set_fact:      
+    admin_bool: 1
+  when: admin_access == 'true'
+
+- name: Create user account
+  command: |
+    /usr/local/bin/matrix-synapse-register-user {{ new_username }} {{ new_password }} {{ admin_bool }}
+  register: cmd
+
+- name: Result
+  debug: msg="{{ cmd.stdout }}"
+  
+- name: End playbook if this task list is called.
+  meta: end_play
