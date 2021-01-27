@@ -23,5 +23,4 @@
   debug: msg="{{ cmd.stdout }}"
   
 - name: End playbook if this task list is called.
-  meta: end_play
-  tags: create-user
+  meta: end_host
