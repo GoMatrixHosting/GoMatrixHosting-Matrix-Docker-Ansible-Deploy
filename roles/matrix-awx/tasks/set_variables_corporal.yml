@@ -1,0 +1,136 @@
+
+- name: Record Corporal Enabled/Disabled variable
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Corporal'
+  with_dict:
+    'matrix_corporal_enabled': '{{ matrix_corporal_enabled }}'
+    
+- name: Enable Shared Secret Auth if Corporal enabled
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Shared Secret Auth'
+  with_dict:
+    'matrix_synapse_ext_password_provider_shared_secret_auth_enabled': 'true'
+  when: matrix_corporal_enabled|bool == true
+  
+- name: Disable Shared Secret Auth if Corporal disabled
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Shared Secret Auth'
+  with_dict:
+    'matrix_synapse_ext_password_provider_shared_secret_auth_enabled': 'false'
+  when: matrix_corporal_enabled|bool == false
+
+- name: Disable Corporal API if Simple Static File mode selected
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Corporal'
+  with_dict:
+    'matrix_corporal_http_api_enabled': 'false'
+  when: matrix_corporal_policy_provider_mode == "Simple Static File"
+
+- name: Enable Corporal API if Push/Pull mode delected
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Corporal'
+  with_dict:
+    'matrix_corporal_http_api_enabled': 'true'
+  when: matrix_corporal_policy_provider_mode != "Simple Static File"
+
+- name: Record Corporal API Access Token if it's defined
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Matrix Corporal'
+  with_dict:
+    'matrix_corporal_http_api_auth_token': '{{ matrix_corporal_http_api_auth_token }}'
+  when: matrix_corporal_http_api_auth_token|length > 0
+
+- name: Record 'Simple Static File' configuration variables in matrix_vars.yml
+  delegate_to: 127.0.0.1
+  blockinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: "# Matrix Corporal Policy Provider"
+    block: |
+      matrix_corporal_policy_provider_config: |
+        {
+          "Type": "static_file",
+          "Path": "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+        }
+  when: matrix_corporal_policy_provider_mode == "Simple Static File" 
+
+- name: Touch the corporal_policy.json file to ensure it exists
+  file:
+    path: "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+    state: touch
+    owner: root
+    mode: 600
+  
+- name: Record 'Simple Static File' configuration content in corporal_policy.json
+  copy:
+    content: "{{ matrix_corporal_simple_static_config }}"
+    dest: "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+  when: matrix_corporal_policy_provider_mode == "Simple Static File" 
+
+- name: Record 'HTTP Pull Mode' configuration variables in matrix_vars.yml
+  delegate_to: 127.0.0.1
+  blockinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: "# Matrix Corporal Policy Provider"
+    block: |
+      matrix_corporal_policy_provider_config: |
+        {
+          "Type": "http",
+          "Uri": "{{ matrix_corporal_pull_mode_uri }}",
+          "AuthorizationBearerToken": "{{ matrix_corporal_pull_mode_token }}",
+          "CachePath": "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json",
+          "ReloadIntervalSeconds": 1800,
+          "TimeoutMilliseconds": 30000
+        }
+  when: (matrix_corporal_policy_provider_mode == "HTTP Pull Mode (API Enabled)") and (matrix_corporal_pull_mode_uri|length > 0) and (matrix_corporal_pull_mode_token|length > 0)
+
+- name: Record 'HTTP Push Mode' configuration variables in matrix_vars.yml
+  delegate_to: 127.0.0.1
+  blockinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: "# Matrix Corporal Policy Provider"
+    block: |
+      matrix_corporal_policy_provider_config: |
+        {
+          "Type": "last_seen_store_policy",
+          "CachePath": "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+        }
+  when: (matrix_corporal_policy_provider_mode == "HTTP Push Mode (API Enabled)")
+
+- name: Lower RateLimit if set to 'Normal'
+  replace:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: '      account:\n          burst_count: 3\n          per_second: 0.17'
+    replace: '      account:\n          burst_count: 50\n          per_second: 500'
+  when: matrix_corporal_raise_ratelimits == "Normal"
+
+- name: Raise RateLimit if set to 'Raised'
+  replace:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: '      account:\n          burst_count: 50\n          per_second: 500'
+    replace: '      account:\n          burst_count: 3\n          per_second: 0.17'
+  when: matrix_corporal_raise_ratelimits == "Raised"
+
