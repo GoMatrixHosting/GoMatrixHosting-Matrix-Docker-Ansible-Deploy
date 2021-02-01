@@ -73,21 +73,22 @@
       matrix_corporal_policy_provider_config: |
         {
           "Type": "static_file",
-          "Path": "matrix/awx/corporal_policy.json"
+          "Path": "etc/matrix-corporal/corporal_policy.json"
         }
   when: matrix_corporal_policy_provider_mode == "Simple Static File" 
 
 - name: Touch the corporal_policy.json file to ensure it exists
   file:
-    path: "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+    path: "/matrix/corporal/config/corporal_policy.json"
     state: touch
-    owner: root
+    owner: matrix
+    group: matrix
     mode: 600
   
 - name: Record 'Simple Static File' configuration content in corporal_policy.json
   copy:
     content: "{{ matrix_corporal_simple_static_config }}"
-    dest: "var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/corporal_policy.json"
+    dest: "/matrix/corporal/config/corporal_policy.json"
   when: matrix_corporal_policy_provider_mode == "Simple Static File" 
 
 - name: Record 'HTTP Pull Mode' configuration variables in matrix_vars.yml
@@ -101,7 +102,7 @@
           "Type": "http",
           "Uri": "{{ matrix_corporal_pull_mode_uri }}",
           "AuthorizationBearerToken": "{{ matrix_corporal_pull_mode_token }}",
-          "CachePath": "matrix/awx/corporal_policy.json",
+          "CachePath": "var/cache/matrix-corporal/corporal_policy.json",
           "ReloadIntervalSeconds": 1800,
           "TimeoutMilliseconds": 30000
         }
@@ -116,7 +117,7 @@
       matrix_corporal_policy_provider_config: |
         {
           "Type": "last_seen_store_policy",
-          "CachePath": "matrix/awx/corporal_policy.json"
+          "CachePath": "var/cache/matrix-corporal/corporal_policy.json"
         }
   when: (matrix_corporal_policy_provider_mode == "HTTP Push Mode (API Enabled)")
 
