@@ -1,22 +1,11 @@
 ---
 
-- name: create 'janitor' user if it hasn't been created yet
-  delegate_to: 127.0.0.1
-  tower_job_launch:
-    job_template: "{{ matrix_domain }} - 1 - Create User"
-    extra_vars:
-      new_username: "janitor"
-      new_password: "{{ matrix_awx_janitor_user_password }}"
-      admin_access: true
-  register: create_janitor_job
+- name: Create user account
+  command: |
+    /usr/local/bin/matrix-synapse-register-user janitor {{ matrix_awx_janitor_user_password }} 1
+  register: cmd
   when: matrix_awx_janitor_user_created|bool == false
 #  no_log: True
-  
-- name: Wait for job max 120s
-  delegate_to: 127.0.0.1
-  tower_job_wait:
-    job_id: "{{ create_janitor_job.id }}"
-    timeout: 300
     
 - name: Update AWX janitor user created variable
   delegate_to: 127.0.0.1
