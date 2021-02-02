@@ -1,0 +1,60 @@
+---
+
+- name: Install pwgen on tower with yum
+  delegate_to: 127.0.0.1
+  yum:
+    name: pwgen
+    state: latest
+
+- name: create 'janitor' user if it hasn't been created yet
+  delegate_to: 127.0.0.1
+  tower_job_launch:
+    job_template: "{{ matrix_domain }} - 1 - Create User"
+    extra_vars:
+      new_username: "janitor"
+      new_password: "{{ matrix_awx_janitor_user_password }}"
+      admin_access: true
+  register: create_janitor_job
+  when: matrix_awx_janitor_user_created|bool == false
+#  no_log: True
+  
+- name: Wait for job max 120s
+  delegate_to: 127.0.0.1
+  tower_job_wait:
+    job_id: "{{ create_janitor_job.id }}"
+    timeout: 300
+    
+- name: Generate the users password
+  delegate_to: 127.0.0.1
+  command: 'pwgen -s 20 1'
+  register: corporal_password
+#  no_log: True
+    
+- name: create 'matrix-corporal' user if it hasn't been created yet
+  delegate_to: 127.0.0.1
+  tower_job_launch:
+    job_template: "{{ matrix_domain }} - 1 - Create User"
+    extra_vars:
+      new_username: "matrix-corporal"
+      new_password: "{{ corporal_password.stdout }}"
+      admin_access: true
+  register: create_corporal_job
+  when: matrix_awx_janitor_user_created|bool == false
+#  no_log: True
+  
+- name: Wait for job max 120s
+  delegate_to: 127.0.0.1
+  tower_job_wait:
+    job_id: "{{ create_corporal_job.id }}"
+    timeout: 300
+    
+- name: Update AWX janitor user created variable
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: 'AWX Settings'
+  with_dict:
+    'matrix_awx_janitor_user_created': 'true'    
+
