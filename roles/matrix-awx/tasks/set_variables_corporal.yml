@@ -138,6 +138,14 @@
     owner: matrix
     group: matrix
     mode: 660
+
+- name: Print static config as is    
+  debug:
+    msg: "{{ matrix_corporal_simple_static_config }}"
+    
+- name: Print static config with to_nice_json
+  debug:
+    msg: "{{ matrix_corporal_simple_static_config | to_nice_json }}"
   
 - name: Record 'Simple Static File' configuration content in corporal_policy.json
   copy:
