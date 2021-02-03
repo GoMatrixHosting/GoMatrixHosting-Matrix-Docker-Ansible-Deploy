@@ -95,7 +95,7 @@
       matrix_corporal_policy_provider_config: |
         {
           "Type": "static_file",
-          "Path": "etc/matrix-corporal/corporal_policy.json"
+          "Path": "/etc/matrix-corporal/corporal_policy.json"
         }
   when: matrix_corporal_policy_provider_mode == "Simple Static File" 
 
@@ -124,7 +124,7 @@
           "Type": "http",
           "Uri": "{{ matrix_corporal_pull_mode_uri }}",
           "AuthorizationBearerToken": "{{ matrix_corporal_pull_mode_token }}",
-          "CachePath": "var/cache/matrix-corporal/corporal_policy.json",
+          "CachePath": "/var/cache/matrix-corporal/last-policy.json",
           "ReloadIntervalSeconds": 1800,
           "TimeoutMilliseconds": 30000
         }
@@ -139,7 +139,7 @@
       matrix_corporal_policy_provider_config: |
         {
           "Type": "last_seen_store_policy",
-          "CachePath": "var/cache/matrix-corporal/corporal_policy.json"
+          "CachePath": "/var/cache/matrix-corporal/last-policy.json"
         }
   when: (matrix_corporal_policy_provider_mode == "HTTP Push Mode (API Enabled)")
 

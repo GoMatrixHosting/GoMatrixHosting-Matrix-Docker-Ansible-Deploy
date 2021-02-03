@@ -15,5 +15,6 @@
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: 'AWX Settings'
   with_dict:
-    'matrix_awx_janitor_user_created': 'true'    
+    'matrix_awx_janitor_user_created': 'true'
+  when: matrix_awx_janitor_user_created|bool == false  
 
