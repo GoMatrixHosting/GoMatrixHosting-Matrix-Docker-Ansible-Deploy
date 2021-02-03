@@ -179,16 +179,16 @@
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: '    account:\n        burst_count: 3\n        per_second: 0.17\n    address:\n        burst_count: 3\n        per_second: 0.17'
-    replace: '    account:\n        burst_count: 300\n        per_second: 50\n    address:\n        burst_count: 300\n        per_second: 0.17'
+    regexp: '    account:\n        burst_count: 300\n        per_second: 50\n    address:\n        burst_count: 300\n        per_second: 0.17'
+    replace: '    account:\n        burst_count: 3\n        per_second: 0.17\n    address:\n        burst_count: 3\n        per_second: 0.17'
   when: matrix_corporal_raise_ratelimits == "Normal"
 
 - name: Raise RateLimit if set to 'Raised'
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: '    account:\n        burst_count: 300\n        per_second: 50\n    address:\n        burst_count: 300\n        per_second: 0.17'
-    replace: '    account:\n        burst_count: 3\n        per_second: 0.17\n    address:\n        burst_count: 3\n        per_second: 0.17'
+    regexp: '    account:\n        burst_count: 3\n        per_second: 0.17\n    address:\n        burst_count: 3\n        per_second: 0.17'
+    replace: '    account:\n        burst_count: 300\n        per_second: 50\n    address:\n        burst_count: 300\n        per_second: 0.17'
   when: matrix_corporal_raise_ratelimits == "Raised"
 
 - name: Copy new 'matrix_vars.yml' to target machine
