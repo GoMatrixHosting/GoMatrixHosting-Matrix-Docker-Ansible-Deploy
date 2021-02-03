@@ -188,7 +188,7 @@
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: '    address:\n        per_second: 0.17\n        burst_count: 3\n    account:\n        per_second: 0.17\n        burst_count: 3'
-    replace: '    address:\n        per_second: 50\n        burst_count: 300\n    account:\n        per_second: 0.17\n        burst_count: 300''
+    replace: '    address:\n        per_second: 50\n        burst_count: 300\n    account:\n        per_second: 0.17\n        burst_count: 300'
   when: matrix_corporal_raise_ratelimits == "Raised"
 
 - name: Copy new 'matrix_vars.yml' to target machine
