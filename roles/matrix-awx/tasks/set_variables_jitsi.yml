@@ -14,7 +14,7 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     dest: '/matrix/awx/matrix_vars.yml'
-    mode: 0644
+    mode: 0660
 
 - name: Save new 'Configure Jitsi' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
@@ -26,7 +26,7 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_jitsi.json'
     dest:  '/matrix/awx/configure_jitsi.json'
-    mode: 0644
+    mode: 0660
 
 - name: Recreate 'Configure Jitsi' job template
   delegate_to: 127.0.0.1
