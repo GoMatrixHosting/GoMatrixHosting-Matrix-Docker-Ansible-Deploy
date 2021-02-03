@@ -143,7 +143,7 @@
   copy:
     content: "{{ matrix_corporal_simple_static_config }}"
     dest: "/matrix/corporal/config/corporal-policy.json"
-  when: matrix_corporal_policy_provider_mode == "Simple Static File" 
+  when: (matrix_corporal_policy_provider_mode == "Simple Static File") and (matrix_corporal_simple_static_config|length > 0)
 
 - name: Record 'HTTP Pull Mode' configuration variables in matrix_vars.yml
   delegate_to: 127.0.0.1
