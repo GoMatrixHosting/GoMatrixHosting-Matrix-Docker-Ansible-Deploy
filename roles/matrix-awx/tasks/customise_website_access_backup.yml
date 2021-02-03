@@ -36,7 +36,9 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     dest: '/matrix/awx/matrix_vars.yml'
-    mode: 0660
+    owner: matrix
+    group: matrix
+    mode: '0660'
 
 - name: Reload vars in matrix_vars.yml
   include_vars:
@@ -52,7 +54,9 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_website_access_backup.json'
     dest:  '/matrix/awx/configure_website_access_backup.json'
-    mode: 0660
+    owner: matrix
+    group: matrix
+    mode: '0660'
 
 - name: Recreate 'Customise Base Domain Website' job template
   delegate_to: 127.0.0.1
