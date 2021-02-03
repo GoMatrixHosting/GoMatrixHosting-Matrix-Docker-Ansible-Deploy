@@ -7,7 +7,7 @@
   command: |
     /usr/local/bin/matrix-synapse-register-user janitor {{ matrix_awx_janitor_user_password }} 1
   register: cmd
-  when: not matrix_awx_janitor_user_created
+  when: not matrix_awx_janitor_user_created|bool
   no_log: True
     
 - name: Update AWX janitor user created variable
@@ -19,5 +19,5 @@
     insertafter: 'AWX Settings'
   with_dict:
     'matrix_awx_janitor_user_created': 'true'
-  when: not matrix_awx_janitor_user_created  
+  when: not matrix_awx_janitor_user_created|bool
 
