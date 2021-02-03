@@ -1,3 +1,8 @@
+- import_tasks: "{{ role_path }}/tasks/awx_post.yml"
+  when: run_setup|bool and matrix_awx_enabled|bool
+  tags:
+    - always
+
 - import_tasks: "{{ role_path }}/tasks/start.yml"
   when: run_start|bool
   tags:
@@ -16,7 +21,4 @@
   tags:
     - run-docker-prune
     
-- import_tasks: "{{ role_path }}/tasks/awx_post.yml"
-  when: run_setup|bool and matrix_awx_enabled|bool
-  tags:
-    - setup-all
+
