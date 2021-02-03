@@ -72,8 +72,6 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     dest: '/matrix/awx/matrix_vars.yml'
-    owner: matrix
-    group: matrix
     mode: '0660'
 
 - name: Save new 'Configure Synapse' survey.json to the AWX tower, template
@@ -86,8 +84,6 @@
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse.json'
     dest:  '/matrix/awx/configure_synapse.json'
-    owner: matrix
-    group: matrix
     mode: '0660'
 
 - name: Recreate 'Configure Synapse' job template
