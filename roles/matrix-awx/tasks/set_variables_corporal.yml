@@ -141,7 +141,7 @@
   
 - name: Record 'Simple Static File' configuration content in corporal_policy.json
   copy:
-    content: "{{ matrix_corporal_simple_static_config|json }}"
+    content: "{{ matrix_corporal_simple_static_config | to_nice_json }}"
     dest: "/matrix/corporal/config/corporal-policy.json"
   when: (matrix_corporal_policy_provider_mode == "Simple Static File") and (matrix_corporal_simple_static_config|length > 0)
 
