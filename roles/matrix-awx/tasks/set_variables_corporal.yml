@@ -224,8 +224,7 @@
   awx.awx.tower_job_template:
     name: "{{ matrix_domain }} - 1 - Configure Corporal"
     description: "Configure Matrix Corporal, a tool that manages your Matrix server according to a configuration policy."
-    #extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/' ~ member_id ~ '/' ~ subscription_id ~ '/extra_vars.json') }}"
+    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
     job_tags: "start,setup-corporal"
     inventory: "{{ member_id }}"
@@ -239,7 +238,5 @@
     verbosity: 1
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
     
