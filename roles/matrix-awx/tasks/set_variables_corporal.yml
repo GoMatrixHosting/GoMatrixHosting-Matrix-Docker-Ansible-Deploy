@@ -62,7 +62,7 @@
     insertafter: '# Corporal Settings'
   with_dict:
     'matrix_corporal_http_api_enabled': 'false'
-  when: matrix_corporal_policy_provider_mode == "Simple Static File"
+  when: (matrix_corporal_policy_provider_mode == "Simple Static File") or (not matrix_corporal_enabled|bool)
 
 - name: Enable Corporal API if Push/Pull mode delected
   delegate_to: 127.0.0.1
@@ -73,7 +73,7 @@
     insertafter: '# Corporal Settings'
   with_dict:
     'matrix_corporal_http_api_enabled': 'true'
-  when: matrix_corporal_policy_provider_mode != "Simple Static File"
+  when: (matrix_corporal_policy_provider_mode != "Simple Static File") and (matrix_corporal_enabled|bool)
 
 - name: Record Corporal API Access Token if it's defined
   delegate_to: 127.0.0.1
