@@ -1,7 +1,3 @@
-- import_tasks: "{{ role_path }}/tasks/awx_post.yml"
-  when: run_setup|bool and matrix_awx_enabled|bool
-  tags:
-    - always
 
 - import_tasks: "{{ role_path }}/tasks/start.yml"
   when: run_start|bool
@@ -12,6 +8,11 @@
   when: run_stop|bool
   tags:
     - stop
+    
+- import_tasks: "{{ role_path }}/tasks/awx_post.yml"
+  when: run_setup|bool and matrix_awx_enabled|bool
+  tags:
+    - always
 
 - import_tasks: "{{ role_path }}/tasks/dump_runtime_results.yml"
   tags:
