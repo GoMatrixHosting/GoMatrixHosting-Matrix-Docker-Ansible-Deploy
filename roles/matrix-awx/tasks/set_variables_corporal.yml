@@ -211,6 +211,18 @@
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_corporal.json'
     dest: '/matrix/awx/configure_corporal.json'
     mode: '0660'
+    
+- debug:
+    msg: "matrix_corporal_matrix_homeserver_api_endpoint: {{ matrix_corporal_matrix_homeserver_api_endpoint }}"
+    
+- debug:
+    msg: "matrix_corporal_matrix_auth_shared_secret: {{ matrix_corporal_matrix_auth_shared_secret }}"
+
+- debug:
+    msg: "matrix_corporal_http_gateway_internal_rest_auth_enabled: {{ matrix_corporal_http_gateway_internal_rest_auth_enabled }}"
+   
+- debug:
+    msg: "matrix_corporal_matrix_registration_shared_secret: {{ matrix_corporal_matrix_registration_shared_secret }}"
 
 - name: Collect AWX admin token the hard way!
   delegate_to: 127.0.0.1
