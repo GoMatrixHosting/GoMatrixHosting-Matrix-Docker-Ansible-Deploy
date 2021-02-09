@@ -14,6 +14,10 @@
     'matrix_client_element_registration_enabled': '{{ matrix_client_element_registration_enabled }}'
     'matrix_server_fqn_element': "{{ element_subdomain }}.{{ matrix_domain }}"
 
+- name: Set fact for 'https' string
+  set_fact:
+    https_string: "https"
+
 - name: Record Element-Web Background variable locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
@@ -23,7 +27,7 @@
     insertafter: '# Element Settings'
   with_dict:
     'matrix_client_element_branding_welcomeBackgroundUrl': '{{ matrix_client_element_branding_welcomeBackgroundUrl }}'
-  when: (https in matrix_client_element_branding_welcomeBackgroundUrl) and ( matrix_client_element_branding_welcomeBackgroundUrl|length > 0 )
+  when: (https_string in matrix_client_element_branding_welcomeBackgroundUrl) and ( matrix_client_element_branding_welcomeBackgroundUrl|length > 0 )
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
