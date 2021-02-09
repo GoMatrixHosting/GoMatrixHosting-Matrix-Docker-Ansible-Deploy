@@ -51,6 +51,31 @@
   set_fact: matrix_synapse_auto_join_rooms_raw=""
   when: (matrix_synapse_auto_join_rooms_raw is not defined) or (matrix_synapse_auto_join_rooms_raw|length == 0)
 
+- name: Record registations_require_3pid extra variable if true
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.line }}"
+    insertbefore: '# End Synapse Extension'
+  with_items:
+    '  registrations_require_3pid:'
+    '    - email'
+  when: ext_registrations_require_3pid|bool
+
+- name: Remove registrations_require_3pid extra variable if false
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.line }}"
+    insertbefore: '# End Synapse Extension'
+    state: absent
+  with_items:
+    '  registrations_require_3pid:'
+    '    - email'
+  when: not ext_registrations_require_3pid|bool
+
 - name: Set ext_recaptcha_public_key to a 'public-key' if undefined
   set_fact: ext_recaptcha_public_key="public-key"
   when: (ext_recaptcha_public_key is not defined) or (ext_recaptcha_public_key|length == 0)

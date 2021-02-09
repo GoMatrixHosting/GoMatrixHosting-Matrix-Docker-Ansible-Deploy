@@ -87,6 +87,18 @@
       "type": "multiplechoice"
     },
     {
+      "question_name": "Registration Requires Email",
+      "question_description": "Controls whether an email address is required to register on the server.",
+      "required": false,
+      "min": null,
+      "max": null,
+      "default": "{{ ext_registrations_require_3pid|string|lower }}",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "ext_registrations_require_3pid",
+      "type": "multiplechoice"
+    },
+    {
       "question_name": "Registration Shared Secret",
       "question_description": "A secret that allows registration of standard or admin accounts by anyone who has the shared secret, even if registration is otherwise disabled.",
       "required": false,
@@ -111,7 +123,7 @@
       "type": "text"
     },
     {
-      "question_name": "Synapse Auto-Join Room",
+      "question_name": "Synapse Auto-Join Rooms",
       "question_description": "Sets the 'auto-join' rooms, where new users will be automatically invited to, these rooms must already exist. Entries must be divided with commas, for example: #announcements:example.org,#main:example.org",
       "required": false,
       "min": 0,
