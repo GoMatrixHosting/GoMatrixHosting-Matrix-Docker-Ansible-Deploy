@@ -24,6 +24,9 @@
     'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
+    'matrix_synapse_url_preview_enabled': '{{ matrix_synapse_url_preview_enabled }}'
+    'matrix_synapse_allow_guest_access': '{{ matrix_synapse_allow_guest_access }}'
+    'matrix_synapse_registration_shared_secret': '{{ matrix_synapse_registration_shared_secret }}'
 
 - name: Remove Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's blank
   delegate_to: 127.0.0.1
