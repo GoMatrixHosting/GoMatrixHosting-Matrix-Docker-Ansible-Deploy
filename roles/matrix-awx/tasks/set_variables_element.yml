@@ -15,6 +15,17 @@
     'matrix_client_element_registration_enabled': '{{ matrix_client_element_registration_enabled }}'
     'matrix_server_fqn_element': "{{ element_subdomain }}.{{ matrix_domain }}"
 
+- name: Record Element-Web Background variable locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Element Settings'
+  with_dict:
+    'matrix_client_element_branding_welcomeBackgroundUrl': '{{ matrix_client_element_branding_welcomeBackgroundUrl }}'
+  when: (https in matrix_client_element_branding_welcomeBackgroundUrl) and ( matrix_client_element_branding_welcomeBackgroundUrl|length > 0 )
+
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
