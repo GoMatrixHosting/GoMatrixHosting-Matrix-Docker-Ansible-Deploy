@@ -50,6 +50,17 @@
 - name: Set matrix_synapse_auto_join_rooms_raw to a empty string if undefined
   set_fact: matrix_synapse_auto_join_rooms_raw=""
   when: (matrix_synapse_auto_join_rooms_raw is not defined) or (matrix_synapse_auto_join_rooms_raw|length == 0)
+  
+- name: Record Synapse Shared Secret if it's defined
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Settings'
+  with_dict:
+    'matrix_synapse_registration_shared_secret': '{{ matrix_synapse_registration_shared_secret }}'
+  when: matrix_synapse_registration_shared_secret|length > 0
 
 - name: Record registations_require_3pid extra variable if true
   delegate_to: 127.0.0.1
