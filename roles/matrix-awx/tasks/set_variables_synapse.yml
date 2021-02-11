@@ -70,8 +70,8 @@
     line: "{{ item }}"
     insertbefore: '# End Synapse Extension'
   with_items:
-    "  registrations_require_3pid:"
-    "    - email"
+    - "  registrations_require_3pid:"
+    - "    - email"
   when: ext_registrations_require_3pid|bool
 
 - name: Remove registrations_require_3pid extra variable if false
@@ -83,8 +83,8 @@
     insertbefore: '# End Synapse Extension'
     state: absent
   with_items:
-    "  registrations_require_3pid:"
-    "    - email"
+    - "  registrations_require_3pid:"
+    - "    - email"
   when: not ext_registrations_require_3pid|bool
 
 - name: Set Federation Whitelisting 1
