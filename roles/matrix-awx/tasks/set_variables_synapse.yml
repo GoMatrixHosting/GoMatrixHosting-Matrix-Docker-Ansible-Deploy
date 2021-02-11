@@ -1,15 +1,4 @@
 
-- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 1
-  shell: |
-    echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | sed "s/,/\',\'/g"
-  register: parsed_auto_join_rooms_output
-  when: (matrix_synapse_auto_join_rooms_raw is defined) and (matrix_synapse_auto_join_rooms_raw|length > 0)
-
-- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 2
-  set_fact:
-    matrix_synapse_auto_join_rooms: '{{ parsed_auto_join_rooms_output.stdout }}'
-  when: (matrix_synapse_auto_join_rooms_raw is defined) and (matrix_synapse_auto_join_rooms_raw|length > 0)
-
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
@@ -26,8 +15,18 @@
     'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
     'matrix_synapse_url_preview_enabled': '{{ matrix_synapse_url_preview_enabled }}'
     'matrix_synapse_allow_guest_access': '{{ matrix_synapse_allow_guest_access }}'
-    'matrix_synapse_registration_shared_secret': '{{ matrix_synapse_registration_shared_secret }}'
 
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 1
+  shell: |
+    echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | sed "s/,/\',\'/g"
+  register: parsed_auto_join_rooms_output
+  when: (matrix_synapse_auto_join_rooms_raw is defined) and (matrix_synapse_auto_join_rooms_raw|length > 0)
+
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 2
+  set_fact:
+    matrix_synapse_auto_join_rooms: '{{ parsed_auto_join_rooms_output.stdout }}'
+  when: (matrix_synapse_auto_join_rooms_raw is defined) and (matrix_synapse_auto_join_rooms_raw|length > 0)
+  
 - name: Remove Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's blank
   delegate_to: 127.0.0.1
   lineinfile:
@@ -50,7 +49,7 @@
 - name: Set matrix_synapse_auto_join_rooms_raw to a empty string if undefined
   set_fact: matrix_synapse_auto_join_rooms_raw=""
   when: (matrix_synapse_auto_join_rooms_raw is not defined) or (matrix_synapse_auto_join_rooms_raw|length == 0)
-  
+
 - name: Record Synapse Shared Secret if it's defined
   delegate_to: 127.0.0.1
   lineinfile:
