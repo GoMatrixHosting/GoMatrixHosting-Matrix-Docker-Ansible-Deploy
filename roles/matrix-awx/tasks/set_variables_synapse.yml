@@ -55,8 +55,8 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "^#? *{{ item.key | regex_escape() }}:"
-    line: "{{ item.line }}"
+    regexp: "{{ item }}:"
+    line: "{{ item }}"
     insertbefore: '# End Synapse Extension'
   with_items:
     '  registrations_require_3pid:'
@@ -67,14 +67,51 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "^#? *{{ item.key | regex_escape() }}:"
-    line: "{{ item.line }}"
+    regexp: "{{ item }}:"
+    line: "{{ item }}"
     insertbefore: '# End Synapse Extension'
     state: absent
   with_items:
     '  registrations_require_3pid:'
     '    - email'
   when: not ext_registrations_require_3pid|bool
+
+- name: Set Federation Whitelisting 1
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    line: "  federation_domain_whitelist:"
+    insertafter: 'matrix_synapse_configuration_extension_yaml: |'
+  when: ext_federation_whitelist_raw|length > 0
+
+- name: Set Federation Whitelisting 2
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "    - {{ item.key }}"
+    line: "    - {{ item.key }}"
+    insertafter: '  federation_domain_whitelist:'
+  with_items: "{{ ext_federation_whitelist_raw.splitlines() }}"
+  when: ext_federation_whitelist_raw|length > 0
+
+- name: Remove Federation Whitelisting 1
+  delegate_to: 127.0.0.1
+  replace:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "/^    - [a-z0-9.]+$/gm"
+    after: '  federation_domain_whitelist:'
+    before: '# End Synapse Extension'
+  when: ext_federation_whitelist_raw|length == 0
+before
+
+- name: Remove Federation Whitelisting 2
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    line: "  federation_domain_whitelist:"
+    insertafter: 'matrix_synapse_configuration_extension_yaml: |'
+    state: absent
+  when: ext_federation_whitelist_raw|length == 0
 
 - name: Set ext_recaptcha_public_key to a 'public-key' if undefined
   set_fact: ext_recaptcha_public_key="public-key"
