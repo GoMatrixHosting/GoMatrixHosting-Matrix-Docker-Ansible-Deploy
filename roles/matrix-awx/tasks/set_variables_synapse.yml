@@ -102,7 +102,6 @@
     after: '  federation_domain_whitelist:'
     before: '# End Synapse Extension'
   when: ext_federation_whitelist_raw|length == 0
-before
 
 - name: Remove Federation Whitelisting 2
   delegate_to: 127.0.0.1
