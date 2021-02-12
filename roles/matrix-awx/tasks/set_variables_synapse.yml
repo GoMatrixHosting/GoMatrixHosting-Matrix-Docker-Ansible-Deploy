@@ -87,7 +87,7 @@
 
 - name: Set URL languages array if raw inputs not empty
   set_fact:
-    ext_url_preview_accept_language_default: "['en']"
+    ext_url_preview_accept_language_default: 'en'
   when: ext_url_preview_accept_language_raw|length == 0
 
 - name: Set URL languages array if raw inputs not empty
