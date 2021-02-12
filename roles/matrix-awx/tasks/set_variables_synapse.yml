@@ -37,7 +37,7 @@
 
 - name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 1
   shell: |
-    echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | tr '\n' '\',\''"
+    echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | tr '\n' '\',\''
   register: parsed_auto_join_rooms_output
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
