@@ -82,7 +82,7 @@
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     line: "  federation_domain_whitelist:"
-    insertafter: '^matrix_synapse_configuration_extension_yaml: |'
+    insertafter: '/^matrix_synapse_configuration_extension_yaml: \|$/m'
   when: ext_federation_whitelist_raw|length > 0
 
 - name: Set Federation Whitelisting 2
@@ -91,7 +91,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     #regexp: "^    - {{ item }}"
     line: "    - {{ item }}"
-    insertafter: '^  federation_domain_whitelist:'
+    insertafter: '/^  federation_domain_whitelist:$/m'
   with_items: "{{ ext_federation_whitelist_raw.splitlines() }}"
   when: ext_federation_whitelist_raw|length > 0
 
@@ -99,7 +99,7 @@
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "/^    - [a-z0-9.]+$/gm"
+    regexp: "/^    - [a-z0-9.]+$/m"
     after: '  federation_domain_whitelist:'
     before: '# End Synapse Extension'
   when: ext_federation_whitelist_raw|length == 0
@@ -109,7 +109,7 @@
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     line: "  federation_domain_whitelist:"
-    insertafter: '^matrix_synapse_configuration_extension_yaml: |'
+    insertafter: '/^matrix_synapse_configuration_extension_yaml: \|$/m'
     state: absent
   when: ext_federation_whitelist_raw|length == 0
 
