@@ -37,7 +37,7 @@
 
 - name: If the raw inputs is not empty start constructing parsed auto_join_rooms list
   set_fact:
-    matrix_synapse_auto_join_rooms: "['{{ matrix_synapse_auto_join_rooms_raw | regex_replace('(?m)\\n', '\\',\\'') }}']"
+    matrix_synapse_auto_join_rooms: "['{{ matrix_synapse_auto_join_rooms_raw | regex_replace('(?m)\n', '\',\'') }}']"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
 - debug:
