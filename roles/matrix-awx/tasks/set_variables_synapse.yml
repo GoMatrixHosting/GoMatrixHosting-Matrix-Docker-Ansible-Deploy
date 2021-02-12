@@ -85,7 +85,7 @@
     after: '  url_preview_accept_language:'
     before: '# End Synapse Extension'
 
-- name: Set URL languages array if raw inputs not empty
+- name: Set URL languages array if raw inputs empty
   set_fact:
     ext_url_preview_accept_language_default: 'en'
   when: ext_url_preview_accept_language_raw|length == 0
@@ -95,7 +95,15 @@
     ext_url_preview_accept_language_default: "{{ ext_url_preview_accept_language_raw }}"
   when: ext_url_preview_accept_language_raw|length > 0
 
-- name: Set URL languages
+- name: Set URL languages if raw inputs empty
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: '^  url_preview_accept_language:'
+    line: "    - {{ ext_url_preview_accept_language_default }}"
+  when: ext_url_preview_accept_language_raw|length == 0
+
+- name: Set URL languages if raw inputs not empty
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
