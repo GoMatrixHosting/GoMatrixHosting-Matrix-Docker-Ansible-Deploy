@@ -89,6 +89,26 @@
     - "    - email"
   when: not ext_registrations_require_3pid|bool
 
+# should make whitelist removing mandatory
+
+- name: Remove Federation Whitelisting 1
+  delegate_to: 127.0.0.1
+  replace:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: '^    - [a-z0-9]+\.[a-z0-9.]+\n'
+    after: '  federation_domain_whitelist:'
+    before: '# End Synapse Extension'
+#  when: ext_federation_whitelist_raw|length == 0
+
+- name: Remove Federation Whitelisting 2
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: '^matrix_synapse_configuration_extension_yaml: \|'
+    line: "  federation_domain_whitelist:"
+    state: absent
+#  when: ext_federation_whitelist_raw|length == 0
+
 - name: Set Federation Whitelisting 1
   delegate_to: 127.0.0.1
   lineinfile:
@@ -105,25 +125,6 @@
     line: "    - {{ item }}"
   with_items: "{{ ext_federation_whitelist_raw.splitlines() }}"
   when: ext_federation_whitelist_raw|length > 0
-
-- name: Remove Federation Whitelisting 1
-  delegate_to: 127.0.0.1
-  replace:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "^    - [a-z0-9]+.[a-z0-9.]+"
-    #regexp: "^    - [a-z0-9]+\.[a-z0-9.]+"
-    after: '  federation_domain_whitelist:'
-    before: '# End Synapse Extension'
-  when: ext_federation_whitelist_raw|length == 0
-
-- name: Remove Federation Whitelisting 2
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertafter: '^matrix_synapse_configuration_extension_yaml: \|'
-    line: "  federation_domain_whitelist:"
-    state: absent
-  when: ext_federation_whitelist_raw|length == 0
 
 - name: Set ext_recaptcha_public_key to a 'public-key' if undefined
   set_fact: ext_recaptcha_public_key="public-key"
