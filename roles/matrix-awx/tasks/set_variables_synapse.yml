@@ -35,9 +35,15 @@
     state: absent
   when: matrix_synapse_auto_join_rooms_raw|length == 0
 
+- name: Set matrix_synapse_auto_join_rooms if matrix_synapse_auto_join_rooms_raw is not empty part 1
+  shell: |
+    echo "['{{ matrix_synapse_auto_join_rooms_raw }}']" | sed "s/\n/\',\'/g"
+  register: parsed_auto_join_rooms_output
+  when: matrix_synapse_auto_join_rooms_raw|length > 0
+
 - name: If the raw inputs is not empty start constructing parsed auto_join_rooms list
   set_fact:
-    matrix_synapse_auto_join_rooms: "['{{ matrix_synapse_auto_join_rooms_raw | regex_replace('\n', '\',\'') }}']"
+    matrix_synapse_auto_join_rooms: "{{ parsed_auto_join_rooms_output.stdout }}"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
 - debug:
