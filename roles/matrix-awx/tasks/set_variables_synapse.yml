@@ -32,15 +32,15 @@
 
 - name: If the raw inputs is not empty start constructing parsed auto_join_rooms list
   set_fact:
-    matrix_synapse_auto_join_rooms: |-
+    matrix_synapse_auto_join_rooms_string: |-
       {{ matrix_synapse_auto_join_rooms_raw.splitlines() | to_json }}
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
-- debug:
-    msg: "{{ matrix_synapse_auto_join_rooms_raw }}"
+#- debug:
+#    msg: "{{ matrix_synapse_auto_join_rooms_raw }}"
     
-- debug:
-    msg: "{{ matrix_synapse_auto_join_rooms }}"
+#- debug:
+#    msg: "{{ matrix_synapse_auto_join_rooms }}"
 
 - name: Record Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's not blank
   delegate_to: 127.0.0.1
@@ -50,7 +50,7 @@
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Synapse Settings'
   with_dict:
-    "matrix_synapse_auto_join_rooms": "{{ matrix_synapse_auto_join_rooms }}"
+    "matrix_synapse_auto_join_rooms": "{{ matrix_synapse_auto_join_rooms_string }}"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
 - name: Record Synapse Shared Secret if it's defined
