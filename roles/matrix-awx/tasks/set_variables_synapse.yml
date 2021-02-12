@@ -24,11 +24,23 @@
     state: absent
   when: matrix_synapse_auto_join_rooms_raw|length == 0
 
+#- name: If the raw inputs is not empty start constructing parsed auto_join_rooms list
+#  set_fact:
+#    matrix_synapse_auto_join_rooms: |-
+#      ['{{ matrix_synapse_auto_join_rooms_raw.splitlines() | join("','") }}']
+#  when: matrix_synapse_auto_join_rooms_raw|length > 0
+
 - name: If the raw inputs is not empty start constructing parsed auto_join_rooms list
   set_fact:
     matrix_synapse_auto_join_rooms: |-
-      ['{{ matrix_synapse_auto_join_rooms_raw.splitlines() | join("','") }}']
+      ['{{ matrix_synapse_auto_join_rooms_raw.splitlines() | to_json }}']
   when: matrix_synapse_auto_join_rooms_raw|length > 0
+
+- debug:
+    msg: "{{ matrix_synapse_auto_join_rooms_raw }}"
+    
+- debug:
+    msg: "{{ matrix_synapse_auto_join_rooms }}"
 
 - name: Record Synapse variable 'matrix_synapse_auto_join_rooms' locally on AWX, if it's not blank
   delegate_to: 127.0.0.1
@@ -98,7 +110,7 @@
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "^    - [a-z0-9]+.[a-z0-9.]+"
+    regexp: "^    - [a-z0-9]+\.[a-z0-9.]+"
     after: '  federation_domain_whitelist:'
     before: '# End Synapse Extension'
   when: ext_federation_whitelist_raw|length == 0
