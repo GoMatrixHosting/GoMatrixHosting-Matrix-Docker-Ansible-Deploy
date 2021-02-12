@@ -124,7 +124,7 @@
     },
     {
       "question_name": "Federation Whitelist",
-      "question_description": "Here you can list the URLs of other Matrix homeservers and Synapse will only federate with those homeservers. Entries must be seperated with new lines and must not have a 'https://' prefix. For example: 'matrix.perthchat.org'",
+      "question_description": "Here you can list the URLs of other Matrix homeservers and Synapse will only federate with those homeservers. Entries must be seperated with newlines and must not have a 'https://' prefix. For example: 'matrix.perthchat.org'",
       "required": false,
       "min": 0,
       "max": 65536,
@@ -136,15 +136,15 @@
     },  
     {
       "question_name": "Synapse Auto-Join Rooms",
-      "question_description": "Sets the 'auto-join' rooms, where new users will be automatically invited to, these rooms must already exist. Entries must be divided with commas, for example: #announcements:example.org,#main:example.org",
+      "question_description": "Sets the 'auto-join' rooms, where new users will be automatically invited to, these rooms must already exist. Entries must be room addresses that are seperated with newlines. For example: '#announcements:example.org'",
       "required": false,
       "min": 0,
-      "max": 4096,
-      "default": "{{ matrix_synapse_auto_join_rooms }}",
+      "max": 65536,
+      "default": "{{ matrix_synapse_auto_join_rooms_raw }}",
       "choices": "",
       "new_question": true,
       "variable": "matrix_synapse_auto_join_rooms_raw",
-      "type": "text"
+      "type": "textarea"
     },
     {
       "question_name": "Enable ReCaptcha on Registration",
