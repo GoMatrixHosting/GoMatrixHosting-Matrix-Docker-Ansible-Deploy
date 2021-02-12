@@ -85,12 +85,12 @@
     after: '  url_preview_accept_language:'
     before: '# End Synapse Extension'
 
-- name: Set URL languages array if raw inputs empty
+- name: Set URL languages default if raw inputs empty
   set_fact:
     ext_url_preview_accept_language_default: 'en'
   when: ext_url_preview_accept_language_raw|length == 0
 
-- name: Set URL languages array if raw inputs not empty
+- name: Set URL languages default if raw inputs not empty
   set_fact:
     ext_url_preview_accept_language_default: "{{ ext_url_preview_accept_language_raw }}"
   when: ext_url_preview_accept_language_raw|length > 0
