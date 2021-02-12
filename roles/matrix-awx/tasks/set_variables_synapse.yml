@@ -110,7 +110,8 @@
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: "^    - [a-z0-9]+\.[a-z0-9.]+"
+    regexp: "^    - [a-z0-9]+.[a-z0-9.]+"
+    #regexp: "^    - [a-z0-9]+\.[a-z0-9.]+"
     after: '  federation_domain_whitelist:'
     before: '# End Synapse Extension'
   when: ext_federation_whitelist_raw|length == 0
