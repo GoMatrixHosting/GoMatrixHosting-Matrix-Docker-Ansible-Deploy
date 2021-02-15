@@ -46,7 +46,7 @@
 
 - name: debug ma1sd config parsing 2
   debug:
-    msg: "{{ ext_matrix_ma1sd_configuration_extension_yaml | reject('search', '^matrix_client_element_configuration_extension_json:') }}"
+    msg: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
 
 - name: Strip header from ma1sd configuration extension if using internal auth
   set_fact:
