@@ -32,36 +32,18 @@
     'matrix_synapse_ext_password_provider_rest_auth_endpoint': 'http://matrix-ma1sd:8090'
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
-- name: Enable REST auth if using external LDAP/AD with ma1sd
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    line: "matrix_ma1sd_configuration_extension_yaml: |"
-    insertbefore: '# Jitsi Settings'
-  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
-
 - name: Strip header from ma1sd configuration extension if using internal auth
   set_fact:
     ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
-- name: Set ma1sd configuration extension
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertbefore: '# Jitsi Settings'
-    line: "{{ item }}"
-  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
-  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
-
-- name: Remove ma1sd configuration extension if using internal auth
+- name: Remove ma1sd configuration extension
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: '^.*\n'
     after: '^matrix_ma1sd_configuration_extension_yaml:'
     before: '# Jitsi Settings'
-  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
 
 - name: Remove ma1sd configuration extension header if using internal auth
   delegate_to: 127.0.0.1
@@ -70,6 +52,23 @@
     regexp: '^matrix_ma1sd_configuration_extension_yaml:'
     state: absent
   when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
+  
+- name: Insert ma1sd configuration extension header if using external LDAP/AD with ma1sd
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    line: "matrix_ma1sd_configuration_extension_yaml: |"
+    insertbefore: '# Jitsi Settings'
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+
+- name: Set ma1sd configuration extension if using external LDAP/AD with ma1sd
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertbefore: '# Jitsi Settings'
+    line: "{{ item }}"
+  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: Record ma1sd Custom variables locally on AWX
   delegate_to: 127.0.0.1
@@ -80,6 +79,7 @@
     insertbefore: '# Custom Settings'
   with_dict:
     'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'
+    'ext_matrix_ma1sd_auth_store': '{{ ext_matrix_ma1sd_auth_store }}'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
