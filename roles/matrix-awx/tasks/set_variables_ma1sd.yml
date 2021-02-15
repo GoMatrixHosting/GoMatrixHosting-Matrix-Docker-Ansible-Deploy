@@ -40,13 +40,18 @@
     insertafter: '# ma1sd Settings'
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
+- name: Strip header from ma1sd configuration extension if using internal auth
+  set_fact:
+    ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ ext_matrix_ma1sd_configuration_extension_yaml | reject('search', 'matrix_client_element_configuration_extension_json: |') | list }}"
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+
 - name: Set ma1sd configuration extension
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertafter: '^matrix_ma1sd_configuration_extension_yaml:'
-    line: "  {{ item }}"
-  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() }}"
+    line: "{{ item }}"
+  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed.splitlines() }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: Remove ma1sd configuration extension if using internal auth
@@ -65,6 +70,16 @@
     regexp: '^matrix_ma1sd_configuration_extension_yaml:'
     state: absent
   when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
+
+- name: Record ma1sd Custom variables locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertbefore: '# Custom Settings'
+  with_dict:
+    'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
