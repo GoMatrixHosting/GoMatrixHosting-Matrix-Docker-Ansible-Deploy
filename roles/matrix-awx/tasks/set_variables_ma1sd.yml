@@ -37,36 +37,36 @@
     ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
-- name: Remove ma1sd configuration extension
+- name: Remove entire ma1sd configuration extension
   delegate_to: 127.0.0.1
   replace:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: '^.*\n'
-    after: 'matrix_ma1sd_configuration_extension_yaml: |'
-    before: '# Jitsi Settings'
+    after: '# Start ma1sd Extension'
+    before: '# End ma1sd Extension'
 
-- name: Remove ma1sd configuration extension header if using internal auth
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    regexp: '^matrix_ma1sd_configuration_extension_yaml:'
-    state: absent
-  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
+#- name: Remove ma1sd configuration extension header if using internal auth
+#  delegate_to: 127.0.0.1
+#  lineinfile:
+#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+#    regexp: '^matrix_ma1sd_configuration_extension_yaml:'
+#    state: absent
+#  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
   
 - name: Insert ma1sd configuration extension header if using external LDAP/AD with ma1sd
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     line: "matrix_ma1sd_configuration_extension_yaml: |"
-    insertbefore: '# Jitsi Settings'
+    insertafter: '# Start ma1sd Extension'
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: Set ma1sd configuration extension if using external LDAP/AD with ma1sd
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertbefore: '# Jitsi Settings'
-    line: "{{ item }}"
+    insertbefore: '# End ma1sd Extension'
+    line: '{{ item }}'
   with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
