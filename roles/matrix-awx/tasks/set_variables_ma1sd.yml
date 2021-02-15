@@ -50,7 +50,7 @@
 
 - name: Strip header from ma1sd configuration extension if using internal auth
   set_fact:
-    ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ (ext_matrix_ma1sd_configuration_extension_yaml | reject('search', '^matrix_client_element_configuration_extension_json:')).splitlines }}"
+    ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ (ext_matrix_ma1sd_configuration_extension_yaml | reject('search', '^matrix_client_element_configuration_extension_json:')).splitlines() }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: Set ma1sd configuration extension
