@@ -41,10 +41,10 @@
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: debug ma1sd config parsing 1
-  debug: {{ ext_matrix_ma1sd_configuration_extension_yaml }}
+  debug: "{{ ext_matrix_ma1sd_configuration_extension_yaml }}"
 
 - name: debug ma1sd config parsing 2
-  debug: {{ ext_matrix_ma1sd_configuration_extension_yaml | reject('search', '^matrix_client_element_configuration_extension_json:') }}
+  debug: "{{ ext_matrix_ma1sd_configuration_extension_yaml | reject('search', '^matrix_client_element_configuration_extension_json:') }}"
 
 - name: Strip header from ma1sd configuration extension if using internal auth
   set_fact:
@@ -132,4 +132,3 @@
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-    
