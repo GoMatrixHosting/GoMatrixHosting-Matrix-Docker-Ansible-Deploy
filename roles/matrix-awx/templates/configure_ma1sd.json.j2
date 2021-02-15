@@ -32,7 +32,7 @@
       "required": false,
       "min": 0,
       "max": 65536,
-      "default": "{{ ext_matrix_ma1sd_configuration_extension_yaml | to_json }}",
+      "default": {{ ext_matrix_ma1sd_configuration_extension_yaml | to_json }},
       "new_question": true,
       "variable": "ext_matrix_ma1sd_configuration_extension_yaml",
       "type": "textarea"
