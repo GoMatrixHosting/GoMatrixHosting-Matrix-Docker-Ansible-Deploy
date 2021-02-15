@@ -40,14 +40,6 @@
     insertbefore: '# Jitsi Settings'
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
-- name: debug ma1sd config parsing 1
-  debug:
-    msg: "{{ ext_matrix_ma1sd_configuration_extension_yaml }}"
-
-- name: debug ma1sd config parsing 2
-  debug:
-    msg: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
-
 - name: Strip header from ma1sd configuration extension if using internal auth
   set_fact:
     ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
@@ -57,7 +49,7 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertafter: '^matrix_ma1sd_configuration_extension_yaml:'
+    insertbefore: '# Jitsi Settings'
     line: "{{ item }}"
   with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
