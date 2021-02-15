@@ -1,13 +1,70 @@
 
-- name: Record Ma1sd variables locally on AWX
+- name: Record ma1sd variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Ma1sd Settings'
+    insertafter: '# ma1sd Settings'
   with_dict:
     'matrix_ma1sd_enabled': '{{ matrix_ma1sd_enabled }}'
+
+- name: Disable REST auth (matrix-corporal/ma1sd) if using internal auth
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Extension'
+  with_dict:
+    'matrix_synapse_ext_password_provider_rest_auth_enabled': 'false'
+  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
+
+- name: Enable REST auth if using external LDAP/AD with ma1sd
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^#? *{{ item.key | regex_escape() }}:"
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: '# Synapse Extension'
+  with_dict:
+    'matrix_synapse_ext_password_provider_rest_auth_enabled': 'true'
+    'matrix_synapse_ext_password_provider_rest_auth_endpoint': 'http://matrix-ma1sd:8090'
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+
+- name: Enable REST auth if using external LDAP/AD with ma1sd
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    line: "matrix_ma1sd_configuration_extension_yaml: |"
+    insertafter: '# ma1sd Settings'
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+
+- name: Set ma1sd configuration extension
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertafter: '^matrix_ma1sd_configuration_extension_yaml:'
+    line: "  {{ item }}"
+  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() }}"
+  when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+
+- name: Remove ma1sd configuration extension if using internal auth
+  delegate_to: 127.0.0.1
+  replace:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: '^  .*\n'
+    after: '^matrix_ma1sd_configuration_extension_yaml:'
+    before: '# Jitsi Settings'
+  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
+
+- name: Remove ma1sd configuration extension header if using internal auth
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: '^matrix_ma1sd_configuration_extension_yaml:'
+    state: absent
+  when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
@@ -15,13 +72,13 @@
     dest: '/matrix/awx/matrix_vars.yml'
     mode: '0660'
 
-- name: Save new 'Configure Ma1sd' survey.json to the AWX tower, template
+- name: Save new 'Configure ma1sd' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
     src: 'roles/matrix-awx/templates/configure_ma1sd.json.j2'
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_ma1sd.json'
 
-- name: Copy new 'Configure Ma1sd' survey.json to target machine
+- name: Copy new 'Configure ma1sd' survey.json to target machine
   copy:
     src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_ma1sd.json'
     dest:  '/matrix/awx/configure_ma1sd.json'
@@ -34,10 +91,10 @@
   register: tower_token
   no_log: True
 
-- name: Recreate 'Configure Ma1sd' job template
+- name: Recreate 'Configure ma1sd' job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure Ma1sd"
+    name: "{{ matrix_domain }} - 1 - Configure ma1sd"
     description: "Configure Jitsi conferencing settings."
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
