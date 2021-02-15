@@ -85,8 +85,8 @@
     line: "{{ item.key }}: {{ item.value }}"
     insertbefore: '# Custom Settings'
   with_dict:
-    'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'
     'ext_matrix_ma1sd_auth_store': '{{ ext_matrix_ma1sd_auth_store }}'
+    'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
