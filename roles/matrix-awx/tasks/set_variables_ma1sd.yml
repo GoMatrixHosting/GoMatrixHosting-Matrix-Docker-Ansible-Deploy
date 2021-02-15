@@ -51,7 +51,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertafter: '^matrix_ma1sd_configuration_extension_yaml:'
     line: "{{ item }}"
-  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed.splitlines() }}"
+  with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
 
 - name: Remove ma1sd configuration extension if using internal auth
