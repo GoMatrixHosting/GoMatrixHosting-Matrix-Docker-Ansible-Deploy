@@ -1,0 +1,42 @@
+
+- name: Print CPU usage statistics
+  shell: iostat -c
+  register: cpu_usage_stat
+
+- debug:
+    msg: "{{ cpu_usage_stat.stdout }}"
+
+- name: Print RAM usage statistics
+  shell: free -mh
+  register: ram_usage_stat
+
+- debug:
+    msg: "{{ ram_usage_stat.stdout }}"
+
+- name: Print free disk space
+  shell: df -h
+  register: disk_space_stat
+
+- debug:
+    msg: "{{ disk_space_stat.stdout }}"
+
+- name: Print size of Synapse database
+  shell: du -sh /matrix/postgres/data
+  register: db_size_stat
+
+- debug:
+    msg: "{{ db_size_stat.stdout }}"
+
+- name: Print size of local media repository
+  shell: du -sh /matrix/synapse/storage/media-store/local*
+  register: local_media_size_stat
+
+- debug:
+    msg: "{{ local_media_size_stat.stdout }}"
+
+- name: Print size of remote media repository
+  shell: du -sh /matrix/synapse/storage/media-store/remote*
+  register: remote_media_size_stat
+
+- debug:
+    msg: "{{ remote_media_size_stat.stdout }}"

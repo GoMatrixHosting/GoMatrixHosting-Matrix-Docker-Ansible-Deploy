@@ -10,6 +10,12 @@
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - create-user
+    
+# Perform extra self-check functions
+- import_tasks: "{{ role_path }}/tasks/self_check.yml"
+  when: run_setup|bool and matrix_awx_enabled|bool
+  tags:
+    - self-check
 
 # Import configs, media repo from /chroot/backup import
 - import_tasks: "{{ role_path }}/tasks/import_awx.yml"
