@@ -105,10 +105,10 @@
   register: tower_token
   no_log: True
 
-- name: Recreate 'Configure ma1sd' job template
+- name: Recreate 'Configure ma1sd (Advanced)' job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure ma1sd"
+    name: "{{ matrix_domain }} - 1 - Configure ma1sd (Advanced)"
     description: "Configure Jitsi conferencing settings."
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
@@ -127,4 +127,6 @@
     validate_certs: yes
   tags:
     - always
+    
+# ^ This playbook isn't executing so the survey isn't being updated! :P
 

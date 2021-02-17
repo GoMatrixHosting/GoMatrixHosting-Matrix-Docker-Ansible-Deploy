@@ -231,10 +231,10 @@
   register: tower_token
   no_log: True
 
-- name: Recreate 'Configure Corporal' job template
+- name: Recreate 'Configure Corporal (Advanced)' job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure Corporal"
+    name: "{{ matrix_domain }} - 1 - Configure Corporal (Advanced)"
     description: "Configure Matrix Corporal, a tool that manages your Matrix server according to a configuration policy."
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
