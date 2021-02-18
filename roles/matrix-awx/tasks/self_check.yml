@@ -25,7 +25,7 @@
     
 - name: Print CPU usage statistics
   debug:
-    msg: '\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}'
+    msg: '\n{{ cpu_usage_stat.stdout_lines }}'
 
 - name: Calculate RAM usage statistics
   shell: free -mh
@@ -78,4 +78,8 @@
   debug:
     msg: "{{ item }}"
   with_items: remote_media_size_stat.stdout_lines
+  
+# docker ps
+# ram usage of all containers
+# docker stats --all --no-stream --no-trunc
 
