@@ -7,42 +7,56 @@
 - name: Print CPU usage statistics
   shell: iostat -c
   register: cpu_usage_stat
+  no_log: True
 
 - debug:
-    msg: "\n{{ cpu_usage_stat.stdout | string }}"
+    msg: "{{ item }}"
+  with_items: cpu_usage_stat.stdout_lines
 
 - name: Print RAM usage statistics
   shell: free -mh
   register: ram_usage_stat
+  no_log: True
 
 - debug:
-    msg: "\n{{ ram_usage_stat.stdout | to_json }}"
+    msg: "{{ item }}"
+  with_items: ram_usage_stat.stdout_lines
 
 - name: Print free disk space
   shell: df -h
   register: disk_space_stat
+  no_log: True
 
 - debug:
-    msg: "{{ disk_space_stat.stdout }}"
+    msg: "{{ item }}"
+  with_items: disk_space_stat.stdout_lines
 
 - name: Print size of Synapse database
   shell: du -sh /matrix/postgres/data
   register: db_size_stat
+  no_log: True
 
 - debug:
-    msg: "{{ db_size_stat.stdout }}"
+    msg: "{{ item }}"
+  with_items: db_size_stat.stdout_lines
 
 - name: Print size of local media repository
   shell: du -sh /matrix/synapse/storage/media-store/local*
   register: local_media_size_stat
   ignore_errors: yes
+  no_log: True
 
 - debug:
-    msg: "{{ local_media_size_stat.stdout }}"
+    msg: "{{ item }}"
+  with_items: local_media_size_stat.stdout_lines
+  when: local_media_size_stat
 
 - name: Print size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
   register: remote_media_size_stat
+  no_log: True
 
 - debug:
-    msg: "{{ remote_media_size_stat.stdout }}"
+    msg: "{{ item }}"
+  with_items: remote_media_size_stat.stdout_lines
+
