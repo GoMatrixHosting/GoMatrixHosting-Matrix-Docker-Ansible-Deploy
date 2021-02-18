@@ -11,44 +11,10 @@
   shell: iostat -c
   register: cpu_usage_stat
   no_log: True
-
-- debug:
-    msg: "{{ cpu_usage_stat.stdout }}"
     
-- debug:
-    msg: '{{ cpu_usage_stat.stdout }}'
-
-- debug:
-    msg: "{{ item }}"
-  with_items: "{{ cpu_usage_stat.stdout_lines }}"
-
-- debug:
+- name: Print CPU usage statistics
+  debug:
     msg: "{{ cpu_usage_stat.stdout.split('\n') }}"
-    
-- debug:
-    msg: "{{ cpu_usage_stat.stdout.split('\n') | regex_replace('\t', '	') }}"
-
-- debug:
-    msg: "{{ cpu_usage_stat.stdout.split('\n') | regex_replace('\\t', '	') }}"
-    
-- debug:
-    msg: "{{ cpu_usage_stat.stdout.split('\n') | regex_replace('\t', ' ') }}"
-
-- debug:
-    msg: "{{ cpu_usage_stat.stdout.split('\n') | regex_replace('\\t', ' ') }}"
-    
-- name: Print CPU usage statistics
-  debug:
-    msg: "\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}"
-    
-- name: Print CPU usage statistics
-  debug:
-    msg: '\n{{ cpu_usage_stat.stdout_lines }}'
-
-- name: Print CPU usage statistics
-  debug:
-    msg: "{{ item | regex_replace('\\t', '\t') }}"
-  with_items: '{{ cpu_usage_stat.stdout_lines }}'
 
 - name: Calculate RAM usage statistics
   shell: free -mh
@@ -58,7 +24,7 @@
 - name: Print RAM usage statistics
   debug:
     msg: "{{ item }}"
-  with_items: ram_usage_stat.stdout_lines
+  with_items: "{{ ram_usage_stat.stdout_lines('\n') }}"
 
 - name: Calculate free disk space
   shell: df -h
@@ -68,7 +34,7 @@
 - name: Print free disk space
   debug:
     msg: "{{ item }}"
-  with_items: disk_space_stat.stdout_lines
+  with_items: "{{ disk_space_stat.stdout_lines('\n') }}"
 
 - name: Calculate size of Synapse database
   shell: du -sh /matrix/postgres/data
@@ -78,7 +44,7 @@
 - name: Print size of Synapse database
   debug:
     msg: "{{ item }}"
-  with_items: db_size_stat.stdout_lines
+  with_items: "{{ db_size_stat.stdout_lines('\n') }}"
 
 - name: Calculate size of local media repository
   shell: du -sh /matrix/synapse/storage/media-store/local*
@@ -90,7 +56,7 @@
   debug:
     msg: "{{ item }}"
   with_items: local_media_size_stat.stdout_lines
-  when: local_media_size_stat
+  when: "{{ local_media_size_stat.stdout_lines('\n') }}"
 
 - name: Calculate size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
@@ -101,7 +67,7 @@
 - name: Print size of remote media repository
   debug:
     msg: "{{ item }}"
-  with_items: remote_media_size_stat.stdout_lines
+  with_items: "{{ remote_media_size_stat.stdout_lines('\n') }}"
   
 # docker ps
 # ram usage of all containers
