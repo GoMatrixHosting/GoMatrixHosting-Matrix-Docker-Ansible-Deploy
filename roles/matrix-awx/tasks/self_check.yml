@@ -22,6 +22,9 @@
 - debug:
     msg: "{{ cpu_usage_stat.stdout.split('\n') }}"
     
+- debug:
+    msg: "{{ cpu_usage_stat.stdout.split('\n') | regex_replace('\\t', '\t') }}"
+    
 - name: Print CPU usage statistics
   debug:
     msg: "\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}"
