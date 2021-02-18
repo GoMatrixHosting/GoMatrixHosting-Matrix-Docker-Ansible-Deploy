@@ -14,11 +14,18 @@
   with_items: "{{ cpu_usage_stat.stdout_lines }}"
 
 - debug:
-    msg: "{{ cpu_usage_stat.stdout.split(\\n) }}"
+    msg: "{{ cpu_usage_stat.stdout.split(\n) }}"
+
+- debug:
+    msg: '{{ cpu_usage_stat.stdout.split(\n) }}'
     
 - name: Print CPU usage statistics
   debug:
     msg: "\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}"
+    
+- name: Print CPU usage statistics
+  debug:
+    msg: '\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}'
 
 - name: Calculate RAM usage statistics
   shell: free -mh
