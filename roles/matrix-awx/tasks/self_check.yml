@@ -4,6 +4,7 @@
     name: 
       - sysstat
       - dnsutils
+      - python-dnspython
       - python3-dnspython
     state: present
 
@@ -15,6 +16,7 @@
 - name: Print CPU usage statistics
   debug:
     msg: "{{ cpu_usage_stat.stdout.split('\n') }}"
+  when: cpu_usage_stat|bool
 
 - name: Calculate RAM usage statistics
   shell: free -mh
@@ -24,6 +26,7 @@
 - name: Print RAM usage statistics
   debug:
     msg: "{{ ram_usage_stat.stdout.split('\n') }}"
+  when: ram_usage_stat|bool
 
 - name: Calculate free disk space
   shell: df -h
@@ -33,6 +36,7 @@
 - name: Print free disk space
   debug:
     msg: "{{ disk_space_stat.stdout.split('\n') }}"
+  when: disk_space_stat|bool
 
 - name: Calculate size of Synapse database
   shell: du -sh /matrix/postgres/data
@@ -42,6 +46,7 @@
 - name: Print size of Synapse database
   debug:
     msg: "{{ db_size_stat.stdout.split('\n') }}"
+  when: db_size_stat|bool
 
 - name: Calculate size of local media repository
   shell: du -sh /matrix/synapse/storage/media-store/local*
@@ -52,7 +57,7 @@
 - name: Print size of local media repository
   debug:
     msg: "{{ local_media_size_stat.stdout.split('\n') }}"
-  when: local_media_size_stat
+  when: local_media_size_stat|bool
 
 - name: Calculate size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
@@ -63,9 +68,16 @@
 - name: Print size of remote media repository
   debug:
     msg: "{{ remote_media_size_stat.stdout.split('\n') }}"
-  when: remote_media_size_stat
-  
-# docker ps
-# ram usage of all containers
-# docker stats --all --no-stream --no-trunc
+  when: remote_media_size_stat|bool
+
+- name: Calculate docker container statistics
+  shell: docker stats --all --no-stream
+  register: docker_stats
+  ignore_errors: yes
+  no_log: True
+
+- name: Print size of remote media repository
+  debug:
+    msg: "{{ docker_stats.stdout.split('\n') }}"
+  when: docker_stats|bool
 
