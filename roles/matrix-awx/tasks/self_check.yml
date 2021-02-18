@@ -1,4 +1,9 @@
 
+- name: Install prerequisite packages
+  apt:
+    name: sysstat
+    state: present
+
 - name: Print CPU usage statistics
   shell: iostat -c
   register: cpu_usage_stat
