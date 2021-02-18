@@ -1,7 +1,10 @@
 
 - name: Install prerequisite packages
   apt:
-    name: sysstat
+    name: 
+      - sysstat
+      - dnsutils
+      - python3-dnspython
     state: present
 
 - name: Calculate CPU usage statistics
