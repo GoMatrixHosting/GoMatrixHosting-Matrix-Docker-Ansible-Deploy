@@ -24,6 +24,11 @@
   debug:
     msg: '\n{{ cpu_usage_stat.stdout_lines }}'
 
+- name: Print CPU usage statistics
+  debug:
+    msg: '{{ item | regex_replace('\\t', '\t') }}'
+  with_items: '{{ cpu_usage_stat.stdout_lines }}'
+
 - name: Calculate RAM usage statistics
   shell: free -mh
   register: ram_usage_stat
