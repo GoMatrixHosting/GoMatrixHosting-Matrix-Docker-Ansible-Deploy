@@ -9,14 +9,14 @@
   register: cpu_usage_stat
 
 - debug:
-    msg: "{{ cpu_usage_stat.stdout }}"
+    msg: "\n{{ cpu_usage_stat.stdout | string }}"
 
 - name: Print RAM usage statistics
   shell: free -mh
   register: ram_usage_stat
 
 - debug:
-    msg: "{{ ram_usage_stat.stdout }}"
+    msg: "\n{{ ram_usage_stat.stdout | to_json }}"
 
 - name: Print free disk space
   shell: df -h
@@ -35,6 +35,7 @@
 - name: Print size of local media repository
   shell: du -sh /matrix/synapse/storage/media-store/local*
   register: local_media_size_stat
+  ignore_errors: yes
 
 - debug:
     msg: "{{ local_media_size_stat.stdout }}"
