@@ -10,6 +10,12 @@
   no_log: True
 
 - debug:
+    msg: "{{ cpu_usage_stat.stdout }}"
+    
+- debug:
+    msg: '{{ cpu_usage_stat.stdout }}'
+
+- debug:
     msg: "{{ item }}"
   with_items: "{{ cpu_usage_stat.stdout_lines }}"
 
