@@ -4,7 +4,7 @@
     name: sysstat
     state: present
 
-- name: Print CPU usage statistics
+- name: Calculate CPU usage statistics
   shell: iostat -c
   register: cpu_usage_stat
   no_log: True
@@ -14,58 +14,61 @@
   with_items: "{{ cpu_usage_stat.stdout_lines }}"
 
 - debug:
-    msg: "{{ cpu_usage_stat.stdout.split(\n) }}"
+    msg: "{{ cpu_usage_stat.stdout.split(\\n) }}"
     
-- debug:
+- name: Print CPU usage statistics
+  debug:
     msg: "\n{{ cpu_usage_stat.stdout | regex_replace('\\n', '\n') | regex_replace('\\t', '\t') }}"
-    
-- debug:
-    msg: "{{ print(cpu_usage_stat.stdout) }}"
 
-- name: Print RAM usage statistics
+- name: Calculate RAM usage statistics
   shell: free -mh
   register: ram_usage_stat
   no_log: True
 
-- debug:
+- name: Print RAM usage statistics
+  debug:
     msg: "{{ item }}"
   with_items: ram_usage_stat.stdout_lines
 
-- name: Print free disk space
+- name: Calculate free disk space
   shell: df -h
   register: disk_space_stat
   no_log: True
 
-- debug:
+- name: Print free disk space
+  debug:
     msg: "{{ item }}"
   with_items: disk_space_stat.stdout_lines
 
-- name: Print size of Synapse database
+- name: Calculate size of Synapse database
   shell: du -sh /matrix/postgres/data
   register: db_size_stat
   no_log: True
 
-- debug:
+- name: Print size of Synapse database
+  debug:
     msg: "{{ item }}"
   with_items: db_size_stat.stdout_lines
 
-- name: Print size of local media repository
+- name: Calculate size of local media repository
   shell: du -sh /matrix/synapse/storage/media-store/local*
   register: local_media_size_stat
   ignore_errors: yes
   no_log: True
 
-- debug:
+- name: Print size of local media repository
+  debug:
     msg: "{{ item }}"
   with_items: local_media_size_stat.stdout_lines
   when: local_media_size_stat
 
-- name: Print size of remote media repository
+- name: Calculate size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
   register: remote_media_size_stat
   no_log: True
 
-- debug:
+- name: Print size of remote media repository
+  debug:
     msg: "{{ item }}"
   with_items: remote_media_size_stat.stdout_lines
 
