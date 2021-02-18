@@ -125,8 +125,6 @@
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-  tags:
-    - always
     
 # ^ This playbook isn't executing so the survey isn't being updated! :P
 
