@@ -45,7 +45,7 @@
 - name: Save new 'Customise Website + Access Backup' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
-    src: './roles/matrix-awx/templates/configure_website_access_backup.json.j2'
+    src: './roles/matrix-awx/surveys/configure_website_access_backup.json.j2'
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_website_access_backup.json'
 
 - name: Copy new 'Customise Website + Access Backup' survey.json to target machine

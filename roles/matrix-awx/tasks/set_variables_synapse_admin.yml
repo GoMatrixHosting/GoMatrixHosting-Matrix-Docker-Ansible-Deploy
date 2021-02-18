@@ -18,7 +18,7 @@
 - name: Save new 'Configure Synapse Admin' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
-    src: 'roles/matrix-awx/templates/configure_synapse_admin.json.j2'
+    src: 'roles/matrix-awx/surveys/configure_synapse_admin.json.j2'
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/configure_synapse_admin.json'
 
 - name: Copy new 'Configure Synapse Admin' survey.json to target machine
