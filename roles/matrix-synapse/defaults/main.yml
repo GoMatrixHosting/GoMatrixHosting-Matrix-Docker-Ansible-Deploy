@@ -11,7 +11,7 @@ matrix_synapse_docker_image_name_prefix: "{{ 'localhost/' if matrix_synapse_cont
 # The if statement below may look silly at times (leading to the same version being returned),
 # but ARM-compatible container images are only released 1-7 hours after a release,
 # so we may often be on different versions for different architectures when new Synapse releases come out.
-matrix_synapse_docker_image_tag: "{{ 'v1.25.0' if matrix_architecture == 'amd64' else 'v1.25.0' }}"
+matrix_synapse_docker_image_tag: "{{ 'v1.27.0' if matrix_architecture == 'amd64' else 'v1.26.0' }}"
 matrix_synapse_docker_image_force_pull: "{{ matrix_synapse_docker_image.endswith(':latest') }}"
 
 matrix_synapse_base_path: "{{ matrix_base_data_path }}/synapse"
@@ -354,6 +354,7 @@ matrix_s3_media_store_bucket_name: "your-bucket-name"
 matrix_s3_media_store_aws_access_key: "your-aws-access-key"
 matrix_s3_media_store_aws_secret_key: "your-aws-secret-key"
 matrix_s3_media_store_region: "eu-central-1"
+matrix_s3_media_store_path: "{{ matrix_synapse_media_store_path }}"
 
 # Controls whether the self-check feature should validate SSL certificates.
 matrix_synapse_self_check_validate_certificates: true

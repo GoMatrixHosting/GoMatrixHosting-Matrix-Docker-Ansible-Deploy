@@ -3,7 +3,7 @@ matrix_client_element_enabled: true
 matrix_client_element_container_image_self_build: false
 matrix_client_element_container_image_self_build_repo: "https://github.com/vector-im/riot-web.git"
 
-matrix_client_element_docker_image: "{{ matrix_client_element_docker_image_name_prefix }}vectorim/element-web:v1.7.17"
+matrix_client_element_docker_image: "{{ matrix_client_element_docker_image_name_prefix }}vectorim/element-web:v1.7.21"
 matrix_client_element_docker_image_name_prefix: "{{ 'localhost/' if matrix_client_element_container_image_self_build else 'docker.io/' }}"
 matrix_client_element_docker_image_force_pull: "{{ matrix_client_element_docker_image.endswith(':latest') }}"
 
@@ -58,6 +58,8 @@ matrix_client_element_branding_authHeaderLogoUrl: "{{ matrix_client_element_welc
 
 # URL to Wallpaper, shown in background of welcome page
 matrix_client_element_branding_welcomeBackgroundUrl: ~
+
+matrix_client_element_page_template_welcome_path: "{{ role_path }}/templates/welcome.html.j2"
 
 # By default, there's no Element homepage (when logged in). If you wish to have one,
 # point this to a `home.html` template file on your local filesystem.
