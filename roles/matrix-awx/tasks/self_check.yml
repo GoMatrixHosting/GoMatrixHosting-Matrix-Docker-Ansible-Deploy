@@ -15,9 +15,6 @@
 
 - debug:
     msg: "{{ cpu_usage_stat.stdout.split(\n) }}"
-
-- debug:
-    msg: '{{ cpu_usage_stat.stdout.split(\n) }}'
     
 - name: Print CPU usage statistics
   debug:
