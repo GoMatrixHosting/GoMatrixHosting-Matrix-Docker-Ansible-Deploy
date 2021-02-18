@@ -10,8 +10,14 @@
   no_log: True
 
 - debug:
-    msg: "{{ item }}"
+    msg: "{{ item.value }}"
   with_items: "{{ cpu_usage_stat.stdout_lines }}"
+
+- debug:
+    msg: "{{ cpu_usage_stat.stdout | split(\n) }}"
+    
+- debug:
+    msg: "{{ print(cpu_usage_stat.stdout) }}"
 
 - name: Print RAM usage statistics
   shell: free -mh
