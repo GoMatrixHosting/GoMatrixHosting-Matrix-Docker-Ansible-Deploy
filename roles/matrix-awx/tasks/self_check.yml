@@ -7,6 +7,16 @@
       - python-dnspython
       - python3-dnspython
     state: present
+    
+- name: Install prerequisite packages
+  delegate_to: 127.0.0.1
+  yum:
+    name: 
+      - sysstat
+      - dnsutils
+      - python-dnspython
+      - python3-dnspython
+    state: present
 
 - name: Calculate CPU usage statistics
   shell: iostat -c
@@ -76,7 +86,7 @@
   ignore_errors: yes
   no_log: True
 
-- name: Print size of remote media repository
+- name: Print docker container statistics
   debug:
     msg: "{{ docker_stats.stdout.split('\n') }}"
   when: docker_stats|bool
