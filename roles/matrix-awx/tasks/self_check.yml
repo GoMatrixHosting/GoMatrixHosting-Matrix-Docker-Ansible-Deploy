@@ -1,18 +1,18 @@
 
-- name: Install prerequisite packages on target
+- name: Install prerequisite apt packages on target
   apt:
     name: 
       - sysstat
     state: present
     
-- name: Install prerequisite packages on AWX
+- name: Install prerequisite yum packages on AWX
   delegate_to: 127.0.0.1
   yum:
     name: 
       - bind-utils
     state: present
     
-- name: Install prerequisite packages on AWX
+- name: Install prerequisite pip packages on AWX
   delegate_to: 127.0.0.1
   pip:
     name: 
