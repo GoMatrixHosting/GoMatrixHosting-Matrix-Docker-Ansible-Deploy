@@ -3,23 +3,19 @@
   apt:
     name: 
       - sysstat
-      - dnsutils
-      - python-dnspython
-      - python3-dnspython
     state: present
     
 - name: Install prerequisite packages
   delegate_to: 127.0.0.1
   yum:
     name: 
-      - sysstat
       - bind-utils
     state: present
 
 - name: Calculate CPU usage statistics
   shell: iostat -c
   register: cpu_usage_stat
-  no_log: True
+#  no_log: True
     
 - name: Print CPU usage statistics
   debug:
@@ -29,7 +25,7 @@
 - name: Calculate RAM usage statistics
   shell: free -mh
   register: ram_usage_stat
-  no_log: True
+#  no_log: True
 
 - name: Print RAM usage statistics
   debug:
@@ -39,7 +35,7 @@
 - name: Calculate free disk space
   shell: df -h
   register: disk_space_stat
-  no_log: True
+#  no_log: True
 
 - name: Print free disk space
   debug:
@@ -49,7 +45,7 @@
 - name: Calculate size of Synapse database
   shell: du -sh /matrix/postgres/data
   register: db_size_stat
-  no_log: True
+#  no_log: True
 
 - name: Print size of Synapse database
   debug:
@@ -60,7 +56,7 @@
   shell: du -sh /matrix/synapse/storage/media-store/local*
   register: local_media_size_stat
   ignore_errors: yes
-  no_log: True
+#  no_log: True
 
 - name: Print size of local media repository
   debug:
@@ -71,7 +67,7 @@
   shell: du -sh /matrix/synapse/storage/media-store/remote*
   register: remote_media_size_stat
   ignore_errors: yes
-  no_log: True
+#  no_log: True
 
 - name: Print size of remote media repository
   debug:
@@ -82,7 +78,7 @@
   shell: docker stats --all --no-stream
   register: docker_stats
   ignore_errors: yes
-  no_log: True
+#  no_log: True
 
 - name: Print docker container statistics
   debug:
