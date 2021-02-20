@@ -13,8 +13,7 @@
   yum:
     name: 
       - sysstat
-      - dnsutils
-      - python-dns
+      - bind-utils
     state: present
 
 - name: Calculate CPU usage statistics
