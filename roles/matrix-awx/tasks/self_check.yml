@@ -1,16 +1,22 @@
 
-- name: Install prerequisite packages
+- name: Install prerequisite packages on target
   apt:
     name: 
       - sysstat
     state: present
     
-- name: Install prerequisite packages
+- name: Install prerequisite packages on AWX
   delegate_to: 127.0.0.1
   yum:
     name: 
       - bind-utils
-      - python-dns
+    state: present
+    
+- name: Install prerequisite packages on AWX
+  delegate_to: 127.0.0.1
+  pip:
+    name: 
+      - dnspython
     state: present
 
 - name: Calculate CPU usage statistics
