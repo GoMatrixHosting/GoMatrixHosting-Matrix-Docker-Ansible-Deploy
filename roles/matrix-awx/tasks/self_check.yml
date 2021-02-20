@@ -10,6 +10,7 @@
   yum:
     name: 
       - bind-utils
+      - python-dns
     state: present
 
 - name: Calculate CPU usage statistics
