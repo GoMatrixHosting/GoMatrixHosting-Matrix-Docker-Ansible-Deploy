@@ -14,8 +14,7 @@
     name: 
       - sysstat
       - dnsutils
-      - python-dnspython
-      - python3-dnspython
+      - python-dns
     state: present
 
 - name: Calculate CPU usage statistics
