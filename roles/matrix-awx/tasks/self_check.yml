@@ -20,7 +20,7 @@
 - name: Print CPU usage statistics
   debug:
     msg: "{{ cpu_usage_stat.stdout.split('\n') }}"
-  when: cpu_usage_stat|bool
+  when: cpu_usage_stat is defined
 
 - name: Calculate RAM usage statistics
   shell: free -mh
