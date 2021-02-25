@@ -90,27 +90,46 @@
     dest: '/lib/systemd/system/ssh_sftp.service'
     mode: 0644
 
-- name: Copy sshd config file
+- name: Copy sshd config file for Password entry
   copy:
-    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config'
+    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_password'
     dest: '/etc/ssh/sshd_sftp_config'
     mode: 0644
+  when: sftp_auth_method == "Password"
+  
+- name: Copy sshd config file for SSH key entry
+  copy:
+    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_key'
+    dest: '/etc/ssh/sshd_sftp_config'
+    mode: 0644
+  when: sftp_auth_method == "SSH Key"
 
 - name: Ensure group "sftp" exists
   group:
     name: sftp
     state: present
 
-- name: If user defines sftp_password, enable account / set password on 'stfp' account.
+- name: If user doesn't define a sftp_password, create a disabled 'sftp' account
   user:
     name: sftp
-    comment: SFTP user to set custom web files
+    comment: SFTP user to set custom web files and access backup
     shell: /bin/false
-    home: /home/sftp/
+    home: /chroot/
+    group: sftp
+    password: '*'
+    update_password: always
+  when: sftp_password|length == 0
+
+- name: If user defines sftp_password, enable account and set password on 'stfp' account
+  user:
+    name: sftp
+    comment: SFTP user to set custom web files and access backup
+    shell: /bin/false
+    home: /chroot/
     group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
-  when: (sftp_password is defined) and (sftp_password|length > 0)
+  when: sftp_password|length > 0
 
 # would be safer if it generated the password for you!
 
@@ -139,7 +158,7 @@
     group: matrix
     mode: '0574'
 
-- name: Ensure /chroot/backup/ location exists
+- name: Ensure /chroot/backup location exists
   file:
     path: /chroot/backup
     state: directory
@@ -147,13 +166,55 @@
     group: sftp
     mode: '0700'
 
+- name: Ensure /chroot/.ssh location exists
+  file:
+    path: /chroot/.ssh
+    state: directory
+    owner: sftp
+    group: sftp
+    mode: '0700'
+
+- name: Ensure /chroot/authorized_keys exists
+  file:
+    path: /chroot/.ssh/authorized_keys
+    state: touch
+    owner: sftp
+    group: sftp
+    mode: '0644'
+
+- name: Clear authorized_keys file
+  command: echo "" > /chroot/.ssh/authorized_keys
+
+- name: Insert public SSH key into authorized_keys file
+  lineinfile:
+    path: /chroot/.ssh/authorized_keys
+    line: "{{ sftp_public_key }}"
+    owner: sftp
+    group: sftp
+    mode: '0644'
+  when: sftp_public_key|length > 0
+
+- name: Disable service ssh_sftp.service
+  service:
+    name: ssh_sftp.service
+    enabled: no
+  when: sftp_auth_method == "Disabled"
+
 - name: Enable service ssh_sftp.service
   service:
     name: ssh_sftp.service
     enabled: yes
+  when: sftp_auth_method != "Disabled"
+
+- name: Start service ssh_sftp.service
+  service:
+    name: ssh_sftp.service
+    state: stopped
+  when: sftp_auth_method == "Disabled"
 
 - name: Start service ssh_sftp.service
   service:
     name: ssh_sftp.service
     state: started
+  when: sftp_auth_method != "Disabled"
 
