@@ -151,7 +151,7 @@
     group: root
     mode: '1755'
 
-- name: Create the rw /chroot/website directory if it doesn't exist.
+- name: Ensure /chroot/website location exists.
   file:
     path: /chroot/website
     state: directory
@@ -207,7 +207,7 @@
     enabled: yes
   when: sftp_auth_method != "Disabled"
 
-- name: Start service ssh_sftp.service
+- name: Stop service ssh_sftp.service
   service:
     name: ssh_sftp.service
     state: stopped
