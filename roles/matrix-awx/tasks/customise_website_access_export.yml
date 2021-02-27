@@ -31,9 +31,9 @@
     insertafter: '# Custom Settings'
   with_dict:
     'customise_base_domain_website': '{{ customise_base_domain_website }}'
-    'sftp_auth_method': '{{ sftp_auth_method }}'
-    'sftp_password': '{{ sftp_password }}'
-    'sftp_public_key': '{{ sftp_public_key }}'
+    'sftp_auth_method': '"{{ sftp_auth_method }}"'
+    'sftp_password': '"{{ sftp_password }}"'
+    'sftp_public_key': '"{{ sftp_public_key }}"'
     
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
