@@ -31,6 +31,29 @@ matrix_homeserver_container_url: "{{ 'http://matrix-nginx-proxy:12080' if matrix
 
 ######################################################################
 #
+# matrix-awx
+#
+######################################################################
+
+#{% if matrix_awx_enabled|bool == false or matrix_nginx_proxy_base_domain_homepage_enabled %}
+#--mount type=bind,src={{ matrix_nginx_proxy_data_path }},dst=/nginx-data,ro \
+#{% endif %}
+#{% if matrix_awx_enabled and matrix_nginx_proxy_base_domain_homepage_enabled|bool == false %}
+#--mount type=bind,src=/chroot/website,dst=/nginx-data/matrix-domain,ro \
+#{% endif %}
+		
+matrix_nginx_proxy_data_path: "{{ '/chroot/website' if matrix_awx_enabled and matrix_nginx_proxy_base_domain_homepage_enabled|bool == false }}"
+matrix_nginx_proxy_data_destination_path: "{{ '/nginx-data/matrix-domain' if matrix_awx_enabled and matrix_nginx_proxy_base_domain_homepage_enabled|bool == false else '/nginx-data' }}"
+
+######################################################################
+#
+# /matrix-awx
+#
+######################################################################
+
+
+######################################################################
+#
 # matrix-bridge-appservice-discord
 #
 ######################################################################
