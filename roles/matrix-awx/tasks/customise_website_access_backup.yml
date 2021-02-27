@@ -158,9 +158,9 @@
     group: matrix
     mode: '0574'
 
-- name: Ensure /chroot/backup location exists
+- name: Ensure /chroot/export location exists
   file:
-    path: /chroot/backup
+    path: /chroot/export
     state: directory
     owner: sftp
     group: sftp
