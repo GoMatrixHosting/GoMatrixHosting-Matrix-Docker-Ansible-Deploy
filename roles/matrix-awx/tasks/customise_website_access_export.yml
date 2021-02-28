@@ -88,32 +88,32 @@
 
 # Copied over from provision stage
 
-- name: Copy ssh_sftp.service file
-  copy:
-    src: './roles/matrix-awx/templates/sftp/ssh_sftp.service'
-    dest: '/lib/systemd/system/ssh_sftp.service'
-    mode: 0644
+#- name: Copy ssh_sftp.service file
+#  copy:
+#    src: './roles/matrix-awx/templates/sftp/ssh_sftp.service'
+#    dest: '/lib/systemd/system/ssh_sftp.service'
+#    mode: 0644
 
-- name: Copy sshd config file for Disabled entry
-  copy:
-    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_disabled'
-    dest: '/etc/ssh/sshd_sftp_config'
-    mode: 0644
-  when: sftp_auth_method == "Disabled"
+#- name: Copy sshd config file for Disabled entry
+#  copy:
+#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_disabled'
+#    dest: '/etc/ssh/sshd_sftp_config'
+#    mode: 0644
+#  when: sftp_auth_method == "Disabled"
 
-- name: Copy sshd config file for Password entry
-  copy:
-    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_password'
-    dest: '/etc/ssh/sshd_sftp_config'
-    mode: 0644
-  when: sftp_auth_method == "Password"
+#- name: Copy sshd config file for Password entry
+#  copy:
+#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_password'
+#    dest: '/etc/ssh/sshd_sftp_config'
+#    mode: 0644
+#  when: sftp_auth_method == "Password"
   
-- name: Copy sshd config file for SSH Key entry
-  copy:
-    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_key'
-    dest: '/etc/ssh/sshd_sftp_config'
-    mode: 0644
-  when: sftp_auth_method == "SSH Key"
+#- name: Copy sshd config file for SSH Key entry
+#  copy:
+#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_key'
+#    dest: '/etc/ssh/sshd_sftp_config'
+#    mode: 0644
+#  when: sftp_auth_method == "SSH Key"
 
 - name: Ensure group "sftp" exists
   group:
@@ -125,7 +125,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /chroot
+    home: /home/sftp
     group: sftp
     password: '*'
     update_password: always
@@ -136,7 +136,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /chroot
+    home: /home/sftp
     group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
@@ -144,8 +144,8 @@
 
 # would be safer if it generated the password for you!
 
-- name: Setup SFTP users default root path
-  shell: usermod -d /chroot sftp
+#- name: Setup SFTP users default root path
+#  shell: usermod -d /chroot sftp
 
 - name: adding existing user 'sftp' to group matrix
   user:
@@ -177,45 +177,98 @@
     group: sftp
     mode: '0700'
 
-- name: Ensure /chroot/.ssh location exists
+- name: Ensure /home/sftp/.ssh location exists
   file:
-    path: /chroot/.ssh
+    path: /home/sftp/.ssh
     state: directory
     owner: sftp
     group: sftp
     mode: '0700'
 
-- name: Ensure /chroot/authorized_keys exists
+- name: Ensure /home/sftp/authorized_keys exists
   file:
-    path: /chroot/.ssh/authorized_keys
+    path: /home/sftp/.ssh/authorized_keys
     state: touch
     owner: sftp
     group: sftp
     mode: '0644'
 
 - name: Clear authorized_keys file
-  shell: echo "" > /chroot/.ssh/authorized_keys
+  shell: echo "" > /home/sftp/.ssh/authorized_keys
 
 - name: Insert public SSH key into authorized_keys file
   lineinfile:
-    path: /chroot/.ssh/authorized_keys
+    path: /home/sftp/.ssh/authorized_keys
     line: "{{ sftp_public_key }}"
     owner: sftp
     group: sftp
     mode: '0644'
   when: (sftp_public_key | length > 0) and (sftp_auth_method == "SSH Key")
+  
+- name: Alter SSH Subsystem State 1
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "Subsystem sftp /usr/lib/openssh/sftp-server"
+    state: absent
 
-- name: Force a daemon-reload
-  systemd:
-    daemon_reload: yes
+- name: Alter SSH Subsystem State 2
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    insertafter: "# override default of no subsystems"
+    line: "Subsystem sftp /usr/lib/openssh/sftp-server"
+    state: absent
 
-- name: Enable service ssh_sftp.service
+- name: Add SSH Match User section for disabled auth
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    state: absent
+    block: |
+      Match User sftp
+          ChrootDirectory /chroot
+          PermitTunnel no
+          X11Forwarding no
+          AllowTcpForwarding no
+          PasswordAuthentication yes
+          AuthorizedKeysFile /home/sftp/.ssh/authorized_keys
+  when: sftp_auth_method == "Disabled"
+
+- name: Add SSH Match User section for password auth
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    block: |
+      Match User sftp
+          ChrootDirectory /chroot
+          PermitTunnel no
+          X11Forwarding no
+          AllowTcpForwarding no
+          PasswordAuthentication yes
+  when: sftp_auth_method == "Password"
+
+- name: Add SSH Match User section for publickey auth
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    block: |
+      Match User sftp
+          ChrootDirectory /chroot
+          PermitTunnel no
+          X11Forwarding no
+          AllowTcpForwarding no
+          AuthorizedKeysFile /home/sftp/.ssh/authorized_keys
+  when: sftp_auth_method == "SSH Key"
+
+#- name: Force a daemon-reload
+#  systemd:
+#    daemon_reload: yes
+
+#- name: Enable service ssh_sftp.service
+#  service:
+#    name: ssh_sftp.service
+#    enabled: yes
+
+- name: Restart service ssh.service
   service:
-    name: ssh_sftp.service
-    enabled: yes
-
-- name: Restart service ssh_sftp.service
-  service:
-    name: ssh_sftp.service
+    name: ssh.service
     state: restarted
 
