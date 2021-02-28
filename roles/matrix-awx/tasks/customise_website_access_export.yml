@@ -208,13 +208,13 @@
 - name: Alter SSH Subsystem State 1
   lineinfile:
     path: /etc/ssh/sshd_config
-    line: "Subsystem sftp /usr/lib/openssh/sftp-server"
+    line: "Subsystem sftp	/usr/lib/openssh/sftp-server"
     state: absent
 
 - name: Alter SSH Subsystem State 2
   lineinfile:
     path: /etc/ssh/sshd_config
-    insertafter: "# override default of no subsystems"
+    insertafter: "^# override default of no subsystems"
     line: "Subsystem sftp /usr/lib/openssh/sftp-server"
     state: absent
 
