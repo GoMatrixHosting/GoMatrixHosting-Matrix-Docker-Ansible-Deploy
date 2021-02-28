@@ -86,35 +86,6 @@
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
-# Copied over from provision stage
-
-#- name: Copy ssh_sftp.service file
-#  copy:
-#    src: './roles/matrix-awx/templates/sftp/ssh_sftp.service'
-#    dest: '/lib/systemd/system/ssh_sftp.service'
-#    mode: 0644
-
-#- name: Copy sshd config file for Disabled entry
-#  copy:
-#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_disabled'
-#    dest: '/etc/ssh/sshd_sftp_config'
-#    mode: 0644
-#  when: sftp_auth_method == "Disabled"
-
-#- name: Copy sshd config file for Password entry
-#  copy:
-#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_password'
-#    dest: '/etc/ssh/sshd_sftp_config'
-#    mode: 0644
-#  when: sftp_auth_method == "Password"
-  
-#- name: Copy sshd config file for SSH Key entry
-#  copy:
-#    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_key'
-#    dest: '/etc/ssh/sshd_sftp_config'
-#    mode: 0644
-#  when: sftp_auth_method == "SSH Key"
-
 - name: Ensure group "sftp" exists
   group:
     name: sftp
@@ -141,11 +112,6 @@
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
   when: sftp_password|length > 0
-
-# would be safer if it generated the password for you!
-
-#- name: Setup SFTP users default root path
-#  shell: usermod -d /chroot sftp
 
 - name: adding existing user 'sftp' to group matrix
   user:
@@ -256,15 +222,6 @@
           AllowTcpForwarding no
           AuthorizedKeysFile /home/sftp/.ssh/authorized_keys
   when: sftp_auth_method == "SSH Key"
-
-#- name: Force a daemon-reload
-#  systemd:
-#    daemon_reload: yes
-
-#- name: Enable service ssh_sftp.service
-#  service:
-#    name: ssh_sftp.service
-#    enabled: yes
 
 - name: Restart service ssh.service
   service:
