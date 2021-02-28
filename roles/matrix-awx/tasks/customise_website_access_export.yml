@@ -215,8 +215,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     insertafter: "^# override default of no subsystems"
-    line: "Subsystem sftp /usr/lib/openssh/sftp-server"
-    state: absent
+    line: "Subsystem sftp internal-sftp"
 
 - name: Add SSH Match User section for disabled auth
   blockinfile:
