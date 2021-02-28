@@ -203,7 +203,7 @@
     owner: sftp
     group: sftp
     mode: '0644'
-  when: sftp_public_key|length > 0
+  when: (sftp_public_key | length > 0) and (sftp_auth_method == "SSH Key")
 
 - name: Force a daemon-reload
   systemd:
