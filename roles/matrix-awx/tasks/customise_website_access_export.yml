@@ -125,7 +125,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /chroot/
+    home: /chroot
     group: sftp
     password: '*'
     update_password: always
@@ -136,7 +136,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /chroot/
+    home: /chroot
     group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
