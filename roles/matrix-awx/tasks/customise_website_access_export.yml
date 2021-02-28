@@ -94,6 +94,13 @@
     dest: '/lib/systemd/system/ssh_sftp.service'
     mode: 0644
 
+- name: Copy sshd config file for Disabled entry
+  copy:
+    src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_disabled'
+    dest: '/etc/ssh/sshd_sftp_config'
+    mode: 0644
+  when: sftp_auth_method == "Disabled"
+
 - name: Copy sshd config file for Password entry
   copy:
     src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_password'
@@ -101,7 +108,7 @@
     mode: 0644
   when: sftp_auth_method == "Password"
   
-- name: Copy sshd config file for SSH key entry
+- name: Copy sshd config file for SSH Key entry
   copy:
     src: './roles/matrix-awx/templates/sftp/sshd_sftp_config_key'
     dest: '/etc/ssh/sshd_sftp_config'
@@ -198,27 +205,13 @@
     mode: '0644'
   when: sftp_public_key|length > 0
 
-- name: Disable service ssh_sftp.service
-  service:
-    name: ssh_sftp.service
-    enabled: no
-  when: sftp_auth_method == "Disabled"
-
 - name: Enable service ssh_sftp.service
   service:
     name: ssh_sftp.service
     enabled: yes
-  when: sftp_auth_method != "Disabled"
-
-- name: Stop service ssh_sftp.service
-  service:
-    name: ssh_sftp.service
-    state: stopped
-  when: sftp_auth_method == "Disabled"
 
 - name: Start service ssh_sftp.service
   service:
     name: ssh_sftp.service
-    state: started
-  when: sftp_auth_method != "Disabled"
+    state: restarted
 
