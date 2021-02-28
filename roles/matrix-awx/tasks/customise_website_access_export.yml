@@ -193,8 +193,8 @@
     group: sftp
     mode: '0644'
 
-- name: Clear authorized_keys file
-  shell: echo "" > /home/sftp/.ssh/authorized_keys
+#- name: Clear authorized_keys file
+#  shell: echo "" > /home/sftp/.ssh/authorized_keys
 
 - name: Insert public SSH key into authorized_keys file
   lineinfile:
