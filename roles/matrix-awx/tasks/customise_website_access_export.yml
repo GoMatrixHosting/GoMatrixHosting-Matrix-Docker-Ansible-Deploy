@@ -125,7 +125,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /home/sftp/
+    home: /chroot/
     group: sftp
     password: '*'
     update_password: always
@@ -136,7 +136,7 @@
     name: sftp
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
-    home: /home/sftp/
+    home: /chroot/
     group: sftp
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
@@ -194,11 +194,11 @@
     mode: '0644'
 
 - name: Clear authorized_keys file
-  shell: echo "" > /home/sftp/.ssh/authorized_keys
+  shell: echo "" > /chroot/.ssh/authorized_keys
 
 - name: Insert public SSH key into authorized_keys file
   lineinfile:
-    path: /home/sftp/.ssh/authorized_keys
+    path: /chroot/.ssh/authorized_keys
     line: "{{ sftp_public_key }}"
     owner: sftp
     group: sftp
