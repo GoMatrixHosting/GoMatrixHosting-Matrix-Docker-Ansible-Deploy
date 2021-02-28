@@ -145,7 +145,7 @@
 # would be safer if it generated the password for you!
 
 - name: Setup SFTP users default root path
-  shell: usermod -d / sftp
+  shell: usermod -d /chroot sftp
 
 - name: adding existing user 'sftp' to group matrix
   user:
