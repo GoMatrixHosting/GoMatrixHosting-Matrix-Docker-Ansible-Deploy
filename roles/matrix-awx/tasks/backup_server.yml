@@ -1,5 +1,4 @@
 
-
 - name: Record Backup Server variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
