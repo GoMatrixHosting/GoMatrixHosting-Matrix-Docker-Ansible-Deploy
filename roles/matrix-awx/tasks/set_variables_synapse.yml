@@ -41,31 +41,6 @@
     "matrix_synapse_auto_join_rooms": "{{ matrix_synapse_auto_join_rooms_array }}"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
-#- name: Record 'mau_multiplier' locally on AWX, if federation is enabled
-#  delegate_to: 127.0.0.1
-#  lineinfile:
-#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
-#    regexp: "^#? *{{ item.key | regex_escape() }}:"
-#    line: "{{ item.key }}: {{ item.value }}"
-#  with_dict:
-#    "mau_multiplier": "1"
-#  when: matrix_synapse_federation_enabled|bool
-
-#- name: Record 'mau_multiplier' locally on AWX, if federation is disabled
-#  delegate_to: 127.0.0.1
-#  lineinfile:
-#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
-#    regexp: "^#? *{{ item.key | regex_escape() }}:"
-#    line: "{{ item.key }}: {{ item.value }}"
-#  with_dict:
-#    "mau_multiplier": "2"
-#  when: not matrix_synapse_federation_enabled|bool
-
-#- name: Include vars in server_vars.yml for calculating new max_mau_value
-#  include_vars:
-#    file: '/var/lib/awx/projects/hosting/server_vars.yml'
-#  no_log: True
-
 - name: Record Synapse Shared Secret if it's defined
   delegate_to: 127.0.0.1
   lineinfile:
@@ -199,7 +174,6 @@
     '  enable_registration_captcha': '{{ ext_enable_registration_captcha }}'
     '  recaptcha_public_key': '{{ ext_recaptcha_public_key }}'
     '  recaptcha_private_key': '{{ ext_recaptcha_private_key }}'
-#    '  max_mau_value': '{{ base_mau_limit * mau_multiplier + 1 }}'
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
