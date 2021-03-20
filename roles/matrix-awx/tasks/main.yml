@@ -45,10 +45,9 @@
     - setup-client-element
 
 # Additional playbook to set the variable file during Synapse configuration
-- include_tasks: 
-    file: "set_variables_synapse.yml"
-    apply:
-      tags: setup-synapse
+- include_tasks: set_variables_synapse.yml"
+#    apply:
+#      tags: setup-synapse
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - setup-synapse
