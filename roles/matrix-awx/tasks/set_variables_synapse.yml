@@ -1,6 +1,5 @@
 
-- tags: setup-synapse
-  block:
+- block:
   - name: Limit max upload size to 100MB part 1
     set_fact:
       matrix_synapse_max_upload_size_mb: "100"
