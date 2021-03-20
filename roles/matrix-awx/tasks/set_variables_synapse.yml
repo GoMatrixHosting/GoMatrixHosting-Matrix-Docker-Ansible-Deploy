@@ -1,4 +1,5 @@
 
+tasks:
 - block:
   tags: setup-synapse
   
