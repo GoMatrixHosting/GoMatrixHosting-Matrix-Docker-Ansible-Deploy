@@ -1,6 +1,9 @@
 
 # Load initial hosting and organisation variables from AWX volume
-- include_tasks: "{{ role_path }}/tasks/load_hosting_and_org_variables.yml"
+- include_tasks: 
+    file: "load_hosting_and_org_variables.yml"
+    apply:
+      tags: always
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - always
@@ -75,7 +78,10 @@
     - setup-synapse-admin
 
 # Load newly formed matrix variables from tower volume
-- include_tasks: "{{ role_path }}/tasks/load_matrix_variables.yml"
+- include_tasks: 
+    file: "load_matrix_variables.yml"
+    apply:
+      tags: always
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
     - always
