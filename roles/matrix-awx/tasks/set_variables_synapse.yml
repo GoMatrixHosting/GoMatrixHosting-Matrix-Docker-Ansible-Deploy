@@ -1,6 +1,7 @@
 
 tasks:
-- block:
+- tags: setup-synapse
+  block:
   - name: Limit max upload size to 100MB part 1
     set_fact:
       matrix_synapse_max_upload_size_mb_final: "100"
@@ -232,5 +233,4 @@ tasks:
       tower_host: "https://{{ tower_host }}"
       tower_oauthtoken: "{{ tower_token.stdout }}"
       validate_certs: yes
-  tags:
-    - setup-synapse
+
