@@ -1,4 +1,14 @@
 
+- name: Limit max upload size to 100MB - 1
+  set_fact:
+    matrix_synapse_max_upload_size_mb_final: "100"
+  when: matrix_synapse_max_upload_size_mb >= 100
+  
+- name: Limit max upload size to 100MB - 2
+  set_fact:
+    matrix_synapse_max_upload_size_mb_final: "{{ matrix_synapse_max_upload_size_mb }}"
+  when: matrix_synapse_max_upload_size_mb < 100
+
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
@@ -12,7 +22,7 @@
     'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
     'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
     'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
-    'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
+    'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb_final }}'
     'matrix_synapse_url_preview_enabled': '{{ matrix_synapse_url_preview_enabled }}'
     'matrix_synapse_allow_guest_access': '{{ matrix_synapse_allow_guest_access }}'
 
