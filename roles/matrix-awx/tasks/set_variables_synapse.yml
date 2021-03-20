@@ -3,13 +3,13 @@
   block:
   - name: Limit max upload size to 100MB part 1
     set_fact:
-      matrix_synapse_max_upload_size_mb_final: "100"
-    when: matrix_synapse_max_upload_size_mb|int >= 100
+      matrix_synapse_max_upload_size_mb: "100"
+    when: matrix_synapse_max_upload_size_mb_raw|int >= 100
 
   - name: Limit max upload size to 100MB part 2
     set_fact:
-      matrix_synapse_max_upload_size_mb_final: "{{ matrix_synapse_max_upload_size_mb }}"
-    when: matrix_synapse_max_upload_size_mb|int < 100
+      matrix_synapse_max_upload_size_mb: "{{ matrix_synapse_max_upload_size_mb_raw }}"
+    when: matrix_synapse_max_upload_size_mb_raw|int < 100
 
   - name: Record Synapse variables locally on AWX
     delegate_to: 127.0.0.1
@@ -24,7 +24,7 @@
       'matrix_synapse_federation_enabled': '{{ matrix_synapse_federation_enabled }}'
       'matrix_synapse_enable_group_creation': '{{ matrix_synapse_enable_group_creation }}'
       'matrix_synapse_use_presence': '{{ matrix_synapse_use_presence }}'
-      'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb_final }}'
+      'matrix_synapse_max_upload_size_mb': '{{ matrix_synapse_max_upload_size_mb }}'
       'matrix_synapse_url_preview_enabled': '{{ matrix_synapse_url_preview_enabled }}'
       'matrix_synapse_allow_guest_access': '{{ matrix_synapse_allow_guest_access }}'
 
@@ -166,6 +166,7 @@
     with_dict:
       'ext_federation_whitelist_raw': '{{ ext_federation_whitelist_raw.splitlines() | to_json }}'
       'ext_url_preview_accept_language_default': '{{ ext_url_preview_accept_language_default.splitlines() | to_json }}'
+      'matrix_synapse_max_upload_size_mb_final': '{{ matrix_synapse_max_upload_size_mb_final }}'
 
   - name: Set ext_recaptcha_public_key to a 'public-key' if undefined
     set_fact: ext_recaptcha_public_key="public-key"
