@@ -43,9 +43,9 @@
 
 # Additional playbook to set the variable file during Synapse configuration
 - include_tasks: "{{ role_path }}/tasks/set_variables_synapse.yml"
-  when: matrix_awx_enabled|bool
-  tags:
-    - setup-synapse
+  when: run_setup|bool and matrix_awx_enabled|bool
+#  tags:
+#    - setup-synapse
 
 # Additional playbook to set the variable file during Jitsi configuration
 - include_tasks: "{{ role_path }}/tasks/set_variables_jitsi.yml"
