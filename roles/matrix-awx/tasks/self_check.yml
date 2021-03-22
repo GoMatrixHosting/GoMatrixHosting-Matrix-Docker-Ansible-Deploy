@@ -22,7 +22,7 @@
 
 - name: Calculate MAU value
   shell: |
-    curl -s localhost:9000 | grep "^synapse_admin_mau_current"
+    curl -s localhost:9000 | grep "^synapse_admin_mau_current "
   register: mau_stat
   no_log: True
 
