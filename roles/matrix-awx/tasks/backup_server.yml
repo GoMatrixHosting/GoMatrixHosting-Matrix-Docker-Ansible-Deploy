@@ -46,7 +46,7 @@
     description: "Performs a backup of the entire service to a remote location."
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
-    job_tags: "backup-server"
+    job_tags: ["backup-server", "use-survey"]
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
