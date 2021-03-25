@@ -8,6 +8,7 @@
     insertafter: '# AWX Settings'
   with_dict:
     'matrix_awx_backup_enabled': '{{ matrix_awx_backup_enabled }}'
+  when: matrix_awx_backup_enabled != skip
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
