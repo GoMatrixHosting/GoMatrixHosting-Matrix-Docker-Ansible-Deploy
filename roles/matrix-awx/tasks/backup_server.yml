@@ -61,6 +61,10 @@
     validate_certs: yes
   tags: use-survey
 
+- name: Run export.sh if this job template is run by the client
+  command: /bin/sh /root/export.sh
+  tags: use-survey
+
 - name: Include vars in matrix_vars.yml
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
