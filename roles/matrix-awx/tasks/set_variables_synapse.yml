@@ -15,7 +15,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Settings'
+    insertafter: '# Synapse Settings Start'
   with_dict:
     'matrix_synapse_allow_public_rooms_over_federation': '{{ matrix_synapse_allow_public_rooms_over_federation }}'
     'matrix_synapse_enable_registration': '{{ matrix_synapse_enable_registration }}'
@@ -46,7 +46,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Settings'
+    insertafter: '# Synapse Settings Start'
   with_dict:
     "matrix_synapse_auto_join_rooms": "{{ matrix_synapse_auto_join_rooms_array }}"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
@@ -57,7 +57,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Settings'
+    insertafter: '# Synapse Settings Start'
   with_dict:
     'matrix_synapse_registration_shared_secret': '{{ matrix_synapse_registration_shared_secret }}'
   when: matrix_synapse_registration_shared_secret|length > 0
@@ -68,7 +68,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "{{ item }}:"
     line: "{{ item }}"
-    insertbefore: '# End Synapse Extension'
+    insertbefore: '# Synapse Extension End'
   with_items:
     - "  registrations_require_3pid:"
     - "    - email"
@@ -80,7 +80,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "{{ item }}:"
     line: "{{ item }}"
-    insertbefore: '# End Synapse Extension'
+    insertbefore: '# Synapse Extension End'
     state: absent
   with_items:
     - "  registrations_require_3pid:"
@@ -93,7 +93,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: '^(?!.*\bemail\b)    - [a-zA-Z\-]{2,5}\n'
     after: '  url_preview_accept_language:'
-    before: '# End Synapse Extension'
+    before: '# Synapse Extension End'
 
 - name: Set URL languages default if raw inputs empty
   set_fact:
@@ -128,7 +128,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: '^    - [a-z0-9]+\.[a-z0-9.]+\n'
     after: '  federation_domain_whitelist:'
-    before: '# End Synapse Extension'
+    before: '# Synapse Extension End'
 
 - name: Remove Federation Whitelisting 2
   delegate_to: 127.0.0.1
@@ -160,7 +160,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertbefore: '# Custom Settings'
+    insertafter: '# Custom Settings Start'
   with_dict:
     'ext_federation_whitelist_raw': '{{ ext_federation_whitelist_raw.splitlines() | to_json }}'
     'ext_url_preview_accept_language_default': '{{ ext_url_preview_accept_language_default.splitlines() | to_json }}'
@@ -179,7 +179,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertbefore: '# End Synapse Extension'
+    insertbefore: '# Synapse Extension End'
   with_dict:
     '  enable_registration_captcha': '{{ ext_enable_registration_captcha }}'
     '  recaptcha_public_key': '{{ ext_recaptcha_public_key }}'

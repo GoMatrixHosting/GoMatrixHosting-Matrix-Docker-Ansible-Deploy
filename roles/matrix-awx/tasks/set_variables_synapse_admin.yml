@@ -5,7 +5,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Admin Settings'
+    insertafter: '# Synapse Admin Settings Start'
   with_dict:
     'matrix_synapse_admin_enabled': '{{ matrix_synapse_admin_enabled }}'
 

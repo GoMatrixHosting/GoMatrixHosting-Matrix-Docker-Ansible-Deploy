@@ -5,7 +5,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# ma1sd Settings'
+    insertafter: '# ma1sd Settings Start'
   with_dict:
     'matrix_ma1sd_enabled': '{{ matrix_ma1sd_enabled }}'
 
@@ -15,7 +15,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Extension'
+    insertafter: '# Synapse Extension Start'
   with_dict:
     'matrix_synapse_ext_password_provider_rest_auth_enabled': 'false'
   when: ext_matrix_ma1sd_auth_store == 'Synapse Internal'
@@ -26,7 +26,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Synapse Extension'
+    insertafter: '# Synapse Extension Start'
   with_dict:
     'matrix_synapse_ext_password_provider_rest_auth_enabled': 'true'
     'matrix_synapse_ext_password_provider_rest_auth_endpoint': 'http://matrix-ma1sd:8090'
@@ -75,7 +75,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertbefore: '# Custom Settings'
+    insertbefore: '# Custom Settings Start'
   with_dict:
     'ext_matrix_ma1sd_auth_store': '{{ ext_matrix_ma1sd_auth_store }}'
     'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'

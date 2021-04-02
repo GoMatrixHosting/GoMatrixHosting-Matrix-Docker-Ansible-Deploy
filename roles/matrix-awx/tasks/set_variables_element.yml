@@ -5,7 +5,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Element Settings'
+    insertafter: '# Element Settings Start'
   with_dict:
     'matrix_client_element_enabled': '{{ matrix_client_element_enabled }}'
     'matrix_client_element_jitsi_preferredDomain': '{{ matrix_client_element_jitsi_preferredDomain }}'
@@ -24,7 +24,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Element Settings'
+    insertafter: '# Element Settings Start'
   with_dict:
     'matrix_client_element_branding_welcomeBackgroundUrl': '{{ matrix_client_element_branding_welcomeBackgroundUrl }}'
   when: (https_string in matrix_client_element_branding_welcomeBackgroundUrl) and ( matrix_client_element_branding_welcomeBackgroundUrl|length > 0 )

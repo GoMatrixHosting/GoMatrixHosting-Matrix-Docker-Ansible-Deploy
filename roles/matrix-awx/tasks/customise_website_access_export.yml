@@ -6,7 +6,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Base Domain Settings'
+    insertafter: '# Base Domain Settings Start'
   with_dict:
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'true'
   when: customise_base_domain_website|bool == false
@@ -17,7 +17,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Base Domain Settings'
+    insertafter: '# Base Domain Settings Start'
   with_dict:
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'false'
   when: customise_base_domain_website|bool == true
@@ -28,7 +28,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Custom Settings'
+    insertafter: '# Custom Settings Start'
   with_dict:
     'customise_base_domain_website': '{{ customise_base_domain_website }}'
     'sftp_auth_method': '"{{ sftp_auth_method }}"'

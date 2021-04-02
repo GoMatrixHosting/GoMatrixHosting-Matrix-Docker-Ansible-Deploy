@@ -5,7 +5,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# Jitsi Settings'
+    insertafter: '# Jitsi Settings Start'
   with_dict:
     'matrix_jitsi_enabled': '{{ matrix_jitsi_enabled }}'
     'matrix_jitsi_web_config_defaultLanguage': '{{ matrix_jitsi_web_config_defaultLanguage }}'

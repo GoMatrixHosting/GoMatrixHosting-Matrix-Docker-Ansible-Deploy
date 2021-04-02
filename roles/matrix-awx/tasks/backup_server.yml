@@ -5,7 +5,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
-    insertafter: '# AWX Settings'
+    insertafter: '# AWX Settings Start'
   with_dict:
     'matrix_awx_backup_enabled': '{{ matrix_awx_backup_enabled }}'
   tags: use-survey
