@@ -31,7 +31,7 @@
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertafter: '^matrix_dimension_admins:'
-    line: "  - {{ item }}"
+    line: '  - "{{ item }}"'
   with_items: "{{ ext_dimension_users_raw.splitlines() }}"
   when: ext_dimension_users_raw|length > 0
 
