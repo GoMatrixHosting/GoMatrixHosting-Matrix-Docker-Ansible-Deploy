@@ -86,7 +86,7 @@
     description: "Configure Dimension, the self-hosted integrations server."
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
-    job_tags: "start,setup-all"
+    job_tags: "start,setup-all,setup-dimension"
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml

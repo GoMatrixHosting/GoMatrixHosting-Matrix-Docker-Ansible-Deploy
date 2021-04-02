@@ -102,10 +102,10 @@
 - include_tasks: 
     file: "set_variables_dimension.yml"
     apply:
-      tags: setup-all
+      tags: setup-dimension
   when: run_setup|bool and matrix_awx_enabled|bool
   tags:
-    - setup-all
+    - setup-dimension
 
 # Additional playbook to set the variable file during Synapse Admin configuration
 - include_tasks: 
