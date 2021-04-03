@@ -35,7 +35,7 @@
 
 - name: Set final users list if no users are defined
   set_fact:
-    ext_dimension_users_raw_final: ['@dimension:{{ matrix_domain }}']
+    ext_dimension_users_raw_final: ["@dimension:{{ matrix_domain }}"]
   when: ext_dimension_users_raw|length == 0
 
 - name: Set Dimension Users Header
