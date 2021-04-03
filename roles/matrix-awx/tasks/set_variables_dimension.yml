@@ -5,7 +5,7 @@
   register: dimension_user_login
   
 - debug:
-  msg: "Dimension user login: {{ dimension_user_login.stdout }}"
+    msg: "Dimension user login: {{ dimension_user_login.stdout }}"
 
 - name: Convert command output to json
   set_fact:
