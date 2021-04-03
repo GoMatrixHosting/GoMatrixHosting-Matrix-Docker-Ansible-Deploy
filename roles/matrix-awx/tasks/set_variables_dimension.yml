@@ -4,6 +4,11 @@
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
   no_log: True
 
+- name: Install jq on remote machine
+  apt:
+    name: jq
+    state: present
+
 - name: Collect access token of Dimension user
   shell: |
     curl -X POST --header 'Content-Type: application/json' -d '{ "identifier": { "type": "m.id.user","user": "dimension" }, "password": "{{ matrix_awx_dimension_user_password }}", "type": "m.login.password"}' 'https://matrix.{{ matrix_domain }}/_matrix/client/r0/login' | jq -c '. | {access_token}' | sed 's/.*\":\"//' | sed 's/\"}//'
