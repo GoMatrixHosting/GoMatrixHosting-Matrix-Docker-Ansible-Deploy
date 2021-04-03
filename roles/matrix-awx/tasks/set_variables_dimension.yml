@@ -49,7 +49,7 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertbefore: '# Dimension Settings End'
     line: "matrix_dimension_admins:"
-  when: ext_dimension_users_raw|length > 0
+#  when: ext_dimension_users_raw|length > 0
 
 - name: Set Dimension Users
   delegate_to: 127.0.0.1
