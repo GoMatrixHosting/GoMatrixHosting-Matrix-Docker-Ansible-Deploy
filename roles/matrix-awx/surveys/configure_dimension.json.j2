@@ -20,7 +20,7 @@
       "required": false,
       "min": 0,
       "max": 65536,
-      "default": "{{ ext_dimension_users_raw_final | to_json }}",
+      "default": {{ ext_dimension_users_raw_final | to_json | string }},
       "choices": "",
       "new_question": true,
       "variable": "ext_dimension_users_raw",
