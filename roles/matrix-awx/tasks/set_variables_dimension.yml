@@ -47,6 +47,7 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    regexp: "^matrix_dimension_admins:"
     insertbefore: '# Dimension Settings End'
     line: "matrix_dimension_admins:"
 #  when: ext_dimension_users_raw|length > 0
