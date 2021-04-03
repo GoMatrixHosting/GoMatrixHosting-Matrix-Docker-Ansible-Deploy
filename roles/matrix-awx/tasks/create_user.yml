@@ -4,6 +4,10 @@
 # /usr/local/bin/matrix-synapse-register-user <your_username> <your_password> <admin access: 0 or 1>
 #
 
+- name: Remove the cached matrix_vars.yml 
+  delegate_to: 127.0.0.1
+  shell: "rm {{ awx_cached_matrix_vars }}"
+
 - name: Set admin bool to zero
   set_fact:
     admin_bool: 0

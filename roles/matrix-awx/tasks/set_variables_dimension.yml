@@ -1,7 +1,7 @@
 
 - name: Include vars in matrix_vars.yml
   include_vars:
-    file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    file: '{{ awx_cached_matrix_vars }}'
   no_log: True
 
 - name: Install jq on remote machine
@@ -17,7 +17,7 @@
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Dimension Settings Start'
@@ -38,7 +38,7 @@
 - name: Remove Dimension Users
   delegate_to: 127.0.0.1
   replace:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: '^  - .*\n'
     after: 'matrix_dimension_admins:'
     before: '# Dimension Settings End'
@@ -46,14 +46,14 @@
 - name: Set Dimension Users Header
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     insertbefore: '# Dimension Settings End'
     line: "matrix_dimension_admins:"
 
 - name: Set Dimension Users
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     insertafter: '^matrix_dimension_admins:'
     line: '  - "{{ item }}"'
   with_items: "{{ ext_dimension_users_raw_final.splitlines() }}"
@@ -61,18 +61,12 @@
 - name: Record Dimension Custom variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Custom Settings Start'
   with_dict:
     'ext_dimension_users_raw': '{{ ext_dimension_users_raw.splitlines() | to_json }}'
-
-- name: Copy new 'matrix_vars.yml' to target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    dest: '/matrix/awx/matrix_vars.yml'
-    mode: '0660'
 
 - name: Save new 'Configure Dimension' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1

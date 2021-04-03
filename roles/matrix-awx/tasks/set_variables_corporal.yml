@@ -2,7 +2,7 @@
 - name: Record Corporal Enabled/Disabled variable
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Corporal Settings Start'
@@ -12,7 +12,7 @@
 - name: Enable Shared Secret Auth if Corporal enabled
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Shared Secret Auth Settings Start'
@@ -23,7 +23,7 @@
 - name: Disable Shared Secret Auth if Corporal disabled
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Shared Secret Auth Settings Start'
@@ -34,7 +34,7 @@
 - name: Enable Rest Auth Endpoint if Corporal enabled
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Synapse Extension Start'
@@ -45,7 +45,7 @@
 - name: Disable Rest Auth Endpoint if Corporal disabled
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Synapse Extension Start'
@@ -56,7 +56,7 @@
 - name: Disable Corporal API if Simple Static File mode selected
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Corporal Settings Start'
@@ -67,7 +67,7 @@
 - name: Enable Corporal API if Push/Pull mode delected
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Corporal Settings Start'
@@ -78,7 +78,7 @@
 - name: Record Corporal API Access Token if it's defined
   delegate_to: 127.0.0.1
   lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: "^#? *{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
     insertafter: '# Corporal Settings Start'
@@ -89,7 +89,7 @@
 - name: Record 'Simple Static File' configuration variables in matrix_vars.yml
   delegate_to: 127.0.0.1
   blockinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     insertafter: "# Corporal Policy Provider Settings Start"
     block: |
       matrix_corporal_policy_provider_config: |
@@ -151,7 +151,7 @@
 - name: Record 'HTTP Pull Mode' configuration variables in matrix_vars.yml
   delegate_to: 127.0.0.1
   blockinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     insertafter: "# Corporal Policy Provider Settings Start"
     block: |
       matrix_corporal_policy_provider_config: |
@@ -168,7 +168,7 @@
 - name: Record 'HTTP Push Mode' configuration variables in matrix_vars.yml
   delegate_to: 127.0.0.1
   blockinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     insertafter: "# Corporal Policy Provider Settings Start"
     block: |
       matrix_corporal_policy_provider_config: |
@@ -181,7 +181,7 @@
 - name: Lower RateLimit if set to 'Normal'
   delegate_to: 127.0.0.1
   replace:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: '    address:\n        per_second: 50\n        burst_count: 300\n    account:\n        per_second: 0.17\n        burst_count: 300'
     replace: '    address:\n        per_second: 0.17\n        burst_count: 3\n    account:\n        per_second: 0.17\n        burst_count: 3'
   when: matrix_corporal_raise_ratelimits == "Normal"
@@ -189,16 +189,10 @@
 - name: Raise RateLimit if set to 'Raised'
   delegate_to: 127.0.0.1
   replace:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    path: '{{ awx_cached_matrix_vars }}'
     regexp: '    address:\n        per_second: 0.17\n        burst_count: 3\n    account:\n        per_second: 0.17\n        burst_count: 3'
     replace: '    address:\n        per_second: 50\n        burst_count: 300\n    account:\n        per_second: 0.17\n        burst_count: 300'
   when: matrix_corporal_raise_ratelimits == "Raised"
-
-- name: Copy new 'matrix_vars.yml' to target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    dest: '/matrix/awx/matrix_vars.yml'
-    mode: '0664'
 
 - name: Save new 'Configure Corporal' survey.json to the AWX tower
   delegate_to: 127.0.0.1
