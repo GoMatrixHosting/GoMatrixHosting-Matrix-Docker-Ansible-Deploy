@@ -26,7 +26,7 @@
     insertafter: '# Dimension Settings Start'
   with_dict:
     'matrix_dimension_enabled': '{{ matrix_dimension_enabled }}'
-    'matrix_dimension_access_token': '{{ dimension_user_access_token }}'
+    'matrix_dimension_access_token': '{{ dimension_user_access_token.stdout }}'
   
 - name: Set final users list if users are defined
   set_fact:
