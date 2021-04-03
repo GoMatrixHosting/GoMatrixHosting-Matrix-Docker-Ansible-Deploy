@@ -125,7 +125,7 @@
   tags:
     - setup-synapse-admin
 
-# Load newly formed matrix variables from tower volume
+# Load newly formed matrix variables from AWX volume
 - include_tasks: 
     file: "load_matrix_variables.yml"
     apply:

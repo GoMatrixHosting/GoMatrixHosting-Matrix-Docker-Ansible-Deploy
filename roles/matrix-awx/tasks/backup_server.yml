@@ -10,13 +10,6 @@
     'matrix_awx_backup_enabled': '{{ matrix_awx_backup_enabled }}'
   tags: use-survey
 
-- name: Copy new 'matrix_vars.yml' to target machine
-  copy:
-    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    dest: '/matrix/awx/matrix_vars.yml'
-    mode: '0660'
-  tags: use-survey
-
 - name: Save new 'Backup Server' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
   template:
@@ -69,6 +62,13 @@
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
   no_log: True
+
+- name: Copy new 'matrix_vars.yml' to target machine
+  copy:
+    src: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    dest: '/matrix/awx/matrix_vars.yml'
+    mode: '0660'
+  tags: use-survey
 
 - name: Remove the cached matrix_vars.yml 
   delegate_to: 127.0.0.1

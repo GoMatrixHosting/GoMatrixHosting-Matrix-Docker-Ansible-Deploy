@@ -120,4 +120,3 @@
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
-# ^ This playbook isn't executing so the survey isn't being updated! :P
