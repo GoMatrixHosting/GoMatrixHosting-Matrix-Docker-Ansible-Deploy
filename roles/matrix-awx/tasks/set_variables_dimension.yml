@@ -13,9 +13,6 @@
   shell: |
     curl -X POST --header 'Content-Type: application/json' -d '{ "identifier": { "type": "m.id.user","user": "dimension" }, "password": "{{ matrix_awx_dimension_user_password }}", "type": "m.login.password"}' 'https://matrix.{{ matrix_domain }}/_matrix/client/r0/login' | jq -c '. | {access_token}' | sed 's/.*\":\"//' | sed 's/\"}//'
   register: dimension_user_access_token
-  
-- debug:
-    msg: "Dimension user access token: {{ dimension_user_access_token.stdout }}"
 
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
@@ -38,14 +35,6 @@
     ext_dimension_users_raw_final: '"@dimension:{{ matrix_domain }}"'
   when: ext_dimension_users_raw|length == 0
 
-- name: Set Dimension Users Header
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertbefore: '# Dimension Settings End'
-    line: "matrix_dimension_admins:"
-  when: ext_dimension_users_raw|length > 0
-
 - name: Remove Dimension Users
   delegate_to: 127.0.0.1
   replace:
@@ -54,6 +43,14 @@
     after: 'matrix_dimension_admins:'
     before: '# Dimension Settings End'
 
+- name: Set Dimension Users Header
+  delegate_to: 127.0.0.1
+  lineinfile:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+    insertbefore: '# Dimension Settings End'
+    line: "matrix_dimension_admins:"
+  when: ext_dimension_users_raw|length > 0
+
 - name: Set Dimension Users
   delegate_to: 127.0.0.1
   lineinfile:
@@ -61,15 +58,15 @@
     insertafter: '^matrix_dimension_admins:'
     line: '  - "{{ item }}"'
   with_items: "{{ ext_dimension_users_raw_final.splitlines() }}"
-  when: ext_dimension_users_raw|length > 0
+#  when: ext_dimension_users_raw|length > 0
 
-- name: Set default if no users are defined
-  delegate_to: 127.0.0.1
-  lineinfile:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-    insertafter: '^matrix_dimension_admins:'
-    line: '  - "@dimension:{{ matrix_domain }}"'
-  when: ext_dimension_users_raw|length == 0
+#- name: Set default if no users are defined
+#  delegate_to: 127.0.0.1
+#  lineinfile:
+#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+#    insertafter: '^matrix_dimension_admins:'
+#    line: '  - "@dimension:{{ matrix_domain }}"'
+#  when: ext_dimension_users_raw|length == 0
 
 - name: Remove Dimension Users Header
   delegate_to: 127.0.0.1

@@ -1,6 +1,6 @@
 ---
 
-- name: Create user account janitor
+- name: Create user account @janitor
   command: |
     /usr/local/bin/matrix-synapse-register-user janitor {{ matrix_awx_janitor_user_password | quote }} 1
   register: cmd
@@ -18,9 +18,9 @@
     'matrix_awx_janitor_user_created': 'true'
   when: not matrix_awx_janitor_user_created|bool
 
-- name: Create user account dimension
+- name: Create user account @dimension
   command: |
-    /usr/local/bin/matrix-synapse-register-user dimension {{ matrix_awx_dimension_user_password | quote }} 1
+    /usr/local/bin/matrix-synapse-register-user dimension {{ matrix_awx_dimension_user_password | quote }} 0
   register: cmd
   when: not matrix_awx_dimension_user_created|bool
   no_log: True
