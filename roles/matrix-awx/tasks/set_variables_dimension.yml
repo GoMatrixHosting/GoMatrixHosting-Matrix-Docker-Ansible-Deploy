@@ -1,4 +1,25 @@
 
+- name: Collect access token of Dimension user
+  shell: |
+    curl -X POST --header 'Content-Type: application/json' -d '{ "identifier": { "type": "m.id.user","user": "dimension" }, "password": "{{ matrix_awx_dimension_user_password }}", "type": "m.login.password"}' 'https://matrix.{{ matrix_domain }}/_matrix/client/r0/login'
+  register: dimension_user_login
+  
+- debug:
+  msg: "Dimension user login: {{ dimension_user_login.stdout }}"
+
+- name: Convert command output to json
+  set_fact:
+    dimension_user_login_json: "{{ dimension_user_login.stdout | to_json }}"
+
+- debug:
+    msg: "Dimension user login: {{ dimension_user_login_json.data[0].access_token }}"
+
+- debug:
+    msg: "Dimension user login: {{ dimension_user_login_json.data[0] }}"
+
+- debug:
+    msg: "Dimension user login: {{ dimension_user_login_json }}"
+
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
