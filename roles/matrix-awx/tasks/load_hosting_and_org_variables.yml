@@ -9,5 +9,5 @@
     file: '/var/lib/awx/projects/hosting/hosting_vars.yml'
   no_log: True
   
-- name: Create cached matrix_vars.yml
-  copy:
+#- name: Create cached matrix_vars.yml
+#  copy:
