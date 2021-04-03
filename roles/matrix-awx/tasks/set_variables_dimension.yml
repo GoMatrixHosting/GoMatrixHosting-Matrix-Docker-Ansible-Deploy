@@ -14,13 +14,16 @@
 
 - name: Convert command output to json
   set_fact:
-    dimension_user_login_json: "{{ dimension_user_login.stdout | to_json }}"
+    dimension_user_login_json: "{{ dimension_user_login.stdout }}"
 
 - debug:
     msg: "Dimension user login: {{ dimension_user_login_json.access_token }}"
 
 - debug:
     msg: "Dimension user login: {{ dimension_user_login_json }}"
+    
+- debug:
+    msg: "Dimension user login: {{ dimension_user_login_json | from_json | json_query('access_token')}}"
 
 - name: Record Synapse variables locally on AWX
   delegate_to: 127.0.0.1
