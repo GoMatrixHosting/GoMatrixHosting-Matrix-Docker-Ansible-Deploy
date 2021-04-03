@@ -49,7 +49,6 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
     insertbefore: '# Dimension Settings End'
     line: "matrix_dimension_admins:"
-#  when: ext_dimension_users_raw|length > 0
 
 - name: Set Dimension Users
   delegate_to: 127.0.0.1
@@ -58,24 +57,6 @@
     insertafter: '^matrix_dimension_admins:'
     line: '  - "{{ item }}"'
   with_items: "{{ ext_dimension_users_raw_final.splitlines() }}"
-#  when: ext_dimension_users_raw|length > 0
-
-#- name: Set default if no users are defined
-#  delegate_to: 127.0.0.1
-#  lineinfile:
-#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-#    insertafter: '^matrix_dimension_admins:'
-#    line: '  - "@dimension:{{ matrix_domain }}"'
-#  when: ext_dimension_users_raw|length == 0
-
-#- name: Remove Dimension Users Header
-#  delegate_to: 127.0.0.1
-#  replace:
-#    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
-#    regexp: '^matrix_dimension_admins:\n'
-#    after: '# Dimension Settings Start'
-#    before: '# Dimension Settings End'
-#  when: ext_dimension_users_raw|length == 0
 
 - name: Record Dimension Custom variables locally on AWX
   delegate_to: 127.0.0.1
