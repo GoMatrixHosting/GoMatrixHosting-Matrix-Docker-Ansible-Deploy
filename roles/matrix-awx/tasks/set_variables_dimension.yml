@@ -17,10 +17,7 @@
     dimension_user_login_json: "{{ dimension_user_login.stdout | to_json }}"
 
 - debug:
-    msg: "Dimension user login: {{ dimension_user_login_json.data[0].access_token }}"
-
-- debug:
-    msg: "Dimension user login: {{ dimension_user_login_json.data[0] }}"
+    msg: "Dimension user login: {{ dimension_user_login_json.access_token }}"
 
 - debug:
     msg: "Dimension user login: {{ dimension_user_login_json }}"
