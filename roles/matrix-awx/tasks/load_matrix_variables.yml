@@ -6,7 +6,7 @@
 
 - name: If include_vars succeeds overwrite the old matrix_vars.yml 
   delegate_to: 127.0.0.1
-  shell: "rm /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml && cp {{ awx_cached_matrix_vars }} /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml && rm {{ awx_cached_matrix_vars }}"
+  shell: "cp {{ awx_cached_matrix_vars }} /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml && rm {{ awx_cached_matrix_vars }}"
 
 - name: Copy new 'matrix_vars.yml' to target machine
   copy:
