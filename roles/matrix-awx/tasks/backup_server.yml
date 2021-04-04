@@ -70,10 +70,6 @@
     mode: '0660'
   tags: use-survey
 
-- name: Remove the cached matrix_vars.yml 
-  delegate_to: 127.0.0.1
-  shell: "rm {{ awx_cached_matrix_vars }}"
-
 - name: Perform the borg backup
   command: borgmatic
   when: matrix_awx_backup_enabled|bool
