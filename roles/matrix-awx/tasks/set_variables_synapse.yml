@@ -51,6 +51,10 @@
     "matrix_synapse_auto_join_rooms": "{{ matrix_synapse_auto_join_rooms_array }}"
   when: matrix_synapse_auto_join_rooms_raw|length > 0
 
+- name: Print length of shared secret
+  debug:
+    msg: "Length of rego shared secret: {{ matrix_synapse_registration_shared_secret|length }}"
+
 - name: Record Synapse Shared Secret if it's defined
   delegate_to: 127.0.0.1
   lineinfile:
