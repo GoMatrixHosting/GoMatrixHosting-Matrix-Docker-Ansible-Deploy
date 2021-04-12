@@ -1,0 +1,92 @@
+
+- name: Ensure dateutils is installed in AWX
+  delegate_to: 127.0.0.1
+  yum:
+    name: dateutils
+    state: latest
+
+- name: Include vars in matrix_vars.yml
+  include_vars:
+    file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
+  no_log: True
+
+- name: Collect access token for janitor user
+  shell: |
+    curl -XPOST -d '{"type":"m.login.password", "user":"janitor", "password":"{{ matrix_awx_janitor_user_password }}"}' "https://matrix.{{ matrix_domain }}/_matrix/client/r0/login"
+  register: janitors_token
+    
+- debug:
+    msg: "Janitor users token: {{ janitors_token.stdout }}"
+    
+- name: Generate list of dates to purge to
+  shell: "dateseq {{ matrix_purge_from_date }} {{ matrix_purge_to_date }}"
+  register: purge_dates
+  
+- debug:
+    msg: "Purge dates: {{ purge_dates.stdout }}"
+
+- name: Set boolean value to exit playbook
+  set_fact:
+    end_playbook: true
+    
+- name: Calculate initial size of local media repository
+  shell: du -sh /matrix/synapse/storage/media-store/local*
+  register: local_media_size_before
+  when: matrix_purge_media_type == "Local Media"
+  ignore_errors: yes
+  no_log: True
+
+- name: Calculate initial size of remote media repository
+  shell: du -sh /matrix/synapse/storage/media-store/remote*
+  register: remote_media_size_before
+  when: matrix_purge_media_type == "Remote Media"
+  ignore_errors: yes
+  no_log: True
+
+- name: Execute every job template sequentially
+  include_tasks: purge_media_local.yml 
+  loop: "{{ purge_dates.stdout_lines | flatten(levels=1) }}"
+  when: matrix_purge_media_type == "Local Media"
+
+- name: Execute every job template sequentially
+  include_tasks: purge_media_remote.yml 
+  loop: "{{ purge_dates.stdout_lines | flatten(levels=1) }}"
+  when: matrix_purge_media_type == "Remote Media"
+
+- name: Calculate final size of local media repository
+  shell: du -sh /matrix/synapse/storage/media-store/local*
+  register: local_media_size_after
+  when: matrix_purge_media_type == "Local Media"
+  ignore_errors: yes
+  no_log: True
+
+- name: Calculate final size of remote media repository
+  shell: du -sh /matrix/synapse/storage/media-store/remote*
+  register: remote_media_size_after
+  when: matrix_purge_media_type == "Remote Media"
+  ignore_errors: yes
+  no_log: True
+
+- name: Print size of local media repository before purge
+  debug:
+    msg: "{{ local_media_size_before.stdout.split('\n') }}"
+  when: local_media_size_before is defined
+
+- name: Print size of local media repository after purge
+  debug:
+    msg: "{{ local_media_size_after.stdout.split('\n') }}"
+  when: local_media_size_after is defined
+
+- name: Print size of remote media repository before purge
+  debug:
+    msg: "{{ remote_media_size_before.stdout.split('\n') }}"
+  when: remote_media_size_before is defined
+
+- name: Print size of remote media repository after purge
+  debug:
+    msg: "{{ remote_media_size_after.stdout.split('\n') }}"
+  when: remote_media_size_after is defined
+
+- name: End playbook early if this task is called.
+  meta: end_play
+  when: end_playbook is defined and end_playbook|bool
