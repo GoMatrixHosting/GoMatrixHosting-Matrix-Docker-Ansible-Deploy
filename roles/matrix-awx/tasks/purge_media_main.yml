@@ -12,8 +12,10 @@
   
 - name: Ensure curl and jq intalled on target machine
   apt:
+    pkg:
     - curl
     - jq
+  state: present
 
 - name: Collect access token for janitor user
   shell: |
