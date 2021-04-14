@@ -1,8 +1,10 @@
 
-- name: Ensure dateutils is installed in AWX
+- name: Ensure dateutils and curl is installed in AWX
   delegate_to: 127.0.0.1
   yum:
-    name: dateutils
+    name: 
+      - dateutils
+      - curl
     state: latest
 
 - name: Include vars in matrix_vars.yml
