@@ -15,7 +15,7 @@
     pkg:
     - curl
     - jq
-  state: present
+    state: present
 
 - name: Collect access token for janitor user
   shell: |
