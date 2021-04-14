@@ -13,6 +13,7 @@
   no_log: True
 
 - name: Collect access token for janitor user
+  delegate_to: 127.0.0.1
   shell: |
     curl -XPOST -d '{"type":"m.login.password", "user":"janitor", "password":"{{ matrix_awx_janitor_user_password }}"}' "https://matrix.{{ matrix_domain }}/_matrix/client/r0/login"
   register: janitors_token
