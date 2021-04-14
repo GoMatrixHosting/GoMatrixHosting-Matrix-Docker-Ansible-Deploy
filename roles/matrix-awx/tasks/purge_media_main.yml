@@ -24,6 +24,7 @@
     msg: "Janitor users token: {{ janitors_token.stdout }}"
     
 - name: Generate list of dates to purge to
+  delegate_to: 127.0.0.1
   shell: "dateseq {{ matrix_purge_from_date }} {{ matrix_purge_to_date }}"
   register: purge_dates
   
