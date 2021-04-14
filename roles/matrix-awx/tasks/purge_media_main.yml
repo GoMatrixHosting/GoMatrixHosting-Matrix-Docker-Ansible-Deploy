@@ -42,14 +42,12 @@
   register: local_media_size_before
   when: matrix_purge_media_type == "Local Media"
   ignore_errors: yes
-  no_log: True
 
 - name: Calculate initial size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
   register: remote_media_size_before
   when: matrix_purge_media_type == "Remote Media"
   ignore_errors: yes
-  no_log: True
 
 - name: Execute every job template sequentially
   include_tasks: purge_media_local.yml 
@@ -66,14 +64,15 @@
   register: local_media_size_after
   when: matrix_purge_media_type == "Local Media"
   ignore_errors: yes
-  no_log: True
 
 - name: Calculate final size of remote media repository
   shell: du -sh /matrix/synapse/storage/media-store/remote*
   register: remote_media_size_after
   when: matrix_purge_media_type == "Remote Media"
   ignore_errors: yes
-  no_log: True
+
+- debug:
+    msg: "local_media_size_before: {{ local_media_size_before }}"
 
 - name: Print size of local media repository before purge
   debug:
