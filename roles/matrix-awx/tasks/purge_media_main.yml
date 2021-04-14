@@ -2,20 +2,22 @@
 - name: Ensure dateutils and curl is installed in AWX
   delegate_to: 127.0.0.1
   yum:
-    name: 
-      - dateutils
-      - curl
+    name: dateutils
     state: latest
 
 - name: Include vars in matrix_vars.yml
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml'
   no_log: True
+  
+- name: Ensure curl and jq intalled on target machine
+  apt:
+    - curl
+    - jq
 
 - name: Collect access token for janitor user
-  delegate_to: 127.0.0.1
   shell: |
-    curl -XPOST -d '{"type":"m.login.password", "user":"janitor", "password":"{{ matrix_awx_janitor_user_password }}"}' "https://matrix.{{ matrix_domain }}/_matrix/client/r0/login"
+    curl -XPOST -d '{"type":"m.login.password", "user":"janitor", "password":"{{ matrix_awx_janitor_user_password }}"}' "https://matrix.{{ matrix_domain }}/_matrix/client/r0/login" | jq '.access_token'
   register: janitors_token
     
 - debug:
