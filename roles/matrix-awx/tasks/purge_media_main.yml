@@ -77,22 +77,22 @@
 - name: Print size of local media repository before purge
   debug:
     msg: "{{ local_media_size_before.stdout.split('\n') }}"
-  when: local_media_size_before is defined
+  when: matrix_purge_media_type == "Local Media"
 
 - name: Print size of local media repository after purge
   debug:
     msg: "{{ local_media_size_after.stdout.split('\n') }}"
-  when: local_media_size_after is defined
+  when: matrix_purge_media_type == "Local Media"
 
 - name: Print size of remote media repository before purge
   debug:
     msg: "{{ remote_media_size_before.stdout.split('\n') }}"
-  when: remote_media_size_before is defined
+  when: matrix_purge_media_type == "Remote Media"
 
 - name: Print size of remote media repository after purge
   debug:
     msg: "{{ remote_media_size_after.stdout.split('\n') }}"
-  when: remote_media_size_after is defined
+  when: matrix_purge_media_type == "Remote Media"
 
 - name: End playbook early if this task is called.
   meta: end_play
