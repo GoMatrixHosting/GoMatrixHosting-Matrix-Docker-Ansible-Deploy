@@ -1,4 +1,10 @@
 
 - name: Rename synapse presence variable
-  shell: |
-    sed -i 's/matrix_synapse_use_presence/matrix_synapse_presence_enabled/g' /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml
+  delegate_to: 127.0.0.1
+  replace:
+    path: "/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml"
+    regexp: 'matrix_synapse_use_presence'
+    replace: 'matrix_synapse_presence_enabled'
+
+#  shell: |
+#    sed -i 's/matrix_synapse_use_presence/matrix_synapse_presence_enabled/g' 
