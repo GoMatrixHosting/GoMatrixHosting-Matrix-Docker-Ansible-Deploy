@@ -6,5 +6,3 @@
     regexp: 'matrix_synapse_use_presence'
     replace: 'matrix_synapse_presence_enabled'
 
-#  shell: |
-#    sed -i 's/matrix_synapse_use_presence/matrix_synapse_presence_enabled/g' 
