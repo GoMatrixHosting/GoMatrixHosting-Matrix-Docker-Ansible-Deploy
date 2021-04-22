@@ -1,0 +1,4 @@
+
+- name: Rename synapse presence variable
+  shell: |
+    sed -i 's/matrix_synapse_use_presence/matrix_synapse_presence_enabled/g' /var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/matrix_vars.yml
