@@ -44,12 +44,10 @@
     'customise_base_domain_website': '{{ customise_base_domain_website }}'
   when: customise_base_domain_website is defined
 
-#- name: Reload vars in matrix_vars.yml
-#  include_vars:
-#    file: '{{ awx_cached_matrix_vars }}'
-#  no_log: True
-
-# ^ Is this even needed?
+- name: Reload vars in matrix_vars.yml
+  include_vars:
+    file: '{{ awx_cached_matrix_vars }}'
+  no_log: True
 
 - name: Save new 'Customise Website + Access Export' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
