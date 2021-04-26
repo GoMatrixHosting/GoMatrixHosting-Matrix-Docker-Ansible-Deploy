@@ -8,7 +8,7 @@
     insertafter: '# Base Domain Settings Start'
   with_dict:
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'true'
-  when: (customise_base_domain_website is defined) and (customise_base_domain_website|bool == false)
+  when: (customise_base_domain_website is defined) and not customise_base_domain_website|bool
 
 - name: Disable index.html creation to allow multi-file site if user does wish to customise base domain
   delegate_to: 127.0.0.1
@@ -19,7 +19,7 @@
     insertafter: '# Base Domain Settings Start'
   with_dict:
     'matrix_nginx_proxy_base_domain_homepage_enabled': 'false'
-  when: (customise_base_domain_website is defined) and (customise_base_domain_website|bool == true)
+  when: (customise_base_domain_website is defined) and customise_base_domain_website|bool
 
 - name: Record custom 'Customise Website + Access Export' variables locally on AWX
   delegate_to: 127.0.0.1
