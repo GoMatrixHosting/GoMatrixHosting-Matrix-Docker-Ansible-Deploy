@@ -35,3 +35,12 @@
   with_dict:
     'matrix_awx_dimension_user_created': 'true'
   when: not matrix_awx_dimension_user_created|bool
+  
+- name: Ensure /chroot/website location exists.
+  file:
+    path: /chroot/website
+    state: directory
+    owner: matrix
+    group: matrix
+    mode: '0574'
+  when: customise_base_domain_website is defined
