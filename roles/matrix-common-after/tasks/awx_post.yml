@@ -36,7 +36,7 @@
     'matrix_awx_dimension_user_created': 'true'
   when: not matrix_awx_dimension_user_created|bool
   
-- name: Ensure /chroot/website location exists
+- name: Ensure /chroot/website location has correct permissions
   file:
     path: /chroot/website
     state: directory
