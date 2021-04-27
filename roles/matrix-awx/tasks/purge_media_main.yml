@@ -23,7 +23,7 @@
   register: janitors_token
   
 - name: Collect the internal IP of the matrix-synapse container
-  shell: docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' matrix-synapse
+  shell: "/usr/bin/docker inspect --format '{''{range.NetworkSettings.Networks}''}{''{.IPAddress}''}{''{end}''}' matrix-synapse"
   register: synapse_container_ip
     
 - name: Generate list of dates to purge to
