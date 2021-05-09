@@ -70,7 +70,7 @@
 
 - name: Build total room list
   include_tasks: purge_database_build_list.yml 
-  loop: "{{ every_100_rooms.splitlines() | flatten(levels=1) }}"
+  loop: "{{ every_100_rooms.stdout_lines | flatten(levels=1) }}"
   when: purge_rooms|bool
 
 - name: Generate list of rooms with no local users
