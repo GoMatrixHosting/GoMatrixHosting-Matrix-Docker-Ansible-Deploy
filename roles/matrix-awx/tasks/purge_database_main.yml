@@ -42,17 +42,17 @@
   shell: |
     curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms' | jq '.total_rooms'
   when: purge_rooms|bool
-  register: rooms_total_number
+  register: rooms_total
 
 - name: Print total number of rooms
   debug:
-    msg: '{{ rooms_total_number.stdout }}'
+    msg: '{{ rooms_total.stdout }}'
   when: purge_rooms|bool
 
 - name: Calculate every 100 values for total number of rooms
   delegate_to: 127.0.0.1
   shell: |
-    seq 0 100 {{ rooms_total_number.stdout }}
+    seq 0 100 {{ rooms_total.stdout }}
   when: purge_rooms|bool
   register: every_100_rooms
 
@@ -74,6 +74,13 @@
   delegate_to: 127.0.0.1
   shell: |
     jq 'try .rooms[] | select(.joined_local_members == 0) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_no_local_users.txt
+  when: purge_rooms|bool
+  
+- name: Count number of rooms with no local users
+  delegate_to: 127.0.0.1
+  shell: |
+    wc -l /tmp/room_list_no_local_users.txt | awk '{ print $1 }'
+  register: rooms_no_local_total
   when: purge_rooms|bool
 
 - name: Setting host fact room_list_no_local_users
@@ -100,6 +107,13 @@
     jq 'try .rooms[] | select(.joined_members >= {{ purge_metric_value }}) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_joined_members.txt
   when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
 
+- name: Count number of rooms with more then N users
+  delegate_to: 127.0.0.1
+  shell: |
+    wc -l /tmp/room_list_joined_members.txt | awk '{ print $1 }'
+  register: rooms_join_members_total
+  when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
+
 - name: Setting host fact room_list_joined_members
   delegate_to: 127.0.0.1
   set_fact:
@@ -116,6 +130,13 @@
   delegate_to: 127.0.0.1
   shell: |
     jq 'try .rooms[] | select(.state_events >= {{ purge_metric_value }}) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_state_events.txt
+  when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
+
+- name: Count number of rooms with more then N users
+  delegate_to: 127.0.0.1
+  shell: |
+    wc -l /tmp/room_list_state_events.txt | awk '{ print $1 }'
+  register: rooms_state_events_total
   when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
 
 - name: Setting host fact room_list_state_events
@@ -181,13 +202,40 @@
   register: db_size_after_stat
   no_log: True
 
-- name: Print before size of Synapse database
+- name: Print total number of rooms processed 
+  debug:
+    msg: '{{ rooms_total.stdout }}'
+  when: purge_rooms|bool
+
+- name: Print the number of rooms purged with no local users
+  debug:
+    msg: '{{ rooms_no_local_total.stdout }}'
+  when: purge_rooms|bool
+
+- name: Print the number of rooms purged with more then N users
+  debug:
+    msg: '{{ rooms_join_members_total.stdout }}'
+  when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
+
+- name: Print the number of rooms purged with more then N events
+  debug:
+    msg: '{{ rooms_state_events_total.stdout }}'
+  when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
+
+- name: Print before purge size of Synapse database
   debug:
     msg: "{{ db_size_before_stat.stdout.split('\n') }}"
   when: db_size_before_stat is defined
 
-- name: Print after size of Synapse database
+- name: Print after purge size of Synapse database
   debug:
     msg: "{{ db_size_after_stat.stdout.split('\n') }}"
   when: db_size_after_stat is defined
 
+- name: Set boolean value to exit playbook
+  set_fact:
+    end_playbook: true
+
+- name: End playbook early if this task is called.
+  meta: end_play
+  when: end_playbook is defined and end_playbook|bool
