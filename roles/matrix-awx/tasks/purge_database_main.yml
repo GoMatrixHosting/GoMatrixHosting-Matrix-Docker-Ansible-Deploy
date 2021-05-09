@@ -188,7 +188,7 @@
 # root@kvm11-perthchat-testbox:~# docker exec -it matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password=xxxxxxxxxxxxxxxxxxxx" -o /var/lib/postgresql/data/psql-output.txt -c 'REINDEX (VERBOSE) DATABASE synapse'
 
 - name: Reindex Synapse Database
-  shell: docker exec -it matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password={{ matrix_synapse_connection_password }}" -c 'REINDEX (VERBOSE) DATABASE synapse'
+  shell: docker exec -i matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password={{ matrix_synapse_connection_password }}" -c 'REINDEX (VERBOSE) DATABASE synapse'
 
 # ansible-playbook -i inventory/hosts setup.yml --tags=run-postgres-vacuum,start
 
