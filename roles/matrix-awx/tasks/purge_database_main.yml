@@ -40,7 +40,7 @@
 - name: Collect total number of rooms
   delegate_to: 127.0.0.1
   shell: |
-    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms' | jq '.total_rooms'
+    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" '{{ synapse_container_ip.stdout }}:8008/_synapse/admin/v1/rooms' | jq '.total_rooms'
   when: purge_rooms|bool
   register: rooms_total
 
