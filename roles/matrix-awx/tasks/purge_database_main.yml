@@ -57,33 +57,33 @@
 - name: Ensure room_list_complete.json file exists
   delegate_to: 127.0.0.1
   file:
-    path: /tmp/room_list_complete.json
+    path: /tmp/{{ subscription_id }}_room_list_complete.json
     state: touch
   when: purge_rooms|bool
 
 - name: Collect entire room list into a file
   delegate_to: 127.0.0.1
   shell: |
-    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms?from={{ item }}' >> /tmp/room_list_complete.json
+    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms?from={{ item }}' >> /tmp/{{ subscription_id }}_room_list_complete.json
   loop: "{{ every_100_rooms.stdout_lines }}"
   when: purge_rooms|bool
 
 - name: Generate list of rooms with no local users
   delegate_to: 127.0.0.1
   shell: |
-    jq 'try .rooms[] | select(.joined_local_members == 0) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_no_local_users.txt
+    jq 'try .rooms[] | select(.joined_local_members == 0) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_no_local_users.txt
   when: purge_rooms|bool
   
 - name: Count number of rooms with no local users
   delegate_to: 127.0.0.1
   shell: |
-    wc -l /tmp/room_list_no_local_users.txt | awk '{ print $1 }'
+    wc -l /tmp/{{ subscription_id }}_room_list_no_local_users.txt | awk '{ print $1 }'
   register: rooms_no_local_total
   when: purge_rooms|bool
 
 - name: Setting host fact room_list_no_local_users
   set_fact:
-    room_list_no_local_users: "{{ lookup('file', '/tmp/room_list_no_local_users.txt') }}"
+    room_list_no_local_users: "{{ lookup('file', '/tmp/{{ subscription_id }}_room_list_no_local_users.txt') }}"
   no_log: True
   when: purge_rooms|bool
 
@@ -102,20 +102,20 @@
 - name: Generate list of rooms with more then N users
   delegate_to: 127.0.0.1
   shell: |
-    jq 'try .rooms[] | select(.joined_members >= {{ purge_metric_value }}) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_joined_members.txt
+    jq 'try .rooms[] | select(.joined_members >= {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_joined_members.txt
   when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
 
 - name: Count number of rooms with more then N users
   delegate_to: 127.0.0.1
   shell: |
-    wc -l /tmp/room_list_joined_members.txt | awk '{ print $1 }'
+    wc -l /tmp/{{ subscription_id }}_room_list_joined_members.txt | awk '{ print $1 }'
   register: rooms_join_members_total
   when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
 
 - name: Setting host fact room_list_joined_members
   delegate_to: 127.0.0.1
   set_fact:
-    room_list_joined_members: "{{ lookup('file', '/tmp/room_list_joined_members.txt') }}"
+    room_list_joined_members: "{{ lookup('file', '/tmp/{{ subscription_id }}_room_list_joined_members.txt') }}"
   when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
   no_log: True
 
@@ -127,20 +127,20 @@
 - name: Generate list of rooms with more then N events
   delegate_to: 127.0.0.1
   shell: |
-    jq 'try .rooms[] | select(.state_events >= {{ purge_metric_value }}) | .room_id' < /tmp/room_list_complete.json > /tmp/room_list_state_events.txt
+    jq 'try .rooms[] | select(.state_events >= {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_state_events.txt
   when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
 
 - name: Count number of rooms with more then N users
   delegate_to: 127.0.0.1
   shell: |
-    wc -l /tmp/room_list_state_events.txt | awk '{ print $1 }'
+    wc -l /tmp/{{ subscription_id }}_room_list_state_events.txt | awk '{ print $1 }'
   register: rooms_state_events_total
   when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
 
 - name: Setting host fact room_list_state_events
   delegate_to: 127.0.0.1
   set_fact:
-    room_list_state_events: "{{ lookup('file', '/tmp/room_list_state_events.txt') }}"
+    room_list_state_events: "{{ lookup('file', '/tmp/{{ subscription_id }}_room_list_state_events.txt') }}"
   when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
   no_log: True
 
@@ -203,6 +203,10 @@
 
 # Start Synapse (done)
 
+- name: Cleanup room_list files
+  delegate_to: 127.0.0.1
+  shell: |
+    rm /tmp/{{ subscription_id }}_room_list*
 
 - name: Collect size of Synapse database
   shell: du -sh /matrix/postgres/data
