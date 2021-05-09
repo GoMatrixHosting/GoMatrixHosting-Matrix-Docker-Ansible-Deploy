@@ -61,11 +61,16 @@
     state: touch
   when: purge_rooms|bool
 
-- name: Collect entire room list into a file
-  delegate_to: 127.0.0.1
-  shell: |
-    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms?from={{ item }}' >> /tmp/{{ subscription_id }}_room_list_complete.json
-  loop: "{{ every_100_rooms.stdout_lines }}"
+#- name: Collect entire room list into a file
+#  delegate_to: 127.0.0.1
+#  shell: |
+#    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" 'https://matrix.{{ matrix_domain }}/_synapse/admin/v1/rooms?from={{ item }}' >> /tmp/{{ subscription_id }}_room_list_complete.json
+#  loop: "{{ every_100_rooms.stdout_lines }}"
+#  when: purge_rooms|bool
+
+- name: Build total room list
+  include_tasks: purge_database_build_list.yml 
+  loop: "{{ every_100_rooms.splitlines() | flatten(levels=1) }}"
   when: purge_rooms|bool
 
 - name: Generate list of rooms with no local users
