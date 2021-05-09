@@ -166,10 +166,10 @@
     validate_certs: yes 
   register: job
 
-- name: Reindex Synapse Database
+- name: Stop Synapse service
   shell: systemctl stop matrix-synapse.service
 
-- name: Reindex Synapse Database
+- name: Re-index Synapse database
   shell: docker exec -i matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password={{ matrix_synapse_connection_password }}" -c 'REINDEX (VERBOSE) DATABASE synapse'
 
 - name: Execute run-postgres-vacuum job template
@@ -187,6 +187,7 @@
   delegate_to: 127.0.0.1
   shell: |
     rm /tmp/{{ subscription_id }}_room_list*
+  when: purge_rooms|bool
 
 - name: Collect size of Synapse database
   shell: du -sh /matrix/postgres/data
