@@ -188,6 +188,7 @@
   shell: |
     rm /tmp/{{ subscription_id }}_room_list*
   when: purge_rooms|bool
+  ignore_errors: yes
 
 - name: Collect size of Synapse database
   shell: du -sh /matrix/postgres/data
