@@ -86,7 +86,7 @@
   no_log: True
   when: purge_rooms|bool
 
-- name: Purge rooms with no local users
+- name: Purge all rooms with no local users
   include_tasks: purge_database_no_local.yml 
   loop: "{{ room_list_no_local_users.splitlines() | flatten(levels=1) }}"
   when: purge_rooms|bool
