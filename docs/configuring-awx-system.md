@@ -36,6 +36,8 @@ Yes, you'll need to configure an AWX instance, the [Create AWX System](https://g
 
 For simpler installation steps you can use to get started with this system, check out our [minimal installation guide at '/doc/Installation_Minimal.md'](https://gitlab.com/GoMatrixHosting/create-awx-system/-/blob/master/docs/Installation_Minimal.md) of that repository.
 
+For simpler installation steps you can use to get started with this system, check out our minimal installation guide at '/doc/Installation_Minimal.md'.
+
 
 ## Does I need a front-end WordPress site? And a DigitalOcean account? 
 
