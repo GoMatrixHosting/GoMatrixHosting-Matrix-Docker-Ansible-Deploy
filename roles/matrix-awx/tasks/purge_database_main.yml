@@ -101,7 +101,7 @@
 - name: Generate list of rooms with more then N users
   delegate_to: 127.0.0.1
   shell: |
-    jq 'try .rooms[] | select(.joined_members >= {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_joined_members.txt
+    jq 'try .rooms[] | select(.joined_members > {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_joined_members.txt
   when: (purge_metric.find("Number of users") != -1) and (purge_rooms|bool)
 
 - name: Count number of rooms with more then N users
@@ -126,7 +126,7 @@
 - name: Generate list of rooms with more then N events
   delegate_to: 127.0.0.1
   shell: |
-    jq 'try .rooms[] | select(.state_events >= {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_state_events.txt
+    jq 'try .rooms[] | select(.state_events > {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_state_events.txt
   when: (purge_metric.find("Number of events") != -1) and (purge_rooms|bool)
 
 - name: Count number of rooms with more then N users
