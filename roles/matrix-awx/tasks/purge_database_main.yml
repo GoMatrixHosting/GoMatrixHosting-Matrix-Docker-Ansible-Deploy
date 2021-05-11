@@ -103,51 +103,51 @@
   delegate_to: 127.0.0.1
   shell: |
     jq 'try .rooms[] | select(.joined_members > {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_joined_members.txt
-  when: purge_metric.find("Number of users [slower]") != -1)
+  when: purge_mode.find("Number of users [slower]") != -1)
 
 - name: Count number of rooms with more then N users
   delegate_to: 127.0.0.1
   shell: |
     wc -l /tmp/{{ subscription_id }}_room_list_joined_members.txt | awk '{ print $1 }'
   register: rooms_join_members_total
-  when: purge_metric.find("Number of users [slower]") != -1)
+  when: purge_mode.find("Number of users [slower]") != -1)
 
 - name: Setting host fact room_list_joined_members
   delegate_to: 127.0.0.1
   set_fact:
     room_list_joined_members: "{{ lookup('file', '/tmp/{{ subscription_id }}_room_list_joined_members.txt') }}"
-  when: purge_metric.find("Number of users [slower]") != -1)
+  when: purge_mode.find("Number of users [slower]") != -1)
   no_log: True
 
 - name: Purge all rooms with more then N users
   include_tasks: purge_database_users.yml 
   loop: "{{ room_list_joined_members.splitlines() | flatten(levels=1) }}"
-  when: purge_metric.find("Number of users [slower]") != -1)
+  when: purge_mode.find("Number of users [slower]") != -1)
 
 - name: Generate list of rooms with more then N events
   delegate_to: 127.0.0.1
   shell: |
     jq 'try .rooms[] | select(.state_events > {{ purge_metric_value }}) | .room_id' < /tmp/{{ subscription_id }}_room_list_complete.json > /tmp/{{ subscription_id }}_room_list_state_events.txt
-  when: purge_metric.find("Number of events [slower]") != -1)
+  when: purge_mode.find("Number of events [slower]") != -1)
 
 - name: Count number of rooms with more then N events
   delegate_to: 127.0.0.1
   shell: |
     wc -l /tmp/{{ subscription_id }}_room_list_state_events.txt | awk '{ print $1 }'
   register: rooms_state_events_total
-  when: purge_metric.find("Number of events [slower]") != -1)
+  when: purge_mode.find("Number of events [slower]") != -1)
 
 - name: Setting host fact room_list_state_events
   delegate_to: 127.0.0.1
   set_fact:
     room_list_state_events: "{{ lookup('file', '/tmp/{{ subscription_id }}_room_list_state_events.txt') }}"
-  when: (purge_metric.find("Number of events [slower]") != -1)
+  when: (purge_mode.find("Number of events [slower]") != -1)
   no_log: True
 
 - name: Purge all rooms with more then N events
   include_tasks: purge_database_events.yml 
   loop: "{{ room_list_state_events.splitlines() | flatten(levels=1) }}"
-  when: (purge_metric.find("Number of events [slower]") != -1)
+  when: (purge_mode.find("Number of events [slower]") != -1)
 
 - name: Collect AWX admin token the hard way!
   delegate_to: 127.0.0.1
