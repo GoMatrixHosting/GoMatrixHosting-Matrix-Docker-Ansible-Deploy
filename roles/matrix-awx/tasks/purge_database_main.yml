@@ -171,16 +171,28 @@
     msg: "tower_token: {{ tower_token }}"
     
 - debug:
-    msg: "tower_token: {{ tower_token | nice_json }}"
-    
+    msg: "tower_token.ansible_facts: {{ tower_token.ansible_facts }}"
+  ignore_errors: True
+
+- debug:
+    msg: "tower_token.tower_token: {{ tower_token.tower_token }}"
+  ignore_errors: True
+
+- debug:
+    msg: "tower_token.key: {{ tower_token.key }}"
+  ignore_errors: True
+
 - debug:
     msg: "tower_token.value: {{ tower_token.value }}"
+  ignore_errors: True
     
 - debug:
     msg: "tower_token.value.token: {{ tower_token.value.token }}"
+  ignore_errors: True
 
 - debug:
     msg: "tower_token.value.id: {{ tower_token.value.id }}"
+  ignore_errors: True
 
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
