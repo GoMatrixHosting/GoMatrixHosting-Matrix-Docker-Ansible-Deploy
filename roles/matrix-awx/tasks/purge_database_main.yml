@@ -167,6 +167,8 @@
   register: tower_token
   no_log: True
 
+
+
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_launch:
