@@ -149,22 +149,22 @@
   loop: "{{ room_list_state_events.splitlines() | flatten(levels=1) }}"
   when: purge_mode.find("Number of events [slower]") != -1
 
-#- name: Collect AWX admin token the hard way!
-#  delegate_to: 127.0.0.1
-#  shell: |
-#      curl -sku {{ tower_username }}:{{ tower_password }} -H "Content-Type: application/json" -X POST -d '{"description":"Tower CLI", "application":null, "scope":"write"}' https://{{ tower_host }}/api/v2/users/1/personal_tokens/ | jq '.token' | sed -r 's/\"//g'
-#  register: tower_token
-#  no_log: True
-
-- name: Create a new token using username/password
+- name: Collect AWX admin token the hard way!
   delegate_to: 127.0.0.1
-  awx.awx.tower_token:
-    description: 'AWX_1'
-    scope: "write"
-    state: present
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-  register: awx_token
+  shell: |
+      curl -sku {{ tower_username }}:{{ tower_password }} -H "Content-Type: application/json" -X POST -d '{"description":"Tower CLI", "application":null, "scope":"write"}' https://{{ tower_host }}/api/v2/users/1/personal_tokens/ | jq '.token' | sed -r 's/\"//g'
+  register: tower_token
+  no_log: True
+
+#- name: Create a new token using username/password
+#  delegate_to: 127.0.0.1
+#  awx.awx.tower_token:
+#    description: 'AWX_1'
+#    scope: "write"
+#    state: present
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#  register: awx_token
 #  no_log: True
 
 #- debug:
@@ -178,37 +178,37 @@
     tags: "rust-synapse-compress-state"
     wait: yes
     tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes 
   register: job
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
   ignore_errors: True
 
-- name: Execute rust-synapse-compress-state job template
-  delegate_to: 127.0.0.1
-  awx.awx.tower_job_launch:
-    job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
-    tags: "rust-synapse-compress-state"
-    wait: yes
-    tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token }}"
-    validate_certs: yes 
-  register: job
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
-  ignore_errors: True
+#- name: Execute rust-synapse-compress-state job template
+#  delegate_to: 127.0.0.1
+#  awx.awx.tower_job_launch:
+#    job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
+#    tags: "rust-synapse-compress-state"
+#    wait: yes
+#    tower_host: "https://{{ tower_host }}"
+#    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token }}"
+#    validate_certs: yes 
+#  register: job
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
+#  ignore_errors: True
 
-- name: Execute rust-synapse-compress-state job template
-  delegate_to: 127.0.0.1
-  awx.awx.tower_job_launch:
-    job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
-    tags: "rust-synapse-compress-state"
-    wait: yes
-    tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token.token }}"
-    validate_certs: yes 
-  register: job
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
-  ignore_errors: True
+#- name: Execute rust-synapse-compress-state job template
+#  delegate_to: 127.0.0.1
+#  awx.awx.tower_job_launch:
+#    job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
+#    tags: "rust-synapse-compress-state"
+#    wait: yes
+#    tower_host: "https://{{ tower_host }}"
+#    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token.token }}"
+#    validate_certs: yes 
+#  register: job
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
+#  ignore_errors: True
 
 - name: Stop Synapse service
   shell: systemctl stop matrix-synapse.service
@@ -225,17 +225,17 @@
     tags: "run-postgres-vacuum,start"
     wait: yes
     tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token.token }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes 
   register: job
   when: (purge_mode.find("Perform final shrink") != -1)
 
-- name: Delete our Token using its ID
-  delegate_to: 127.0.0.1
-  awx.awx.tower_token:
-    existing_token_id: "{{ awx_token.ansible_facts.tower_token.id }}"
-    state: absent
-  when: awx_token is defined
+#- name: Delete our Token using its ID
+#  delegate_to: 127.0.0.1
+#  awx.awx.tower_token:
+#    existing_token_id: "{{ awx_token.ansible_facts.tower_token.id }}"
+#    state: absent
+#  when: awx_token is defined
 
 - name: Cleanup room_list files
   delegate_to: 127.0.0.1
