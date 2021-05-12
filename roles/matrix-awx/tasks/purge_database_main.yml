@@ -171,6 +171,9 @@
     msg: "tower_token: {{ tower_token }}"
     
 - debug:
+    msg: "tower_token: {{ tower_token | nice_json }}"
+    
+- debug:
     msg: "tower_token.value: {{ tower_token.value }}"
     
 - debug:
