@@ -171,10 +171,10 @@
     msg: "tower_token: {{ tower_token }}"
 
 - debug:
-    msg: "tower_token.token: {{ tower_token.token }}"
+    msg: "tower_token.token: {{ tower_token.value.token }}"
 
 - debug:
-    msg: "tower_token.id: {{ tower_token.id }}"
+    msg: "tower_token.id: {{ tower_token.value.id }}"
 
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
