@@ -182,7 +182,6 @@
     validate_certs: yes 
   register: job
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
-  ignore_errors: True
 
 #- name: Execute rust-synapse-compress-state job template
 #  delegate_to: 127.0.0.1
