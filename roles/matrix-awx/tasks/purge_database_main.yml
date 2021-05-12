@@ -159,7 +159,7 @@
 - name: Create a new token using username/password
   delegate_to: 127.0.0.1
   awx.awx.tower_token:
-    description: '{{ token_description }}'
+    description: 'AWX_1'
     scope: "write"
     state: present
     tower_username: "{{ tower_username }}"
