@@ -167,9 +167,9 @@
   register: awx_token
 #  no_log: True
 
-- debug:
-    msg: "awx_token.ansible_facts.tower_token.token: {{ awx_token.ansible_facts.tower_token.token }}"
-  ignore_errors: True
+#- debug:
+#    msg: "awx_token.ansible_facts.tower_token.token: {{ awx_token.ansible_facts.tower_token.token }}"
+#  ignore_errors: True
 
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
