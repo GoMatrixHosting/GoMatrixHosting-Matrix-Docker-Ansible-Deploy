@@ -96,7 +96,7 @@
   delegate_to: 127.0.0.1
   shell: |
     date -d '{{ purge_date }}' +"%s"
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+  when: (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
   register: purge_epoche_time
 
 - name: Generate list of rooms with more then N users
@@ -164,6 +164,7 @@
     state: present
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
+  no_log: True
 
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
