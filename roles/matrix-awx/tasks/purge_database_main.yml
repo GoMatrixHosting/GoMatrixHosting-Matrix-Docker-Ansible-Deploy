@@ -173,7 +173,15 @@
 - debug:
     msg: "tower_token.ansible_facts: {{ tower_token.ansible_facts }}"
   ignore_errors: True
+  
+- debug:
+    msg: "tower_token.ansible_facts.token: {{ tower_token.ansible_facts.token }}"
+  ignore_errors: True
 
+- debug:
+    msg: "tower_token.ansible_facts.token: {{ tower_token.ansible_facts.tower_token.token }}"
+  ignore_errors: True
+  
 - debug:
     msg: "tower_token.tower_token: {{ tower_token.tower_token }}"
   ignore_errors: True
