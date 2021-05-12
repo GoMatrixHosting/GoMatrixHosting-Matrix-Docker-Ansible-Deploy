@@ -178,7 +178,7 @@
     tags: "rust-synapse-compress-state"
     wait: yes
     tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token.token }}"
+    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token }}"
     validate_certs: yes 
   register: job
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
@@ -191,7 +191,7 @@
     tags: "rust-synapse-compress-state"
     wait: yes
     tower_host: "https://{{ tower_host }}"
-    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token }}"
+    tower_oauthtoken: "{{ awx_token.ansible_facts.tower_token.token }}"
     validate_certs: yes 
   register: job
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
@@ -231,6 +231,7 @@
   when: (purge_mode.find("Perform final shrink") != -1)
 
 - name: Delete our Token using its ID
+  delegate_to: 127.0.0.1
   awx.awx.tower_token:
     existing_token_id: "{{ awx_token.ansible_facts.tower_token.id }}"
     state: absent
