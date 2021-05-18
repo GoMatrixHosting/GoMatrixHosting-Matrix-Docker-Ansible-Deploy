@@ -88,6 +88,11 @@
     dest: "/tmp/{{ subscription_id }}_room_list_complete.json"
     flat: yes
 
+- name: Remove complete room list from target machine
+  file:
+    path: /tmp/room_list_complete.json
+    state: absent
+
 - name: Generate list of rooms with no local users
   delegate_to: 127.0.0.1
   shell: |
