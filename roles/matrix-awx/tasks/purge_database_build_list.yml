@@ -3,12 +3,15 @@
   shell: |
     curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" '{{ synapse_container_ip.stdout }}:8008/_synapse/admin/v1/rooms?from={{ item }}'
   register: rooms_output
+  
+- debug:
+    msg: "rooms_output: {{ rooms_output.stdout }}"
 
 - name: Print stdout to file
   delegate_to: 127.0.0.1
   lineinfile:
     path: "/tmp/{{ subscription_id }}_room_list_complete.json"
-    line: "{{ rooms_output.stdout }}"
+    line: '{{ rooms_output.stdout | to_json }}'
 
 #- name: Print stdout to file
 #  delegate_to: 127.0.0.1
