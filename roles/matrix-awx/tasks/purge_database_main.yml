@@ -23,11 +23,6 @@
   when: (purge_mode.find("Perform final shrink") != -1)
   no_log: True
 
-- name: Print before size of Synapse database
-  debug:
-    msg: "{{ db_size_before_stat.stdout.split('\n') }}"
-  when: (db_size_before_stat is defined) and (purge_mode.find("Perform final shrink") != -1)
-
 - name: Collect the internal IP of the matrix-synapse container
   shell: "/usr/bin/docker inspect --format '{''{range.NetworkSettings.Networks}''}{''{.IPAddress}''}{''{end}''}' matrix-synapse"
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
@@ -39,36 +34,6 @@
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
   register: janitors_token
   no_log: True
-
-#- name: Collect total number of rooms
-#  shell: |
-#    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" '{{ synapse_container_ip.stdout }}:8008/_synapse/admin/v1/rooms' | jq '.total_rooms'
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-#  register: rooms_total
-
-#- name: Print total number of rooms
-#  debug:
-#    msg: '{{ rooms_total.stdout }}'
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-
-#- name: Calculate every 100 values for total number of rooms
-#  delegate_to: 127.0.0.1
-#  shell: |
-#    seq 0 100 {{ rooms_total.stdout }}
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-#  register: every_100_rooms
-
-#- name: Ensure room_list_complete.json file exists
-#  delegate_to: 127.0.0.1
-#  file:
-#    path: /tmp/{{ subscription_id }}_room_list_complete.json
-#    state: touch
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-
-#- name: Build file with total room list
-#  include_tasks: purge_database_build_list.yml 
-#  loop: "{{ every_100_rooms.stdout_lines | flatten(levels=1) }}"
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
 
 - name: Copy build_room_list.py script to target machine
   copy:
@@ -214,12 +179,12 @@
   register: job
   when: (purge_mode.find("Perform final shrink") != -1)
 
-#- name: Cleanup room_list files
-#  delegate_to: 127.0.0.1
-#  shell: |
-#    rm /tmp/{{ subscription_id }}_room_list*
-#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-#  ignore_errors: yes
+- name: Cleanup room_list files
+  delegate_to: 127.0.0.1
+  shell: |
+    rm /tmp/{{ subscription_id }}_room_list*
+  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+  ignore_errors: yes
 
 - name: Collect after shrink size of Synapse database
   shell: du -sh /matrix/postgres/data
