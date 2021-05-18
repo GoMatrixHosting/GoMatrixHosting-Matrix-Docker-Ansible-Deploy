@@ -80,7 +80,7 @@
 
 - name: Run build_room_list.py script
   shell: |
-    runuser -u matrix -- python3 /usr/local/bin/build_room_list.py
+    runuser -u matrix -- python3 /usr/local/bin/build_room_list.py {{ janitors_token.stdout[1:-1] }} {{ synapse_container_ip.stdout }} 
 
 - name: Fetch complete room list from target machine
   fetch:
