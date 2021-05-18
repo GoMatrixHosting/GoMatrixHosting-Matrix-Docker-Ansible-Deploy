@@ -25,4 +25,4 @@ for i in range(0, total_rooms, 100):
 
 room_list_file.close()
 
-
+print(total_rooms)
