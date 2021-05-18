@@ -11,7 +11,7 @@
   delegate_to: 127.0.0.1
   lineinfile:
     path: "/tmp/{{ subscription_id }}_room_list_complete.json"
-    line: '{{ rooms_output.stdout | to_json(ensure_ascii=False) }}'
+    line: '{{ rooms_output.stdout }}'
 
 #- name: Print stdout to file
 #  delegate_to: 127.0.0.1
