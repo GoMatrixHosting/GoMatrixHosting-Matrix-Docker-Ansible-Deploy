@@ -40,35 +40,53 @@
   register: janitors_token
   no_log: True
 
-- name: Collect total number of rooms
+#- name: Collect total number of rooms
+#  shell: |
+#    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" '{{ synapse_container_ip.stdout }}:8008/_synapse/admin/v1/rooms' | jq '.total_rooms'
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+#  register: rooms_total
+
+#- name: Print total number of rooms
+#  debug:
+#    msg: '{{ rooms_total.stdout }}'
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+
+#- name: Calculate every 100 values for total number of rooms
+#  delegate_to: 127.0.0.1
+#  shell: |
+#    seq 0 100 {{ rooms_total.stdout }}
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+#  register: every_100_rooms
+
+#- name: Ensure room_list_complete.json file exists
+#  delegate_to: 127.0.0.1
+#  file:
+#    path: /tmp/{{ subscription_id }}_room_list_complete.json
+#    state: touch
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+
+#- name: Build file with total room list
+#  include_tasks: purge_database_build_list.yml 
+#  loop: "{{ every_100_rooms.stdout_lines | flatten(levels=1) }}"
+#  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+
+- name: Copy build_room_list.py script to target machine
+  copy:
+    src: ./roles/matrix-awx/scripts/build_room_list.py
+    dest: /usr/local/bin/build_room_list.py
+    owner: matrix
+    group: matrix
+    mode: '0755'
+
+- name: Run build_room_list.py script
   shell: |
-    curl -X GET --header "Authorization: Bearer {{ janitors_token.stdout[1:-1] }}" '{{ synapse_container_ip.stdout }}:8008/_synapse/admin/v1/rooms' | jq '.total_rooms'
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-  register: rooms_total
+    runuser -u matrix -- python3 /usr/local/bin/build_room_list.py
 
-- name: Print total number of rooms
-  debug:
-    msg: '{{ rooms_total.stdout }}'
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-
-- name: Calculate every 100 values for total number of rooms
-  delegate_to: 127.0.0.1
-  shell: |
-    seq 0 100 {{ rooms_total.stdout }}
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-  register: every_100_rooms
-
-- name: Ensure room_list_complete.json file exists
-  delegate_to: 127.0.0.1
-  file:
-    path: /tmp/{{ subscription_id }}_room_list_complete.json
-    state: touch
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
-
-- name: Build file with total room list
-  include_tasks: purge_database_build_list.yml 
-  loop: "{{ every_100_rooms.stdout_lines | flatten(levels=1) }}"
-  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
+- name: Fetch complete room list from target machine
+  fetch:
+    src: /tmp/room_list_complete.json
+    dest: "/tmp/{{ subscription_id }}_room_list_complete.json"
+    flat: yes
 
 - name: Generate list of rooms with no local users
   delegate_to: 127.0.0.1
