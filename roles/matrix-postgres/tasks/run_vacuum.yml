@@ -67,11 +67,11 @@
 - set_fact:
     matrix_postgres_synapse_was_running: "{{ ansible_facts.services['matrix-synapse.service']|default(none) is not none and ansible_facts.services['matrix-synapse.service'].state == 'running' }}"
 
-#- name: Ensure matrix-synapse is stopped
-#  service:
-#    name: matrix-synapse
-#    state: stopped
-#    daemon_reload: yes
+- name: Ensure matrix-synapse is stopped
+  service:
+    name: matrix-synapse
+    state: stopped
+    daemon_reload: yes
 
 - name: Run Postgres vacuum command
   command: "{{ matrix_postgres_vacuum_command }}"

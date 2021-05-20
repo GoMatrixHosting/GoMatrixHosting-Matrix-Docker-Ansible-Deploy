@@ -163,12 +163,12 @@
   register: job
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
 
-#- name: Ensure matrix-synapse is stopped
-#  service:
-#    name: matrix-synapse
-#    state: stopped
-#    daemon_reload: yes
-#  when: (purge_mode.find("Perform final shrink") != -1)
+- name: Ensure matrix-synapse is stopped
+  service:
+    name: matrix-synapse
+    state: stopped
+    daemon_reload: yes
+  when: (purge_mode.find("Perform final shrink") != -1)
 
 - name: Re-index Synapse database
   shell: docker exec -i matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password={{ matrix_synapse_connection_password }}" -c 'REINDEX (VERBOSE) DATABASE synapse'
@@ -178,7 +178,7 @@
   delegate_to: 127.0.0.1
   awx.awx.tower_job_launch:
     job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
-    tags: "run-postgres-vacuum,start"
+    tags: "run-postgres-vacuum,start
     wait: yes
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
