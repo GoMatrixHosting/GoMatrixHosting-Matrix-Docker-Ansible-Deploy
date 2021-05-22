@@ -173,6 +173,13 @@
   shell: docker exec -i matrix-postgres psql "host=127.0.0.1 port=5432 dbname=synapse user=synapse password={{ matrix_synapse_connection_password }}" -c 'REINDEX (VERBOSE) DATABASE synapse'
   when: (purge_mode.find("Perform final shrink") != -1)
 
+- name: Ensure matrix-synapse is started
+  service:
+    name: matrix-synapse
+    state: started
+    daemon_reload: yes
+  when: (purge_mode.find("Perform final shrink") != -1)
+
 - name: Execute run-postgres-vacuum job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_launch:
