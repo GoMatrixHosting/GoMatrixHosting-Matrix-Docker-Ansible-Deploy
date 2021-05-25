@@ -245,7 +245,6 @@
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes 
   when: (purge_mode.find("Perform final shrink") != -1)
-  ignore_errors: yes
 
 - name: Revert 'Deploy/Update a Server' job template
   delegate_to: 127.0.0.1
