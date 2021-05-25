@@ -587,4 +587,3 @@ matrix_synapse_configuration_extension: "{{ matrix_synapse_configuration_extensi
 # You most likely don't need to touch this variable. Instead, see `matrix_synapse_configuration_yaml`.
 matrix_synapse_configuration: "{{ matrix_synapse_configuration_yaml|from_yaml|combine(matrix_synapse_configuration_extension, recursive=True) }}"
 
-run_synapse_rust_synapse_compress_state: true
