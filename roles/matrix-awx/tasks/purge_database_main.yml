@@ -37,8 +37,8 @@
 
 - name: Copy build_room_list.py script to target machine
   copy:
-    src: ./roles/matrix-awx/scripts/build_room_list.py
-    dest: /usr/local/bin/build_room_list.py
+    src: ./roles/matrix-awx/scripts/matrix_build_room_list.py
+    dest: /usr/local/bin/matrix_build_room_list.py
     owner: matrix
     group: matrix
     mode: '0755'
@@ -46,7 +46,7 @@
 
 - name: Run build_room_list.py script
   shell: |
-    runuser -u matrix -- python3 /usr/local/bin/build_room_list.py {{ janitors_token.stdout[1:-1] }} {{ synapse_container_ip.stdout }}
+    runuser -u matrix -- python3 /usr/local/bin/matrix_build_room_list.py {{ janitors_token.stdout[1:-1] }} {{ synapse_container_ip.stdout }}
   register: rooms_total
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1)
 
@@ -159,7 +159,6 @@
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
     job_tags: "rust-synapse-compress-state"
-    ask_tags_on_launch: yes
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
@@ -189,7 +188,6 @@
     extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
     job_tags: "setup-all,start"
-    ask_tags_on_launch: yes
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
