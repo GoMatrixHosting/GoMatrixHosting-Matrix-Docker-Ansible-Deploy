@@ -151,16 +151,56 @@
   register: tower_token
   no_log: True
 
+- name: Adjust 'Deploy/Update a Server' job template
+  delegate_to: 127.0.0.1
+  awx.awx.tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
+    description: "Creates a new matrix service with Spantaleev's playbooks"
+    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
+    job_type: run
+    job_tags: "rust-synapse-compress-state"
+    ask_tags_on_launch: yes
+    inventory: "{{ member_id }}"
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    credential: "{{ member_id }} - AWX SSH Key"
+    state: present
+    verbosity: 1
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
+    validate_certs: yes
+  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
+
 - name: Execute rust-synapse-compress-state job template
   delegate_to: 127.0.0.1
   awx.awx.tower_job_launch:
     job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
-    skip_tags: "start,setup-all"
-    tags: "rust-synapse-compress-state"
+#    skip_tags: "start,setup-all"
+#    tags: "rust-synapse-compress-state"
     wait: yes
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes 
+  when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
+
+- name: Revert 'Deploy/Update a Server' job template
+  delegate_to: 127.0.0.1
+  awx.awx.tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
+    description: "Creates a new matrix service with Spantaleev's playbooks"
+    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
+    job_type: run
+    job_tags: "setup-all,start"
+    ask_tags_on_launch: yes
+    inventory: "{{ member_id }}"
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    credential: "{{ member_id }} - AWX SSH Key"
+    state: present
+    verbosity: 1
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
+    validate_certs: yes
   when: (purge_mode.find("No local users [recommended]") != -1) or (purge_mode.find("Number of users [slower]") != -1) or (purge_mode.find("Number of events [slower]") != -1) or (purge_mode.find("Skip purging rooms [faster]") != -1)
 
 - name: Ensure matrix-synapse is stopped
