@@ -43,14 +43,6 @@
   tags:
     - update-user-password
 
-- debug:
-    msg: "run_synapse_rust_synapse_compress_state: {{ run_synapse_rust_synapse_compress_state }}"
-
-- debug:
-    msg: "This prints when rust-synapse-compress-state tag is present."
-  tags: 
-    - rust-synapse-compress-state
-
 - import_tasks: "{{ role_path }}/tasks/rust-synapse-compress-state/main.yml"
   when: run_synapse_rust_synapse_compress_state|bool
   tags:
