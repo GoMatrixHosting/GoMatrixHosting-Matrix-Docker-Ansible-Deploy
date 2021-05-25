@@ -155,7 +155,7 @@
   delegate_to: 127.0.0.1
   awx.awx.tower_job_launch:
     job_template: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
-    skip_tags: ["start","setup-all"]
+    skip_tags: "start,setup-all"
     tags: "rust-synapse-compress-state"
     wait: yes
     tower_host: "https://{{ tower_host }}"
