@@ -74,6 +74,7 @@
   register: _create_instances
   async: 3600  # Maximum runtime in seconds.
   poll: 0  # Fire and continue (never poll)
+  when: matrix_awx_backup_enabled|bool
 
 - name: Wait for both of these jobs to finish
   async_status:
@@ -83,6 +84,7 @@
   delay: 5  # Check every 5 seconds.
   retries: 720  # Retry for a full hour.
   with_items: "{{ _create_instances.results }}"
+  when: matrix_awx_backup_enabled|bool
 
 - name: Perform borg backup of postgres dump
   command: borgmatic -c /etc/borgmatic/config_2.yaml
