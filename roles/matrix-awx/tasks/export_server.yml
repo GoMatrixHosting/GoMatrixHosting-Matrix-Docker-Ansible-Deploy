@@ -17,7 +17,7 @@
   retries: 720  # Retry for a full hour.
   with_items: "{{ _create_instances.results }}"
 
-- name: Install at on target machine
+- name: Install 'at' on target machine
   apt:
     name: at
 

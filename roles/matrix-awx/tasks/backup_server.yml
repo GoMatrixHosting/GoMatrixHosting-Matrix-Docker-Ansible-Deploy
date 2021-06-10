@@ -69,7 +69,7 @@
 - name: Run initial backup of /matrix/ and snapshot the database simultaneously 
   command: "{{ item }}" 
   with_items:
-    - borgmatic -c /etc/borgmatic/config_1.yaml
+    - borgmatic -c /root/.config/borgmatic/config_1.yaml
     - /bin/sh /usr/local/bin/awx-export-service.sh 1 0
   register: _create_instances
   async: 3600  # Maximum runtime in seconds.
@@ -87,7 +87,7 @@
   when: matrix_awx_backup_enabled|bool
 
 - name: Perform borg backup of postgres dump
-  command: borgmatic -c /etc/borgmatic/config_2.yaml
+  command: borgmatic -c /root/.config/borgmatic/config_2.yaml
   when: matrix_awx_backup_enabled|bool
 
 - name: Set boolean value to exit playbook
