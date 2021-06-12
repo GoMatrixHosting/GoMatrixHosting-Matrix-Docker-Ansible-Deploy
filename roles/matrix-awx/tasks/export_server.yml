@@ -17,10 +17,6 @@
   retries: 720  # Retry for a full hour.
   with_items: "{{ _create_instances.results }}"
 
-- name: Install 'at' on target machine
-  apt:
-    name: at
-
 - name: Schedule deletion of the export in 24 hours
   at:
     command: rm /chroot/export/matrix*
