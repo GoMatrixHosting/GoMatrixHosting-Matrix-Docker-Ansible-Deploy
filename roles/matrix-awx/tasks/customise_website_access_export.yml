@@ -139,7 +139,7 @@
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
     home: /home/sftp
-    group: sftp
+    group: matrix
     password: '*'
     update_password: always
   when: sftp_password|length == 0
@@ -150,7 +150,7 @@
     comment: SFTP user to set custom web files and access servers export
     shell: /bin/false
     home: /home/sftp
-    group: sftp
+    group: matrix
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
   when: sftp_password|length > 0
@@ -158,7 +158,7 @@
 - name: adding existing user 'sftp' to group matrix
   user:
     name: sftp
-    groups: matrix
+    groups: sftp
     append: yes
   when: customise_base_domain_website is defined
 
@@ -214,12 +214,6 @@
     group: sftp
     mode: '0644'
   when: (sftp_public_key | length > 0) and (sftp_auth_method == "SSH Key")
-
-#- name: Alter SSH Subsystem State 1
-#  lineinfile:
-#    path: /etc/ssh/sshd_config
-#    line: "Subsystem sftp	/usr/lib/openssh/sftp-server"
-#    state: absent
     
 - name: Remove any existing Subsystem lines
   lineinfile:
