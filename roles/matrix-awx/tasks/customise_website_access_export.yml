@@ -215,13 +215,19 @@
     mode: '0644'
   when: (sftp_public_key | length > 0) and (sftp_auth_method == "SSH Key")
 
-- name: Alter SSH Subsystem State 1
+#- name: Alter SSH Subsystem State 1
+#  lineinfile:
+#    path: /etc/ssh/sshd_config
+#    line: "Subsystem sftp	/usr/lib/openssh/sftp-server"
+#    state: absent
+    
+- name: Remove any existing Subsystem lines
   lineinfile:
     path: /etc/ssh/sshd_config
-    line: "Subsystem sftp	/usr/lib/openssh/sftp-server"
     state: absent
+    regexp: '^Subsystem'
 
-- name: Alter SSH Subsystem State 2
+- name: Set SSH Subsystem State
   lineinfile:
     path: /etc/ssh/sshd_config
     insertafter: "^# override default of no subsystems"
