@@ -128,11 +128,6 @@
     validate_certs: yes
   when: customise_base_domain_website is undefined
 
-- name: Ensure group "sftp" exists
-  group:
-    name: sftp
-    state: present
-
 - name: If user doesn't define a sftp_password, create a disabled 'sftp' account
   user:
     name: sftp
@@ -154,6 +149,11 @@
     password: "{{ sftp_password | password_hash('sha512') }}"
     update_password: always
   when: sftp_password|length > 0
+
+- name: Ensure group "sftp" exists
+  group:
+    name: sftp
+    state: present
 
 - name: adding existing user 'sftp' to group matrix
   user:
