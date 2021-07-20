@@ -36,6 +36,7 @@
   set_fact:
     ext_matrix_ma1sd_configuration_extension_yaml_parsed: "{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | reject('search', '^matrix_client_element_configuration_extension_json:') | list }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+  no_log: True
 
 - name: Remove entire ma1sd configuration extension
   delegate_to: 127.0.0.1
@@ -68,6 +69,7 @@
     line: '{{ item }}'
   with_items: "{{ ext_matrix_ma1sd_configuration_extension_yaml_parsed }}"
   when: ext_matrix_ma1sd_auth_store == 'LDAP/AD'
+  no_log: True
 
 - name: Record ma1sd Custom variables locally on AWX
   delegate_to: 127.0.0.1
@@ -79,6 +81,7 @@
   with_dict:
     'ext_matrix_ma1sd_auth_store': '{{ ext_matrix_ma1sd_auth_store }}'
     'ext_matrix_ma1sd_configuration_extension_yaml': '{{ ext_matrix_ma1sd_configuration_extension_yaml.splitlines() | to_json }}'
+  no_log: True
 
 - name: Save new 'Configure ma1sd' survey.json to the AWX tower, template
   delegate_to: 127.0.0.1
